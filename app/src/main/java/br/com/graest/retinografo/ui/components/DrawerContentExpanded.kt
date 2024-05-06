@@ -61,9 +61,3 @@ fun DrawerContentExpanded(
         }
     }
 }
-fun updateSelectedItemIndex(
-    selectedItemIndex: Int,
-    index: Int
-) : Int {
-    return index
-}

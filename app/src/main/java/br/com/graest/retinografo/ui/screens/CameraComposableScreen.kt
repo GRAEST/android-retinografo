@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.utils.CameraUtils.takePhoto
 
 @Composable

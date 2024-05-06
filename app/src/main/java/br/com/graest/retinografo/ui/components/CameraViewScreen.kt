@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens
+package br.com.graest.retinografo.ui.components
 
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView

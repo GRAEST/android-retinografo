@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun VerticalGridImages(
-    bitmaps: List<Bitmap>,
+    bitmaps: List<Bitmap>
 ) {
 
     if (bitmaps.isEmpty()) {
@@ -32,8 +32,9 @@ fun VerticalGridImages(
     } else {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(8.dp)
         ) {
             items(bitmaps) { bitmap ->
                 Image(
