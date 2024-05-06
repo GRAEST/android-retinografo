@@ -31,8 +31,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.model.CameraViewModel
-import br.com.graest.retinografo.ui.screens.CameraComposableScreen
 import br.com.graest.retinografo.ui.components.HolderScreen
+import br.com.graest.retinografo.ui.screens.CameraComposableScreen
+import br.com.graest.retinografo.ui.screens.LoginScreen
 import br.com.graest.retinografo.ui.screens.VerticalGridImages
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(0)
                 }
 
-                fun onSelectedItemChange(index : Int) : Unit {
+                fun onSelectedItemChange(index: Int): Unit {
                     selectedItemIndex = index
                 }
 
@@ -94,10 +95,23 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
 
-                NavHost(navController = navController, startDestination = "Camera") {
+                NavHost(navController = navController, startDestination = "Login") {
+
+                    composable("Login") {
+                        LoginScreen(
+                            onSignInClick = { navController.navigate("Camera") }
+                        )
+                    }
 
                     composable("Camera") {
-                        HolderScreen(items, navController, selectedItemIndex, ::onSelectedItemChange, scope, drawerState) {
+                        HolderScreen(
+                            items,
+                            navController,
+                            selectedItemIndex,
+                            ::onSelectedItemChange,
+                            scope,
+                            drawerState
+                        ) {
                             CameraComposableScreen(
                                 applicationContext = applicationContext,
                                 controller = controller,
@@ -106,7 +120,13 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("Images") {
-                        HolderScreen(items, navController, selectedItemIndex, ::onSelectedItemChange, scope, drawerState
+                        HolderScreen(
+                            items,
+                            navController,
+                            selectedItemIndex,
+                            ::onSelectedItemChange,
+                            scope,
+                            drawerState
                         ) {
                             VerticalGridImages(bitmaps)
                         }
