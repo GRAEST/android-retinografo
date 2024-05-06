@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,16 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.utils.CameraUtils.takePhoto
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun CameraComposableScreen(
     applicationContext: Context,
     controller: LifecycleCameraController,
-    scope: CoroutineScope,
     onPhotoTaken: (Bitmap) -> Unit
 ) {
 
@@ -63,19 +58,6 @@ fun CameraComposableScreen(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        //scaffoldState.bottomSheetState.expand()
-                        TODO()
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Photo,
-                    contentDescription = "Open Gallery"
-                )
-            }
 
             IconButton(
                 onClick = {

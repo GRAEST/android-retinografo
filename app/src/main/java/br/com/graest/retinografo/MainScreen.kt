@@ -3,6 +3,7 @@ package br.com.graest.retinografo
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -20,25 +21,25 @@ import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.topBarComposable
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun MainScreenComposable(
     items: List<NavigationItem>,
     navController: NavController,
+    selectedItemIndex: Int,
+    onSelectedItemChange: (Int) -> Unit,
+    scope: CoroutineScope,
+    drawerState: DrawerState,
     composable: @Composable () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
         ModalNavigationDrawer(
             drawerContent = {
-                DrawerContentExpanded(items, selectedItemIndex, scope, drawerState, navController)
+                DrawerContentExpanded(items, selectedItemIndex, onSelectedItemChange, scope, drawerState, navController)
             },
             drawerState = drawerState
         ) {

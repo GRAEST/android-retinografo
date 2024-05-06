@@ -10,6 +10,10 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -21,29 +25,31 @@ import kotlinx.coroutines.launch
 fun DrawerContentExpanded(
     items: List<NavigationItem>,
     selectedItemIndex: Int,
+    onSelectedItemChange: (Int) -> Unit,
     scope: CoroutineScope,
     drawerState: DrawerState,
     navController: NavController
 ) {
-    var selectedItemIndex1 = selectedItemIndex
+
     ModalDrawerSheet {
+
         Spacer(modifier = Modifier.height(16.dp))
         items.forEachIndexed { index, item ->
             NavigationDrawerItem(
                 label = {
                     Text(text = item.title)
                 },
-                selected = index == selectedItemIndex1,
+                selected = index == selectedItemIndex,
                 onClick = {
+                    onSelectedItemChange(index)
                     navController.navigate(item.route)
-                    selectedItemIndex1 = index
                     scope.launch {
                         drawerState.close()
                     }
                 },
                 icon = {
                     Icon(
-                        imageVector = if (index == selectedItemIndex1) {
+                        imageVector = if (index == selectedItemIndex) {
                             item.selectedIcon
                         } else item.unselectedIcon,
                         contentDescription = item.title
@@ -54,4 +60,10 @@ fun DrawerContentExpanded(
             )
         }
     }
+}
+fun updateSelectedItemIndex(
+    selectedItemIndex: Int,
+    index: Int
+) : Int {
+    return index
 }

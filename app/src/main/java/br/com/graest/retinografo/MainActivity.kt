@@ -13,12 +13,16 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,7 +68,6 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
-                val scope = rememberCoroutineScope()
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
                         setEnabledUseCases(
@@ -78,20 +81,32 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
+                var selectedItemIndex by rememberSaveable {
+                    mutableStateOf(0)
+                }
+
+                fun onSelectedItemChange(index : Int) : Unit {
+                    selectedItemIndex = index
+                }
+
+                val scope = rememberCoroutineScope()
+
+                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+
                 NavHost(navController = navController, startDestination = "Camera") {
 
                     composable("Camera") {
-                        HolderScreen(items, navController) {
+                        HolderScreen(items, navController, selectedItemIndex, ::onSelectedItemChange, scope, drawerState) {
                             CameraComposableScreen(
                                 applicationContext = applicationContext,
                                 controller = controller,
-                                scope = scope,
                                 onPhotoTaken = viewModel::onTakePhoto
                             )
                         }
                     }
                     composable("Images") {
-                        HolderScreen(items, navController) {
+                        HolderScreen(items, navController, selectedItemIndex, ::onSelectedItemChange, scope, drawerState) {
                             VerticalGridImages(bitmaps)
                         }
                     }
