@@ -61,6 +61,17 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
+
+    implementation(libs.material.icons.extended)
+    implementation(libs.androidx.camera.camera.core)
+    implementation(libs.androidx.camera.camera.camera2)
+    implementation(libs.androidx.camera.camera.lifecycle)
+    implementation(libs.androidx.camera.camera.video)
+    implementation(libs.androidx.camera.camera.view)
+    implementation(libs.androidx.camera.camera.mlkit.vision)
+    implementation(libs.androidx.camera.camera.extensions)
+    implementation(libs.androidx.lifecycle.lifecycle.viewmodel.compose)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
