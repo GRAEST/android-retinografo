@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.graest.retinografo.data.NavigationItem
+import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
 import br.com.graest.retinografo.ui.screens.CameraComposableScreen
@@ -48,26 +49,10 @@ class MainActivity : ComponentActivity() {
                 this, CAMERAX_PERMISSIONS, 0
             )
         }
-
-
-
+        
         enableEdgeToEdge()
         setContent {
             RetinografoTheme {
-                val items = listOf(
-                    NavigationItem(
-                        title = "Camera",
-                        selectedIcon = Icons.Filled.Home,
-                        unselectedIcon = Icons.Outlined.Home,
-                        route = "Camera"
-                    ),
-                    NavigationItem(
-                        title = "Images",
-                        selectedIcon = Icons.Filled.Info,
-                        unselectedIcon = Icons.Outlined.Info,
-                        route = "Images"
-                    )
-                )
 
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
@@ -77,6 +62,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
+
                 val viewModel = viewModel<CameraViewModel>()
                 val bitmaps by viewModel.bitmaps.collectAsState()
 
