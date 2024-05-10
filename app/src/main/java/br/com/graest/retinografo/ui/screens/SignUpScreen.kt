@@ -1,6 +1,5 @@
 package br.com.graest.retinografo.ui.screens
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun LoginScreen() {
-
+fun SignUpScreen() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -49,13 +48,12 @@ fun LoginScreen() {
     ) {
 
         Text(
-            text = "Login",
+            text = "Cadastro de Conta",
             fontSize = 24.sp,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.Start)
         )
-
 
         OutlinedTextField(
             value = username,
@@ -82,26 +80,41 @@ fun LoginScreen() {
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         )
 
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Confirm Password") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(
             onClick = { /* Handle sign up button click */ },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Sign In")
+            Text("Sign Up")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewLoginScreen() {
-    LoginScreen()
+fun PreviewSignUpScreen() {
+    SignUpScreen()
 }

@@ -34,6 +34,7 @@ import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
 import br.com.graest.retinografo.ui.screens.CameraComposableScreen
+import br.com.graest.retinografo.ui.screens.InitialScreen
 import br.com.graest.retinografo.ui.screens.LoginScreen
 import br.com.graest.retinografo.ui.screens.VerticalGridImages
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
@@ -84,7 +85,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "Login") {
 
                     composable("Login") {
-                        LoginScreen(
+                        InitialScreen(
                             onSignInClick = { navController.navigate("Camera") }
                         )
                     }
