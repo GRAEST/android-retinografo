@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.dp
 fun InitialScreen(
     onSignInClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(
-            onClick = onSignInClick
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = "Sign in")
+            Button(
+                onClick = onSignInClick
+            ) {
+                Text(text = "Sign in")
+            }
         }
-    }
 }
