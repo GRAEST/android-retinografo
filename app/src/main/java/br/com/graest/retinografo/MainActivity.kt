@@ -8,11 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -26,16 +21,17 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
 import br.com.graest.retinografo.ui.screens.CameraComposableScreen
-import br.com.graest.retinografo.ui.screens.InitialScreen
+import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.LoginScreen
+import br.com.graest.retinografo.ui.screens.SignUpScreen
 import br.com.graest.retinografo.ui.screens.VerticalGridImages
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
@@ -64,10 +60,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val viewModel = viewModel<CameraViewModel>()
-                val bitmaps by viewModel.bitmaps.collectAsState()
+                val cameraViewModel = viewModel<CameraViewModel>()
+                val bitmaps by cameraViewModel.bitmaps.collectAsState()
 
-                val navController = rememberNavController()
+                val navController : NavHostController = rememberNavController()
 
                 var selectedItemIndex by rememberSaveable {
                     mutableStateOf(0)
@@ -82,11 +78,25 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
 
-                NavHost(navController = navController, startDestination = "Login") {
+                NavHost(navController = navController, startDestination = "InitialScreen") {
 
-                    composable("Login") {
-                        InitialScreen(
-                            onSignInClick = { navController.navigate("Camera") }
+
+                    composable("InitialScreen") {
+                        InitialScreenMain(
+                            onLoginClick = { navController.navigate("LogInScreen") },
+                            onSignUpClick = { navController.navigate("SignUpScreen") }
+                        )
+                    }
+
+                    composable("LogInScreen") {
+                        LoginScreen(
+                            onClickLogIn = { navController.navigate("Camera")}
+                        )
+                    }
+
+                    composable("SignUpScreen") {
+                        SignUpScreen(
+                            onClickSignUp = { navController.navigate("LogInScreen")}
                         )
                     }
 
@@ -102,7 +112,7 @@ class MainActivity : ComponentActivity() {
                             CameraComposableScreen(
                                 applicationContext = applicationContext,
                                 controller = controller,
-                                onPhotoTaken = viewModel::onTakePhoto
+                                onPhotoTaken = cameraViewModel::onTakePhoto
                             )
                         }
                     }

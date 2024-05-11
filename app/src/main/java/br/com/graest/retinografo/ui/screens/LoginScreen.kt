@@ -28,9 +28,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onClickLogIn: () -> Unit
+) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -92,7 +95,7 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(
-            onClick = { /* Handle sign up button click */ },
+            onClick = { onClickLogIn() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Sign In")
@@ -103,5 +106,7 @@ fun LoginScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
-    LoginScreen()
+    LoginScreen(
+        onClickLogIn = {}
+    )
 }

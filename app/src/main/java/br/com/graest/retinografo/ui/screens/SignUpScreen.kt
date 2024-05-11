@@ -27,9 +27,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    onClickSignUp: () -> Unit
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -105,7 +108,7 @@ fun SignUpScreen() {
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(
-            onClick = { /* Handle sign up button click */ },
+            onClick = { onClickSignUp() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Sign Up")
@@ -116,5 +119,7 @@ fun SignUpScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSignUpScreen() {
-    SignUpScreen()
+    SignUpScreen(
+        onClickSignUp = {}
+    )
 }

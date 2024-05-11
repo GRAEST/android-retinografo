@@ -15,10 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 
 @Composable
-fun InitialScreenMain() {
+fun InitialScreenMain(
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +48,7 @@ fun InitialScreenMain() {
                 .align(Alignment.Start)
         )
         Button(
-            onClick = { /* Handle sign up button click */ },
+            onClick = { onLoginClick() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
@@ -59,7 +63,7 @@ fun InitialScreenMain() {
                 .align(Alignment.Start)
         )
         Button(
-            onClick = { /* Handle sign up button click */ },
+            onClick = { onSignUpClick() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Sign Up")
@@ -72,5 +76,8 @@ fun InitialScreenMain() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewInitialScreenMain() {
-    InitialScreenMain()
+    InitialScreenMain(
+        {},
+        {}
+    )
 }
