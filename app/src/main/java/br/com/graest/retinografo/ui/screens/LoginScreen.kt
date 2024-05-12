@@ -71,6 +71,7 @@ fun LoginScreen(
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -87,6 +88,7 @@ fun LoginScreen(
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)

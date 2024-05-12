@@ -76,7 +76,7 @@ fun InitialScreenMain(
 @Preview(showBackground = true)
 @Composable
 fun PreviewInitialScreenMain() {
-    InitialScreenMain(
+    InitialScreenMain( 
         {},
         {}
     )
