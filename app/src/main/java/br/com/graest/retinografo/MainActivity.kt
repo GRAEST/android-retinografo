@@ -14,7 +14,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,7 +29,6 @@ import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
 import br.com.graest.retinografo.ui.screens.CameraComposableScreen
-import br.com.graest.retinografo.ui.screens.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.LoginScreen
 import br.com.graest.retinografo.ui.screens.SignUpScreen
@@ -134,10 +132,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("ImageDetails") {
-                        ImageDetailsScreen(
-                            bitmaps = bitmaps,
-                            bitmapSelectedIndex
-                        )
+//                        ImageDetailsScreen(
+//                            bitmaps = bitmaps,
+//                            bitmapSelectedIndex
+//                        )
                     }
 
 
