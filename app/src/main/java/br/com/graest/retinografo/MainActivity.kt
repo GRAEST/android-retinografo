@@ -29,6 +29,7 @@ import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
 import br.com.graest.retinografo.ui.screens.CameraComposableScreen
+import br.com.graest.retinografo.ui.screens.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.LoginScreen
 import br.com.graest.retinografo.ui.screens.SignUpScreen
@@ -132,10 +133,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable("ImageDetails") {
-//                        ImageDetailsScreen(
-//                            bitmaps = bitmaps,
-//                            bitmapSelectedIndex
-//                        )
+                        ImageDetailsScreen(
+                            bitmaps = bitmaps,
+                            bitmapSelectedIndex
+                        )
                     }
 
 

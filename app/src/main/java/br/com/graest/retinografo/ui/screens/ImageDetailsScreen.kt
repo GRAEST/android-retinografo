@@ -19,12 +19,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-//@Composable
-//fun ImageDetailsScreen(
-//    bitmaps: List<Bitmap>,
-//    bitmapSelectedIndex: Int
-//) {
+@Composable
+fun ImageDetailsScreen(
+    bitmaps: List<Bitmap>,
+    bitmapSelectedIndex: Int
+) {
 //    val imageBitmap: ImageBitmap = bitmaps[bitmapSelectedIndex].asImageBitmap()
+//
+//
+//
 //    Column {
 //        Image(
 //            bitmap = imageBitmap,
@@ -96,10 +99,10 @@ import androidx.compose.ui.unit.dp
 //        )
 //
 //    }
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun ImageDetailPreview() {
-//    ImageDetailsScreen()
-//}
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ImageDetailPreview() {
+    //ImageDetailsScreen()
+}
