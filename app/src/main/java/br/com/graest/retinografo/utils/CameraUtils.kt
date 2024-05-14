@@ -37,7 +37,7 @@ object CameraUtils {
                     )
                     val removedGreen = BitmapUtils.removeGreen(rotatedBitmap)
 
-                    onPhotoTaken(removedGreen)
+                    onPhotoTaken(rotatedBitmap)
                 }
 
                 override fun onError(exception: ImageCaptureException) {

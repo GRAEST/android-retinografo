@@ -32,8 +32,10 @@ import br.com.graest.retinografo.ui.screens.CameraComposableScreen
 import br.com.graest.retinografo.ui.screens.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.LoginScreen
+import br.com.graest.retinografo.ui.screens.PatientScreen
 import br.com.graest.retinografo.ui.screens.SignUpScreen
 import br.com.graest.retinografo.ui.screens.VerticalGridImages
+import br.com.graest.retinografo.ui.screens.mockdata
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
@@ -137,6 +139,18 @@ class MainActivity : ComponentActivity() {
                             bitmaps = bitmaps,
                             bitmapSelectedIndex
                         )
+                    }
+                    composable("Patient") {
+                        HolderScreen(
+                            items = items,
+                            navController = navController,
+                            selectedItemIndex = selectedItemIndex,
+                            onSelectedItemChange = ::onSelectedItemChange,
+                            scope = scope,
+                            drawerState = drawerState
+                        ) {
+                            PatientScreen(patientList = mockdata)
+                        }
                     }
 
 
