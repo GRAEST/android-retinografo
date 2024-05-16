@@ -44,11 +44,14 @@ androidx-camera-camera-extensions = { group = "androidx.camera", name = "camera-
 androidx-lifecycle-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModel"}
 androidx-room-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion"}
 androidx-room-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
+androidx-room-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref="roomVersion"}
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt"}
+
 
 

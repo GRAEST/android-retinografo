@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.material3.DrawerValue
@@ -20,11 +21,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.model.CameraViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
@@ -35,11 +39,30 @@ import br.com.graest.retinografo.ui.screens.LoginScreen
 import br.com.graest.retinografo.ui.screens.PatientScreen
 import br.com.graest.retinografo.ui.screens.SignUpScreen
 import br.com.graest.retinografo.ui.screens.VerticalGridImages
-import br.com.graest.retinografo.ui.screens.mockdata
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
 class MainActivity : ComponentActivity() {
+
+    private val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            PatientDatabase::class.java,
+            "patient.db"
+        ).build()
+    }
+
+    private val patientViewModel by viewModels<PatientDataViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return PatientDataViewModel(db.dao) as T
+                }
+            }
+        }
+    )
+
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +72,13 @@ class MainActivity : ComponentActivity() {
                 this, CAMERAX_PERMISSIONS, 0
             )
         }
-        
+
         enableEdgeToEdge()
         setContent {
             RetinografoTheme {
+
+                val patientDataState by patientViewModel.patientDataState.collectAsState()
+
 
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
@@ -69,7 +95,7 @@ class MainActivity : ComponentActivity() {
                     mutableIntStateOf(0)
                 }
 
-                val navController : NavHostController = rememberNavController()
+                val navController: NavHostController = rememberNavController()
 
                 var selectedItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
@@ -84,7 +110,7 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
 
-                NavHost(navController = navController, startDestination = "InitialScreen") {
+                NavHost(navController = navController, startDestination = "Patient") {
 
 
                     composable("InitialScreen") {
@@ -96,13 +122,13 @@ class MainActivity : ComponentActivity() {
 
                     composable("LogInScreen") {
                         LoginScreen(
-                            onClickLogIn = { navController.navigate("Camera")}
+                            onClickLogIn = { navController.navigate("Camera") }
                         )
                     }
 
                     composable("SignUpScreen") {
                         SignUpScreen(
-                            onClickSignUp = { navController.navigate("LogInScreen")}
+                            onClickSignUp = { navController.navigate("LogInScreen") }
                         )
                     }
 
@@ -141,16 +167,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("Patient") {
-                        HolderScreen(
-                            items = items,
-                            navController = navController,
-                            selectedItemIndex = selectedItemIndex,
-                            onSelectedItemChange = ::onSelectedItemChange,
-                            scope = scope,
-                            drawerState = drawerState
-                        ) {
-                            PatientScreen(patientList = mockdata)
-                        }
+                        PatientScreen(
+                            state = patientDataState,
+                            onEvent = patientViewModel::onEvent
+                        )
+
                     }
 
 
