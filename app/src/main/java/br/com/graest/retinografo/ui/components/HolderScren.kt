@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.MainScreenComposable
+import br.com.graest.retinografo.PatientDataEvent
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -16,8 +17,18 @@ fun HolderScreen(
     onSelectedItemChange: (Int) -> Unit,
     scope: CoroutineScope,
     drawerState: DrawerState,
+    onPatientEvent: (PatientDataEvent) -> Unit,
     composable: @Composable () -> Unit
 
 ) {
-    MainScreenComposable(items, navController, selectedItemIndex, onSelectedItemChange, scope, drawerState, composable)
+    MainScreenComposable(
+        items,
+        navController,
+        selectedItemIndex,
+        onSelectedItemChange,
+        scope,
+        drawerState,
+        onPatientEvent,
+        composable
+    )
 }

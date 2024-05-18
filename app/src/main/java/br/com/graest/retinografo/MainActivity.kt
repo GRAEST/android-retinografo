@@ -139,7 +139,8 @@ class MainActivity : ComponentActivity() {
                             selectedItemIndex,
                             ::onSelectedItemChange,
                             scope,
-                            drawerState
+                            drawerState,
+                            patientViewModel::onEvent
                         ) {
                             CameraComposableScreen(
                                 applicationContext = applicationContext,
@@ -155,7 +156,8 @@ class MainActivity : ComponentActivity() {
                             selectedItemIndex,
                             ::onSelectedItemChange,
                             scope,
-                            drawerState
+                            drawerState,
+                            patientViewModel::onEvent
                         ) {
                             VerticalGridImages(bitmaps)
                         }
@@ -173,7 +175,8 @@ class MainActivity : ComponentActivity() {
                             selectedItemIndex,
                             ::onSelectedItemChange,
                             scope,
-                            drawerState
+                            drawerState,
+                            patientViewModel::onEvent
                         ) {
                             PatientScreen(
                                 state = patientDataState,
