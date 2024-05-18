@@ -38,7 +38,7 @@ fun AddPatientDialog(
                     }
                 )
                 TextField(
-                    value = state.age.toString(),
+                    value = state.age,
                     onValueChange = {
                         onEvent(PatientDataEvent.SetPatientAge(it))
                     },

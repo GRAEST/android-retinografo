@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 )
 data class PatientData(
     val name: String,
-    val age: String,
+    val age: Int = 0,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )

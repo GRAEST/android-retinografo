@@ -60,7 +60,7 @@ class PatientDataViewModel(
                 }
 
                 val patientData = PatientData(
-                    age = age,
+                    age = age.toInt(),
                     name = name
                 )
 

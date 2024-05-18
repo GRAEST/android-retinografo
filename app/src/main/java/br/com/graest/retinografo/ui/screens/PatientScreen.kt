@@ -60,7 +60,6 @@ fun PatientScreen(
                                 onEvent(PatientDataEvent.SortPatientData(sortPatientType))
                             }
                         )
-                        //Text(text = SortPatientType.entries.toString())
                         Text(text = SortPatientType.stringfy(sortPatientType))
                     }
 
