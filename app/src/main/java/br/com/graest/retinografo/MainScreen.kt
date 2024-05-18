@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 fun MainScreenComposable(
     items: List<NavigationItem>,
     navController: NavController,
+    showAppBar: Boolean,
     selectedItemIndex: Int,
     onSelectedItemChange: (Int) -> Unit,
     scope: CoroutineScope,
@@ -44,7 +45,9 @@ fun MainScreenComposable(
         ) {
             Scaffold(
                 topBar = {
-                    topBarComposable(scope, drawerState)
+                    if ( showAppBar ) {
+                        topBarComposable(scope, drawerState)
+                    }
                 },
                 floatingActionButton = {
                     if (selectedItemIndex == 2) {

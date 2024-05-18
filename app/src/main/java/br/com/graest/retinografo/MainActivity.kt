@@ -12,9 +12,11 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,22 +27,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
-import br.com.graest.retinografo.ui.components.HolderScreen
-import br.com.graest.retinografo.ui.screens.camera.CameraComposableScreen
-import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
-import br.com.graest.retinografo.ui.screens.InitialScreenMain
-import br.com.graest.retinografo.ui.screens.login.LoginScreen
-import br.com.graest.retinografo.ui.screens.patient.PatientScreen
-import br.com.graest.retinografo.ui.screens.login.SignUpScreen
-import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
@@ -92,12 +84,21 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val cameraViewModel = viewModel<CameraViewModel>()
+
                 val bitmaps by cameraViewModel.bitmaps.collectAsState()
                 val bitmapSelectedIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }
 
+                val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreen")
                 val navController: NavHostController = rememberNavController()
+                var showAppBar by remember { mutableStateOf(true) }
+                LaunchedEffect(navController) {
+                    navController.addOnDestinationChangedListener { _, destination, _ ->
+                        showAppBar = destination.route !in hideAppBarRoutes
+                    }
+                }
+
 
                 var selectedItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
@@ -111,81 +112,26 @@ class MainActivity : ComponentActivity() {
 
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-
-                NavHost(navController = navController, startDestination = "InitialScreen") {
-
-
-                    composable("InitialScreen") {
-                        InitialScreenMain(
-                            onLoginClick = { navController.navigate("LogInScreen") },
-                            onSignUpClick = { navController.navigate("SignUpScreen") }
-                        )
-                    }
-
-                    composable("LogInScreen") {
-                        LoginScreen(
-                            onClickLogIn = { navController.navigate("Camera") }
-                        )
-                    }
-
-                    composable("SignUpScreen") {
-                        SignUpScreen(
-                            onClickSignUp = { navController.navigate("LogInScreen") }
-                        )
-                    }
-
-                    composable("Camera") {
-                        HolderScreen(
-                            items,
-                            navController,
-                            selectedItemIndex,
-                            ::onSelectedItemChange,
-                            scope,
-                            drawerState,
-                            patientViewModel::onEvent
-                        ) {
-                            CameraComposableScreen(
-                                applicationContext = applicationContext,
-                                controller = controller,
-                                onPhotoTaken = cameraViewModel::onTakePhoto
-                            )
-                        }
-                    }
-                    composable("Images") {
-                        HolderScreen(
-                            items,
-                            navController,
-                            selectedItemIndex,
-                            ::onSelectedItemChange,
-                            scope,
-                            drawerState,
-                            patientViewModel::onEvent
-                        ) {
-                            VerticalGridImages(bitmaps)
-                        }
-                    }
-                    composable("ImageDetails") {
-                        ImageDetailsScreen(
-                            bitmaps = bitmaps,
-                            bitmapSelectedIndex
-                        )
-                    }
-                    composable("Patient") {
-                        HolderScreen(
-                            items,
-                            navController,
-                            selectedItemIndex,
-                            ::onSelectedItemChange,
-                            scope,
-                            drawerState,
-                            patientViewModel::onEvent
-                        ) {
-                            PatientScreen(
-                                state = patientDataState,
-                                onEvent = patientViewModel::onEvent
-                            )
-                        }
-                    }
+                MainScreenComposable(
+                    items = items,
+                    navController = navController,
+                    showAppBar = showAppBar,
+                    selectedItemIndex = selectedItemIndex,
+                    onSelectedItemChange = ::onSelectedItemChange,
+                    scope = scope,
+                    drawerState = drawerState,
+                    onPatientEvent = patientViewModel::onEvent
+                ) {
+                    RetinografoNavGraph(
+                        navController,
+                        controller,
+                        applicationContext,
+                        bitmaps,
+                        bitmapSelectedIndex,
+                        cameraViewModel,
+                        patientViewModel,
+                        patientDataState
+                    )
                 }
             }
         }
