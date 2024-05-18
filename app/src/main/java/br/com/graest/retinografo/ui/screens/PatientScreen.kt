@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.PatientDataEvent
 import br.com.graest.retinografo.PatientDataState
 import br.com.graest.retinografo.data.SortPatientType
+import br.com.graest.retinografo.data.SortPatientType.Companion.stringfy
 
 @Composable
 fun PatientScreen(
@@ -74,7 +75,8 @@ fun PatientScreen(
                                     onEvent(PatientDataEvent.SortPatientData(sortPatientType))
                                 }
                             )
-                            Text(text = SortPatientType.entries.toString())
+                            //Text(text = SortPatientType.entries.toString())
+                            Text(text = SortPatientType.stringfy(sortPatientType))
                         }
 
                     }
