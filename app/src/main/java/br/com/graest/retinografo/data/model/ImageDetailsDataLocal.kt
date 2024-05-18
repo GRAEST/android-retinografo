@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.data
+package br.com.graest.retinografo.data.model
 
 import java.sql.Timestamp
 

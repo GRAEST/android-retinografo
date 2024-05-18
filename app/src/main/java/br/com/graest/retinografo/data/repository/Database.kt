@@ -1,9 +1,9 @@
-package br.com.graest.retinografo.data
+package br.com.graest.retinografo.data.repository
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import br.com.graest.retinografo.data.patient.PatientData
-import br.com.graest.retinografo.data.patient.PatientDataDao
+import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.data.local.PatientDataDao
 
 @Database(
     entities = [PatientData::class],

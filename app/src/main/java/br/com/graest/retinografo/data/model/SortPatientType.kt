@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.data.patient
+package br.com.graest.retinografo.data.model
 
 enum class SortPatientType {
     PATIENT_NAME,

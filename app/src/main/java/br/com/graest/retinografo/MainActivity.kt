@@ -30,7 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import br.com.graest.retinografo.data.items
-import br.com.graest.retinografo.data.Database
+import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
