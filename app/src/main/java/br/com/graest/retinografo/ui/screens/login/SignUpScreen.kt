@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens
+package br.com.graest.retinografo.ui.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

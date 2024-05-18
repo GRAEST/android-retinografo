@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.topBarComposable
+import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

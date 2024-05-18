@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens
+package br.com.graest.retinografo.ui.screens.patient
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -22,9 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.graest.retinografo.PatientDataEvent
-import br.com.graest.retinografo.PatientDataState
-import br.com.graest.retinografo.data.SortPatientType
+import br.com.graest.retinografo.data.patient.SortPatientType
 
 @Composable
 fun PatientScreen(

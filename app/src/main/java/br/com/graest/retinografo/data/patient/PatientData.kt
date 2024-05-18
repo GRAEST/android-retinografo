@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.data
+package br.com.graest.retinografo.data.patient
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

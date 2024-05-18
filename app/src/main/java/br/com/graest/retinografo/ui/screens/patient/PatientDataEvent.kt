@@ -1,7 +1,7 @@
-package br.com.graest.retinografo
+package br.com.graest.retinografo.ui.screens.patient
 
-import br.com.graest.retinografo.data.PatientData
-import br.com.graest.retinografo.data.SortPatientType
+import br.com.graest.retinografo.data.patient.PatientData
+import br.com.graest.retinografo.data.patient.SortPatientType
 
 sealed interface PatientDataEvent {
     object SavePatientData : PatientDataEvent

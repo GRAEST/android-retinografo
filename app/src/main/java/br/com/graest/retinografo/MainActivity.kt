@@ -30,15 +30,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import br.com.graest.retinografo.data.items
-import br.com.graest.retinografo.model.CameraViewModel
+import br.com.graest.retinografo.data.Database
+import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
+import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.components.HolderScreen
-import br.com.graest.retinografo.ui.screens.CameraComposableScreen
-import br.com.graest.retinografo.ui.screens.ImageDetailsScreen
+import br.com.graest.retinografo.ui.screens.camera.CameraComposableScreen
+import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
-import br.com.graest.retinografo.ui.screens.LoginScreen
-import br.com.graest.retinografo.ui.screens.PatientScreen
-import br.com.graest.retinografo.ui.screens.SignUpScreen
-import br.com.graest.retinografo.ui.screens.VerticalGridImages
+import br.com.graest.retinografo.ui.screens.login.LoginScreen
+import br.com.graest.retinografo.ui.screens.patient.PatientScreen
+import br.com.graest.retinografo.ui.screens.login.SignUpScreen
+import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
@@ -47,7 +49,7 @@ class MainActivity : ComponentActivity() {
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
-            PatientDatabase::class.java,
+            Database::class.java,
             "patient.db"
         ).build()
     }

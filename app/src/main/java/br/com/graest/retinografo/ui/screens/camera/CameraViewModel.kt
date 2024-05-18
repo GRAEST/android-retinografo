@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.model
+package br.com.graest.retinografo.ui.screens.camera
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel

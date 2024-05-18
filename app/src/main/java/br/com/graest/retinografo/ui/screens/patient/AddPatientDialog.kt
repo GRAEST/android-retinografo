@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens
+package br.com.graest.retinografo.ui.screens.patient
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import br.com.graest.retinografo.PatientDataEvent
-import br.com.graest.retinografo.PatientDataState
 
 @Composable
 fun AddPatientDialog(

@@ -1,10 +1,9 @@
-package br.com.graest.retinografo.dao
+package br.com.graest.retinografo.data.patient
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import br.com.graest.retinografo.data.PatientData
 import kotlinx.coroutines.flow.Flow
 
 @Dao

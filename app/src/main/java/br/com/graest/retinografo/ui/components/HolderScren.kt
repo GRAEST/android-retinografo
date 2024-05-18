@@ -2,11 +2,10 @@ package br.com.graest.retinografo.ui.components
 
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.MainScreenComposable
-import br.com.graest.retinografo.PatientDataEvent
+import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

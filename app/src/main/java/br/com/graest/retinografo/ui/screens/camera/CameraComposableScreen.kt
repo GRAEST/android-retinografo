@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens
+package br.com.graest.retinografo.ui.screens.camera
 
 import android.content.Context
 import android.graphics.Bitmap

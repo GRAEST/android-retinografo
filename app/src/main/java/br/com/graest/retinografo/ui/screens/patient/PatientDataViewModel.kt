@@ -1,10 +1,10 @@
-package br.com.graest.retinografo
+package br.com.graest.retinografo.ui.screens.patient
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.graest.retinografo.dao.PatientDataDao
-import br.com.graest.retinografo.data.PatientData
-import br.com.graest.retinografo.data.SortPatientType
+import br.com.graest.retinografo.data.patient.PatientDataDao
+import br.com.graest.retinografo.data.patient.PatientData
+import br.com.graest.retinografo.data.patient.SortPatientType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
