@@ -57,7 +57,7 @@ fun AddPatientDialog(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
-                    Text(text = "Save Contact")
+                    Text(text = "Add")
                 }
             }
         })

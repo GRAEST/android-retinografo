@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
 
-                NavHost(navController = navController, startDestination = "Patient") {
+                NavHost(navController = navController, startDestination = "InitialScreen") {
 
 
                     composable("InitialScreen") {
@@ -167,14 +167,20 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("Patient") {
-                        PatientScreen(
-                            state = patientDataState,
-                            onEvent = patientViewModel::onEvent
-                        )
-
+                        HolderScreen(
+                            items,
+                            navController,
+                            selectedItemIndex,
+                            ::onSelectedItemChange,
+                            scope,
+                            drawerState
+                        ) {
+                            PatientScreen(
+                                state = patientDataState,
+                                onEvent = patientViewModel::onEvent
+                            )
+                        }
                     }
-
-
                 }
             }
         }

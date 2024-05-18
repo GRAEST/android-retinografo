@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -84,7 +85,9 @@ fun PatientScreen(
             }
             items(state.patientData) { patientData ->
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp)
                 ) {
                     Column(
                         modifier = Modifier.weight(1f)
@@ -94,7 +97,7 @@ fun PatientScreen(
                             fontSize = 20.sp
                         )
                         Text(
-                            text = patientData.age,
+                            text = "${patientData.age} anos",
                             fontSize = 12.sp
                         )
                     }
@@ -104,7 +107,6 @@ fun PatientScreen(
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete Patient Data"
-
                         )
                     }
                 }
