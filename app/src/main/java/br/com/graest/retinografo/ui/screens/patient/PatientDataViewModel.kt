@@ -92,6 +92,7 @@ class PatientDataViewModel(
             is PatientDataEvent.SortPatientData -> {
                 _sortPatientDataType.value = event.sortPatientType
             }
+            else -> {}
         }
     }
 }

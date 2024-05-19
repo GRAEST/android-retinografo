@@ -1,16 +1,13 @@
 package br.com.graest.retinografo
 
-import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.camera.CameraComposableScreen
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
