@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
@@ -32,6 +32,10 @@ fun PatientScreen(
 
     if (state.isAddingPatientData) {
         AddPatientDialog(state = state, onEvent = onEvent)
+    }
+
+    if (state.isEditingPatientData) {
+        EditPatientDialog(state = state, onEvent = onEvent)
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -83,11 +87,11 @@ fun PatientScreen(
                     )
                 }
                 IconButton(onClick = {
-                    onEvent(PatientDataEvent.DeletePatientData(patientData))
+                    onEvent(PatientDataEvent.ShowEditPatientDialog)
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Patient Data"
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Patient Data"
                     )
                 }
             }

@@ -2,6 +2,7 @@ package br.com.graest.retinografo.ui.screens.patient
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.data.model.SortPatientType
@@ -46,11 +47,27 @@ class PatientDataViewModel(
                     patientDataDao.deletePatientData(event.patientData)
                 }
             }
-            PatientDataEvent.HideDialog -> {
+            PatientDataEvent.HideAddPatientDialog -> {
                 _patientDataState.update { it.copy(
                     isAddingPatientData = false
                 ) }
             }
+            PatientDataEvent.ShowAddPatientDialog -> {
+                _patientDataState.update { it.copy(
+                    isAddingPatientData = true
+                ) }
+            }
+            PatientDataEvent.HideEditPatientDialog -> {
+                _patientDataState.update { it.copy(
+                    isEditingPatientData = false
+                ) }
+            }
+            PatientDataEvent.ShowEditPatientDialog -> {
+                _patientDataState.update { it.copy(
+                    isEditingPatientData = true
+                ) }
+            }
+
             PatientDataEvent.SavePatientData -> {
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
@@ -69,6 +86,7 @@ class PatientDataViewModel(
                 }
                 _patientDataState.update { it.copy(
                     isAddingPatientData = false,
+                    isEditingPatientData = false,
                     name = "",
                     age = ""
                 ) }
@@ -84,11 +102,7 @@ class PatientDataViewModel(
                     name = event.name
                 ) }
             }
-            PatientDataEvent.ShowDialog -> {
-                _patientDataState.update { it.copy(
-                    isAddingPatientData = true
-                ) }
-            }
+
             is PatientDataEvent.SortPatientData -> {
                 _sortPatientDataType.value = event.sortPatientType
             }

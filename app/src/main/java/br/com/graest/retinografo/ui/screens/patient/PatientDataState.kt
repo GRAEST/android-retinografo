@@ -8,5 +8,6 @@ data class PatientDataState (
     val name: String = "",
     val age: String = "",
     val isAddingPatientData: Boolean = false,
+    val isEditingPatientData: Boolean = false,
     val sortPatientDataType : SortPatientType = SortPatientType.PATIENT_NAME
 )
