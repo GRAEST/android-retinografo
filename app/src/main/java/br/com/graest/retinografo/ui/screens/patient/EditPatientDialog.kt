@@ -55,14 +55,6 @@ fun EditPatientDialog(
             onEvent(PatientDataEvent.HideEditPatientDialog)
         },
         confirmButton = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
-                    Text(text = "Save")
-                }
-            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
