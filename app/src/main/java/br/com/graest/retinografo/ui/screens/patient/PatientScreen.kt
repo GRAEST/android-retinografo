@@ -87,7 +87,7 @@ fun PatientScreen(
                     )
                 }
                 IconButton(onClick = {
-                    onEvent(PatientDataEvent.ShowEditPatientDialog)
+                    onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.id))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Edit,

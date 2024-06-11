@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -62,7 +63,22 @@ class PatientDataViewModel(
                     isEditingPatientData = false
                 ) }
             }
-            PatientDataEvent.ShowEditPatientDialog -> {
+            is PatientDataEvent.ShowEditPatientDialog -> {
+                // criar um método para pegar os valores correpondentes ao id enviado pelo PatientScreen
+
+                viewModelScope.launch {
+                    patientDataDao.getPatientData(event.id).collect{
+                        _patientData.value[it.id]
+                    }
+                }
+
+                // criar um método para preencher os valores de name e age com os do sql correspondente
+                _patientDataState.update { it.copy(
+                    name = "",
+                    age = ""
+                ) }
+
+                //mostrar a tela em questão
                 _patientDataState.update { it.copy(
                     isEditingPatientData = true
                 ) }

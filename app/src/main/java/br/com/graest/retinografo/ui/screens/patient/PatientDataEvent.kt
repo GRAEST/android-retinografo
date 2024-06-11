@@ -11,7 +11,7 @@ sealed interface PatientDataEvent {
     object ShowAddPatientDialog : PatientDataEvent
     object HideAddPatientDialog : PatientDataEvent
 
-    object ShowEditPatientDialog : PatientDataEvent
+    data class ShowEditPatientDialog (val id: Int) : PatientDataEvent
     object HideEditPatientDialog : PatientDataEvent
     data class SortPatientData(val sortPatientType: SortPatientType) : PatientDataEvent
     data class DeletePatientData(val patientData: PatientData) : PatientDataEvent
