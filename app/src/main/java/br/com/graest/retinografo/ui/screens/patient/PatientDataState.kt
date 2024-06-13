@@ -4,7 +4,7 @@ import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.data.model.SortPatientType
 
 data class PatientDataState (
-    val patientData: List<PatientData> = emptyList(),
+    val patientsData: List<PatientData> = emptyList(),
     val id: Int = 0,
     val name: String = "",
     val age: String = "",

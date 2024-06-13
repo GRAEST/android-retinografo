@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import androidx.camera.core.impl.CameraRepository
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +12,7 @@ import br.com.graest.retinografo.data.model.SortPatientType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -21,13 +24,16 @@ class PatientDataViewModel(
     private val patientDataDao: PatientDataDao
 ) : ViewModel() {
 
-    private val _patientData = patientDataDao.getPatientData()
+    private var _patientData = MutableStateFlow<PatientData?>(null)
+    val patientData: StateFlow<PatientData?> get() = _patientData
+
+    private val _patientsData = patientDataDao.getPatientsData()
 
     private val _patientDataState = MutableStateFlow(PatientDataState())
 
-    val patientDataState = combine(_patientDataState,  _patientData) { patientState, patientData ->
+    val patientDataState = combine(_patientDataState,  _patientsData) { patientState, patientsData->
         patientState.copy (
-            patientData = patientData
+            patientsData = patientsData
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
 
@@ -56,16 +62,16 @@ class PatientDataViewModel(
             is PatientDataEvent.ShowEditPatientDialog -> {
                 // criar um método para pegar os valores correpondentes ao id enviado pelo PatientScreen
 
-//                viewModelScope.launch {
-//                    patientDataDao.getPatientData(event.id).collect{
-//                        _patientData.value[it.id]
-//                    }
-//                }
+                viewModelScope.launch {
+                    patientDataDao.getPatientData(event.id).collect {data ->
+                        _patientData.value = data
+                    }
+                }
 
                 // criar um método para preencher os valores de name e age com os do sql correspondente
                 _patientDataState.update { it.copy(
-                    name = "",
-                    age = ""
+                    name = patientData.name,
+                    age = patientData.age
                 ) }
 
                 //mostrar a tela em questão
