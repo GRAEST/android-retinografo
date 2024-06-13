@@ -42,7 +42,7 @@ fun PatientScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        items(state.patientData) { patientData ->
+        items(state.patientsData) { patientData ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

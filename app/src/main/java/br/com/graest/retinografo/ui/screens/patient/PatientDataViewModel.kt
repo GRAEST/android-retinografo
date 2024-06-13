@@ -24,8 +24,8 @@ class PatientDataViewModel(
     private val patientDataDao: PatientDataDao
 ) : ViewModel() {
 
-    private var _patientData = MutableStateFlow<PatientData?>(null)
-    val patientData: StateFlow<PatientData?> get() = _patientData
+    private var _patientData = MutableStateFlow<PatientData>(PatientData("", 12))
+    //val patientData: StateFlow<PatientData?> get() = _patientData
 
     private val _patientsData = patientDataDao.getPatientsData()
 
@@ -70,8 +70,8 @@ class PatientDataViewModel(
 
                 // criar um método para preencher os valores de name e age com os do sql correspondente
                 _patientDataState.update { it.copy(
-                    name = patientData.name,
-                    age = patientData.age
+                    name = _patientData.value.name,
+                    age = _patientData.value.age.toString()
                 ) }
 
                 //mostrar a tela em questão
