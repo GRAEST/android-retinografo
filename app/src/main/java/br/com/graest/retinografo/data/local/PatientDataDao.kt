@@ -18,10 +18,7 @@ interface PatientDataDao {
     @Query("SELECT * FROM patient_data WHERE id = :id")
     fun getPatientData(id: Int) : Flow<PatientData>
 
-    @Query("SELECT * FROM patient_data ORDER BY age ASC")
-    fun getPatientDataOrderedByAge() : Flow<List<PatientData>>
-
     @Query("SELECT * FROM patient_data ORDER BY name ASC")
-    fun getPatientDataOrderedByName() : Flow<List<PatientData>>
+    fun getPatientData() : Flow<List<PatientData>>
 
 }

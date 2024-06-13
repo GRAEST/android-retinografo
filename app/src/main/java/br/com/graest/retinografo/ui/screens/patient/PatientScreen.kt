@@ -41,33 +41,7 @@ fun PatientScreen(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                SortPatientType.entries.forEach { sortPatientType ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clickable {
-                                onEvent(PatientDataEvent.SortPatientData(sortPatientType))
-                            }
-                    ) {
-                        RadioButton(
-                            selected = state.sortPatientDataType == sortPatientType,
-                            onClick = {
-                                onEvent(PatientDataEvent.SortPatientData(sortPatientType))
-                            }
-                        )
-                        Text(text = SortPatientType.stringfy(sortPatientType))
-                    }
 
-                }
-            }
-        }
         items(state.patientData) { patientData ->
             Row(
                 modifier = Modifier

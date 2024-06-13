@@ -21,23 +21,13 @@ class PatientDataViewModel(
     private val patientDataDao: PatientDataDao
 ) : ViewModel() {
 
-    private val _sortPatientDataType = MutableStateFlow(SortPatientType.PATIENT_AGE)
-
-
-    private val _patientData = _sortPatientDataType
-        .flatMapLatest { sortPatientType ->
-            when(sortPatientType) {
-                SortPatientType.PATIENT_AGE -> patientDataDao.getPatientDataOrderedByAge()
-                SortPatientType.PATIENT_NAME -> patientDataDao.getPatientDataOrderedByName()
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _patientData = patientDataDao.getPatientData()
 
     private val _patientDataState = MutableStateFlow(PatientDataState())
-    val patientDataState = combine(_patientDataState, _sortPatientDataType, _patientData) { patientState, sortPatientDataType, patientData ->
+
+    val patientDataState = combine(_patientDataState,  _patientData) { patientState, patientData ->
         patientState.copy (
-            patientData = patientData,
-            sortPatientDataType = sortPatientDataType
+            patientData = patientData
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
 
@@ -66,11 +56,11 @@ class PatientDataViewModel(
             is PatientDataEvent.ShowEditPatientDialog -> {
                 // criar um método para pegar os valores correpondentes ao id enviado pelo PatientScreen
 
-                viewModelScope.launch {
-                    patientDataDao.getPatientData(event.id).collect{
-                        _patientData.value[it.id]
-                    }
-                }
+//                viewModelScope.launch {
+//                    patientDataDao.getPatientData(event.id).collect{
+//                        _patientData.value[it.id]
+//                    }
+//                }
 
                 // criar um método para preencher os valores de name e age com os do sql correspondente
                 _patientDataState.update { it.copy(
@@ -118,11 +108,6 @@ class PatientDataViewModel(
                     name = event.name
                 ) }
             }
-
-            is PatientDataEvent.SortPatientData -> {
-                _sortPatientDataType.value = event.sortPatientType
-            }
-            else -> {}
         }
     }
 }
