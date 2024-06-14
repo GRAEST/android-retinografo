@@ -13,8 +13,9 @@ interface PatientDataDao {
     @Upsert
     suspend fun upsertPatientData(patientData: PatientData)
 
-    @Delete
-    suspend fun deletePatientData(patientData: PatientData)
+    @Query("DELETE FROM patient_data WHERE id = :id")
+    suspend fun deletePatientData(id: Int)
+
     @Query("SELECT * FROM patient_data WHERE id = :id")
     fun getPatientData(id: Int) : Flow<PatientData>
 

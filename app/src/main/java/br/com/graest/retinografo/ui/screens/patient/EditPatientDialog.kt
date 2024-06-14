@@ -62,8 +62,7 @@ fun EditPatientDialog(
             ) {
                 Button(
                     onClick = {
-                        //onEvent(PatientDataEvent.DeletePatientData(patientData))
-                        //now we should delete by id or name
+                        onEvent(PatientDataEvent.DeletePatientData(state.id))
                     },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
                 ) {

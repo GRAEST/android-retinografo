@@ -24,9 +24,6 @@ class PatientDataViewModel(
     private val patientDataDao: PatientDataDao
 ) : ViewModel() {
 
-    private var _patientData = MutableStateFlow<PatientData>(PatientData("", 12))
-    //val patientData: StateFlow<PatientData?> get() = _patientData
-
     private val _patientsData = patientDataDao.getPatientsData()
 
     private val _patientDataState = MutableStateFlow(PatientDataState())
@@ -41,7 +38,7 @@ class PatientDataViewModel(
         when(event) {
             is PatientDataEvent.DeletePatientData -> {
                 viewModelScope.launch {
-                    patientDataDao.deletePatientData(event.patientData)
+                    patientDataDao.deletePatientData(event.id)
                 }
             }
             PatientDataEvent.HideAddPatientDialog -> {
@@ -60,24 +57,19 @@ class PatientDataViewModel(
                 ) }
             }
             is PatientDataEvent.ShowEditPatientDialog -> {
-                // criar um método para pegar os valores correpondentes ao id enviado pelo PatientScreen
 
                 viewModelScope.launch {
                     patientDataDao.getPatientData(event.id).collect {data ->
-                        _patientData.value = data
+                        _patientDataState.update { currentState ->
+                            currentState.copy(
+                                isEditingPatientData = true,
+                                name = data.name,
+                                age = data.age.toString()
+                            )
+
+                        }
                     }
                 }
-
-                // criar um método para preencher os valores de name e age com os do sql correspondente
-                _patientDataState.update { it.copy(
-                    name = _patientData.value.name,
-                    age = _patientData.value.age.toString()
-                ) }
-
-                //mostrar a tela em questão
-                _patientDataState.update { it.copy(
-                    isEditingPatientData = true
-                ) }
             }
 
             PatientDataEvent.SavePatientData -> {
