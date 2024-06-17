@@ -1,20 +1,13 @@
 package br.com.graest.retinografo.ui.screens.patient
 
-import androidx.camera.core.impl.CameraRepository
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
-import br.com.graest.retinografo.data.model.SortPatientType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,6 +33,14 @@ class PatientDataViewModel(
                 viewModelScope.launch {
                     patientDataDao.deletePatientData(event.id)
                 }
+                _patientDataState.update { it.copy(
+                    isEditingPatientData = false,
+                    id = 0,
+                    name = "",
+                    age = ""
+                ) }
+
+                //quando o id deixa de existir, o state que lia do sql crasha
             }
             PatientDataEvent.HideAddPatientDialog -> {
                 _patientDataState.update { it.copy(
@@ -63,6 +64,7 @@ class PatientDataViewModel(
                         _patientDataState.update { currentState ->
                             currentState.copy(
                                 isEditingPatientData = true,
+                                id = event.id,
                                 name = data.name,
                                 age = data.age.toString()
                             )
@@ -72,7 +74,27 @@ class PatientDataViewModel(
                 }
             }
 
+            is PatientDataEvent.SaveEditPatient -> {
+
+                viewModelScope.launch {
+                    patientDataDao.getPatientData(event.id).collect {data ->
+                        val updatedPatientData = data.copy(
+                            name = event.newName ?: data.name,
+                            age = event.newAge ?: data.age
+                        )
+                        patientDataDao.upsertPatientData(updatedPatientData)
+                        _patientDataState.update { it.copy(
+                            isEditingPatientData = false,
+                            id = 0,
+                            name = "",
+                            age = ""
+                        ) }
+                    }
+                }
+            }
+
             PatientDataEvent.SavePatientData -> {
+                val id = patientDataState.value.id
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
 
@@ -81,6 +103,7 @@ class PatientDataViewModel(
                 }
 
                 val patientData = PatientData(
+                    id = id,
                     age = age.toInt(),
                     name = name
                 )
@@ -90,7 +113,7 @@ class PatientDataViewModel(
                 }
                 _patientDataState.update { it.copy(
                     isAddingPatientData = false,
-                    isEditingPatientData = false,
+                    id = 0,
                     name = "",
                     age = ""
                 ) }

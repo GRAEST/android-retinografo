@@ -12,6 +12,7 @@ sealed interface PatientDataEvent {
     object HideAddPatientDialog : PatientDataEvent
 
     data class ShowEditPatientDialog (val id: Int) : PatientDataEvent
+    data class SaveEditPatient(val id: Int, val newName: String?, val newAge: Int?) : PatientDataEvent
     object HideEditPatientDialog : PatientDataEvent
     data class DeletePatientData(val id: Int) : PatientDataEvent
 }

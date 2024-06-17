@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -55,24 +60,38 @@ fun EditPatientDialog(
             onEvent(PatientDataEvent.HideEditPatientDialog)
         },
         confirmButton = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = {
-                        onEvent(PatientDataEvent.DeletePatientData(state.id))
-                    },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
-                ) {
-                    Text(text = "Delete", color = MaterialTheme.colorScheme.onError)
-                }
-                Spacer(modifier = Modifier.width(8.dp))
 
-                Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
-                    Text(text = "Save")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            onEvent(PatientDataEvent.HideEditPatientDialog)
+                        },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                    ) {
+                        Text(text = "Cancel", color = MaterialTheme.colorScheme.onError)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
+                        Text(text = "Save")
+                    }
+                }
+                IconButton(onClick = {
+                    onEvent(PatientDataEvent.DeletePatientData(state.id))
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Patient"
+                    )
                 }
             }
+
         })
 }
