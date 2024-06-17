@@ -50,9 +50,9 @@ fun AddPatientDialog(
             onEvent(PatientDataEvent.HideAddPatientDialog)
         },
         confirmButton = {
-            Box (
+            Column (
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
                     Text(text = "Add")

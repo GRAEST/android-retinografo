@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
@@ -39,23 +40,36 @@ class PatientDataViewModel(
                     name = "",
                     age = ""
                 ) }
-
                 //quando o id deixa de existir, o state que lia do sql crasha
+                Log.d("TAG", "Delete: " +
+                        "${patientDataState}")
             }
             PatientDataEvent.HideAddPatientDialog -> {
                 _patientDataState.update { it.copy(
-                    isAddingPatientData = false
+                    isAddingPatientData = false,
+                    id = 0,
+                    name = "",
+                    age = ""
                 ) }
+                Log.d("TAG", "Hide Add: " +
+                        "${patientDataState}")
             }
             PatientDataEvent.ShowAddPatientDialog -> {
                 _patientDataState.update { it.copy(
                     isAddingPatientData = true
                 ) }
+                Log.d("TAG", "Show Add: " +
+                        "${patientDataState}")
             }
             PatientDataEvent.HideEditPatientDialog -> {
                 _patientDataState.update { it.copy(
-                    isEditingPatientData = false
+                    isEditingPatientData = false,
+                    id = 0,
+                    name = "",
+                    age = ""
                 ) }
+                Log.d("TAG", "Hide Edit: " +
+                        "${patientDataState}")
             }
             is PatientDataEvent.ShowEditPatientDialog -> {
 
@@ -72,6 +86,8 @@ class PatientDataViewModel(
                         }
                     }
                 }
+                Log.d("TAG", "Show Edit: " +
+                        "${patientDataState}")
             }
 
             is PatientDataEvent.SaveEditPatient -> {
@@ -117,6 +133,9 @@ class PatientDataViewModel(
                     name = "",
                     age = ""
                 ) }
+
+                Log.d("TAG", "Save: " +
+                        "${patientDataState}")
 
             }
             is PatientDataEvent.SetPatientAge -> {
