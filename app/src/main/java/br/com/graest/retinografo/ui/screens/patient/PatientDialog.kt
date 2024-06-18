@@ -1,7 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddPatientDialog(
+fun PatientDialog(
     state: PatientDataState,
-    event: PatientDataEvent,
     onEvent: (PatientDataEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -57,13 +55,11 @@ fun AddPatientDialog(
             }
         },
         onDismissRequest = {
-            //onEvent(PatientDataEvent.HideAddPatientDialog)
             onEvent(PatientDataEvent.HideDialog)
         },
         confirmButton = {
-
-            if (state.isAddingPatientData == true) {
-                Column (
+            if (state.isAddingPatientData) {
+                Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -104,14 +100,5 @@ fun AddPatientDialog(
                     }
                 }
             }
-
-//            Column (
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
-//                    Text(text = "Add")
-//                }
-//            }
         })
 }

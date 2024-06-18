@@ -22,22 +22,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.graest.retinografo.data.model.SortPatientType
+import br.com.graest.retinografo.data.model.DialogType
 
 @Composable
 fun PatientScreen(
     state: PatientDataState,
-    event: PatientDataEvent,
     onEvent: (PatientDataEvent) -> Unit
 ) {
 
     if (state.isAddingPatientData) {
-        AddPatientDialog(state = state, event = event, onEvent = onEvent)
+        PatientDialog(state = state, onEvent = onEvent)
     }
-
-//    if (state.isEditingPatientData) {
-//        EditPatientDialog(state = state, onEvent = onEvent)
-//    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +58,7 @@ fun PatientScreen(
                     )
                 }
                 IconButton(onClick = {
-                    onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.id))
+                    onEvent(PatientDataEvent.ShowPatientDialog(patientData.id, DialogType.EDIT))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Edit,

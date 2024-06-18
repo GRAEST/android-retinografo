@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
+import br.com.graest.retinografo.data.model.DialogType
 import br.com.graest.retinografo.data.model.PatientData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,19 +49,6 @@ class PatientDataViewModel(
                 //quando o id deixa de existir, o state que lia do sql crasha
 
             }
-//            PatientDataEvent.HideAddPatientDialog -> {
-//
-//                Log.d("TAG", "Hide Add: " +
-//                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-//                )
-//
-//                _patientDataState.update { it.copy(
-//                    isAddingPatientData = false,
-//                    id = 0,
-//                    name = "",
-//                    age = ""
-//                ) }
-//            }
             PatientDataEvent.HideDialog -> {
 
                 Log.d("TAG", "Hide Add: " +
@@ -75,49 +63,39 @@ class PatientDataViewModel(
                 ) }
             }
 
-            PatientDataEvent.ShowAddPatientDialog -> {
+            is PatientDataEvent.ShowPatientDialog -> {
 
-                Log.d("TAG", "Show Add: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                )
 
-                _patientDataState.update { it.copy(
-                    isAddingPatientData = true
-                ) }
 
-            }
+                when (event.dialogType) {
+                    DialogType.CREATE -> {
+                        _patientDataState.update { it.copy(
+                            isAddingPatientData = true
+                        ) }
+                        Log.d("TAG", "Show Add: " +
+                                "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                        )
+                    }
 
-//            PatientDataEvent.HideEditPatientDialog -> {
-//
-//                Log.d("TAG", "Hide Edit: " +
-//                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-//                )
-//
-//                _patientDataState.update { it.copy(
-//                    isEditingPatientData = false,
-//                    id = 0,
-//                    name = "",
-//                    age = ""
-//                ) }
-//            }
-
-            is PatientDataEvent.ShowEditPatientDialog -> {
-
-                viewModelScope.launch {
-                    patientDataDao.getPatientData(event.id).collect {data ->
-                        _patientDataState.update { currentState ->
-                            currentState.copy(
-                                isEditingPatientData = true,
-                                id = event.id,
-                                name = data.name,
-                                age = data.age.toString()
+                    DialogType.EDIT -> {
+                        viewModelScope.launch {
+                            patientDataDao.getPatientData(event.id).collect { data ->
+                                _patientDataState.update { currentState ->
+                                    currentState.copy(
+                                        isEditingPatientData = true,
+                                        id = event.id,
+                                        name = data.name,
+                                        age = data.age.toString()
+                                    )
+                                }
+                            }
+                            Log.d("TAG", "Show Edit: " +
+                                    "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                             )
                         }
                     }
+
                 }
-                Log.d("TAG", "Show Edit: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                )
 
             }
 

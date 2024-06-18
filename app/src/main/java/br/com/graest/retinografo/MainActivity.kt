@@ -73,7 +73,6 @@ class MainActivity : ComponentActivity() {
             RetinografoTheme {
 
                 val patientDataState by patientViewModel.patientDataState.collectAsState()
-                val currentDialog by remember { mutableStateOf<PatientDataEvent>(PatientDataEvent.HideDialog)}
 
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
@@ -132,8 +131,7 @@ class MainActivity : ComponentActivity() {
                         bitmapSelectedIndex,
                         cameraViewModel,
                         patientViewModel,
-                        patientDataState,
-                        currentDialog
+                        patientDataState
                     )
                 }
             }

@@ -1,7 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import br.com.graest.retinografo.data.model.PatientData
-import br.com.graest.retinografo.data.model.SortPatientType
 
 data class PatientDataState (
     val patientsData: List<PatientData> = emptyList(),

@@ -30,7 +30,6 @@ fun RetinografoNavGraph(
     cameraViewModel: CameraViewModel,
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
-    patientDataEvent: PatientDataEvent,
 
 ) {
     NavHost(
@@ -81,7 +80,6 @@ fun RetinografoNavGraph(
 
             PatientScreen(
                 state = patientDataState,
-                event = patientDataEvent,
                 onEvent = patientViewModel::onEvent
             )
 

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
+import br.com.graest.retinografo.data.model.DialogType
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.topBarComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
@@ -52,7 +53,7 @@ fun MainScreenComposable(
                 floatingActionButton = {
                     if (selectedItemIndex == 2) {
                         FloatingActionButton(onClick = {
-                            onPatientEvent(PatientDataEvent.ShowAddPatientDialog)
+                            onPatientEvent(PatientDataEvent.ShowPatientDialog(0, DialogType.CREATE))
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Add,
