@@ -67,7 +67,8 @@ fun PatientDialog(
                         Text(text = "Add")
                     }
                 }
-            } else if (state.isEditingPatientData) {
+            }
+            if (state.isEditingPatientData) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

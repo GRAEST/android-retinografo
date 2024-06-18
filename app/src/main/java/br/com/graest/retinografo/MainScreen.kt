@@ -53,7 +53,7 @@ fun MainScreenComposable(
                 floatingActionButton = {
                     if (selectedItemIndex == 2) {
                         FloatingActionButton(onClick = {
-                            onPatientEvent(PatientDataEvent.ShowPatientDialog(0, DialogType.CREATE))
+                            onPatientEvent(PatientDataEvent.ShowAddPatientDialog)
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Add,

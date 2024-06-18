@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
-import br.com.graest.retinografo.data.model.DialogType
 import br.com.graest.retinografo.data.model.PatientData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,46 +56,36 @@ class PatientDataViewModel(
 
                 _patientDataState.update { it.copy(
                     isAddingPatientData = false,
+                    isEditingPatientData = false,
                     id = 0,
                     name = "",
                     age = ""
                 ) }
             }
-
-            is PatientDataEvent.ShowPatientDialog -> {
-
-
-
-                when (event.dialogType) {
-                    DialogType.CREATE -> {
-                        _patientDataState.update { it.copy(
-                            isAddingPatientData = true
-                        ) }
-                        Log.d("TAG", "Show Add: " +
-                                "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                        )
-                    }
-
-                    DialogType.EDIT -> {
-                        viewModelScope.launch {
-                            patientDataDao.getPatientData(event.id).collect { data ->
-                                _patientDataState.update { currentState ->
-                                    currentState.copy(
-                                        isEditingPatientData = true,
-                                        id = event.id,
-                                        name = data.name,
-                                        age = data.age.toString()
-                                    )
-                                }
-                            }
-                            Log.d("TAG", "Show Edit: " +
-                                    "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+            PatientDataEvent.ShowAddPatientDialog -> {
+                _patientDataState.update { it.copy(
+                    isAddingPatientData = true
+                ) }
+                Log.d("TAG", "Show Add: " +
+                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                )
+            }
+            is PatientDataEvent.ShowEditPatientDialog -> {
+                viewModelScope.launch {
+                    patientDataDao.getPatientData(event.id).collect { data ->
+                        _patientDataState.update { currentState ->
+                            currentState.copy(
+                                isEditingPatientData = true,
+                                id = event.id,
+                                name = data.name,
+                                age = data.age.toString()
                             )
                         }
                     }
-
+                    Log.d("TAG", "Show Edit: " +
+                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                    )
                 }
-
             }
 
             PatientDataEvent.SavePatientData -> {
@@ -138,6 +127,7 @@ class PatientDataViewModel(
                     name = event.name
                 ) }
             }
+            else -> {}
         }
     }
 }
