@@ -32,6 +32,7 @@ import androidx.room.Room
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
+import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
             RetinografoTheme {
 
                 val patientDataState by patientViewModel.patientDataState.collectAsState()
-
+                val currentDialog by remember { mutableStateOf<PatientDataEvent>(PatientDataEvent.HideDialog)}
 
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
@@ -112,6 +113,7 @@ class MainActivity : ComponentActivity() {
 
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+
                 MainScreenComposable(
                     items = items,
                     navController = navController,
@@ -130,7 +132,8 @@ class MainActivity : ComponentActivity() {
                         bitmapSelectedIndex,
                         cameraViewModel,
                         patientViewModel,
-                        patientDataState
+                        patientDataState,
+                        currentDialog
                     )
                 }
             }

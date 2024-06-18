@@ -27,16 +27,18 @@ import br.com.graest.retinografo.data.model.SortPatientType
 @Composable
 fun PatientScreen(
     state: PatientDataState,
+    event: PatientDataEvent,
     onEvent: (PatientDataEvent) -> Unit
 ) {
 
     if (state.isAddingPatientData) {
-        AddPatientDialog(state = state, onEvent = onEvent)
+        AddPatientDialog(state = state, event = event, onEvent = onEvent)
     }
 
-    if (state.isEditingPatientData) {
-        EditPatientDialog(state = state, onEvent = onEvent)
-    }
+//    if (state.isEditingPatientData) {
+//        EditPatientDialog(state = state, onEvent = onEvent)
+//    }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)

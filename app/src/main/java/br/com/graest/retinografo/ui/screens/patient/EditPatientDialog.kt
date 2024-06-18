@@ -57,7 +57,7 @@ fun EditPatientDialog(
             }
         },
         onDismissRequest = {
-            onEvent(PatientDataEvent.HideEditPatientDialog)
+            //onEvent(PatientDataEvent.HideEditPatientDialog)
         },
         confirmButton = {
 
@@ -71,7 +71,7 @@ fun EditPatientDialog(
                 ) {
                     Button(
                         onClick = {
-                            onEvent(PatientDataEvent.HideEditPatientDialog)
+                            //onEvent(PatientDataEvent.HideEditPatientDialog)
                         },
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
                     ) {

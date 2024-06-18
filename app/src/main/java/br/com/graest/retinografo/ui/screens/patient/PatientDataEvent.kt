@@ -9,10 +9,11 @@ sealed interface PatientDataEvent {
     data class SetPatientName(val name: String) : PatientDataEvent
     data class SetPatientAge(val age: String) : PatientDataEvent
     object ShowAddPatientDialog : PatientDataEvent
-    object HideAddPatientDialog : PatientDataEvent
+    //object HideAddPatientDialog : PatientDataEvent
+    object HideDialog : PatientDataEvent
 
     data class ShowEditPatientDialog (val id: Int) : PatientDataEvent
-    data class SaveEditPatient(val id: Int, val newName: String?, val newAge: Int?) : PatientDataEvent
-    object HideEditPatientDialog : PatientDataEvent
+
+    //object HideEditPatientDialog : PatientDataEvent
     data class DeletePatientData(val id: Int) : PatientDataEvent
 }

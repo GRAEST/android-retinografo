@@ -15,6 +15,7 @@ import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
 import br.com.graest.retinografo.ui.screens.login.SignUpScreen
+import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
@@ -28,7 +29,8 @@ fun RetinografoNavGraph(
     bitmapSelectedIndex: Int,
     cameraViewModel: CameraViewModel,
     patientViewModel: PatientDataViewModel,
-    patientDataState: PatientDataState
+    patientDataState: PatientDataState,
+    patientDataEvent: PatientDataEvent,
 
 ) {
     NavHost(
@@ -79,6 +81,7 @@ fun RetinografoNavGraph(
 
             PatientScreen(
                 state = patientDataState,
+                event = patientDataEvent,
                 onEvent = patientViewModel::onEvent
             )
 
