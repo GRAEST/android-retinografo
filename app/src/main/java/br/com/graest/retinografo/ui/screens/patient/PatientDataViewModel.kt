@@ -3,6 +3,7 @@ package br.com.graest.retinografo.ui.screens.patient
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,24 +31,35 @@ class PatientDataViewModel(
 
     fun onEvent(event: PatientDataEvent) {
         when(event) {
-            is PatientDataEvent.DeletePatientData -> {
+
+            PatientDataEvent.DeletePatientData -> {
+
+                val patientData = PatientData(
+                    patientDataState.value.name,
+                    patientDataState.value.age.toInt(),
+                    patientDataState.value.id
+                )
+
+                viewModelScope.launch {
+                    patientDataDao.deletePatientData(patientData)
+                }
+            }
+
+            is PatientDataEvent.DeletePatientDataById -> {
 
                 Log.d("TAG", "Delete: " +
                         "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
 
                 viewModelScope.launch {
-                    patientDataDao.deletePatientData(event.id)
+                    patientDataDao.deletePatientDataById(event.id)
                 }
-                _patientDataState.update { it.copy(
-                    isEditingPatientData = false,
-                    id = 0,
-                    name = "",
-                    age = ""
-                ) }
-                //quando o id deixa de existir, o state que lia do sql crasha
 
+                onEvent(PatientDataEvent.HideDialog)
+                //quando o id deixa de existir, o state que lia do sql crasha
+                //acho que o erro era que alguma coisa era enviada como String para Int (idade)
             }
+
             PatientDataEvent.HideDialog -> {
 
                 Log.d("TAG", "Hide Add: " +
@@ -107,16 +119,11 @@ class PatientDataViewModel(
                 Log.d("TAG", "Save: " +
                         "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
-
                 viewModelScope.launch{
                     patientDataDao.upsertPatientData(patientData)
+                    onEvent(PatientDataEvent.HideDialog) // aqui não duplica tela (edit + save)
                 }
 
-                _patientDataState.update { it.copy(
-                    id = 0,
-                    name = "",
-                    age = "",
-                ) }
             }
             is PatientDataEvent.SetPatientAge -> {
                 _patientDataState.update { it.copy(

@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import br.com.graest.retinografo.data.model.PatientData
+
 sealed interface PatientDataEvent {
     object SavePatientData : PatientDataEvent
 
@@ -8,5 +10,6 @@ sealed interface PatientDataEvent {
     data class ShowEditPatientDialog (val id: Int) : PatientDataEvent
     object ShowAddPatientDialog : PatientDataEvent
     object HideDialog : PatientDataEvent
-    data class DeletePatientData(val id: Int) : PatientDataEvent
+    data class DeletePatientDataById(val id: Int) : PatientDataEvent
+    object DeletePatientData : PatientDataEvent
 }

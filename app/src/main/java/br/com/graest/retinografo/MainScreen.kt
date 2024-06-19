@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
-import br.com.graest.retinografo.data.model.DialogType
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.topBarComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
