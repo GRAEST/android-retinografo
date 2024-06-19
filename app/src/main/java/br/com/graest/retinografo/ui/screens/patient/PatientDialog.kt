@@ -29,7 +29,14 @@ fun PatientDialog(
 ) {
     AlertDialog(
         modifier = modifier,
-        title = { Text(text = "Add Patient") },
+        title = {
+            if (state.isAddingPatientData) {
+                Text(text = "Add Patient")
+            }
+            if (state.isEditingPatientData) {
+                Text(text = "Editing Patient")
+            }
+        },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)

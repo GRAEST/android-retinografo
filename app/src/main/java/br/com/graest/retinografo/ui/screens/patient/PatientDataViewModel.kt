@@ -89,6 +89,7 @@ class PatientDataViewModel(
             }
 
             PatientDataEvent.SavePatientData -> {
+                //arrumar isso aqui
                 val id = patientDataState.value.id
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
@@ -114,7 +115,7 @@ class PatientDataViewModel(
                 _patientDataState.update { it.copy(
                     id = 0,
                     name = "",
-                    age = ""
+                    age = "",
                 ) }
             }
             is PatientDataEvent.SetPatientAge -> {
