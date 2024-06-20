@@ -3,7 +3,6 @@ package br.com.graest.retinografo.ui.screens.patient
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,14 +22,14 @@ class PatientDataViewModel(
 
     private val _patientDataState = MutableStateFlow(PatientDataState())
 
-    val patientDataState = combine(_patientDataState,  _patientsData) { patientState, patientsData->
-        patientState.copy (
+    val patientDataState = combine(_patientDataState, _patientsData) { patientState, patientsData ->
+        patientState.copy(
             patientsData = patientsData
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
 
     fun onEvent(event: PatientDataEvent) {
-        when(event) {
+        when (event) {
 
             PatientDataEvent.DeletePatientData -> {
 
@@ -47,8 +46,9 @@ class PatientDataViewModel(
 
             is PatientDataEvent.DeletePatientDataById -> {
 
-                Log.d("TAG", "Delete: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                Log.d(
+                    "TAG", "Delete: " +
+                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
 
                 viewModelScope.launch {
@@ -62,26 +62,36 @@ class PatientDataViewModel(
 
             PatientDataEvent.HideDialog -> {
 
-                Log.d("TAG", "Hide Add: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                Log.d(
+                    "TAG", "Hide Add: " +
+                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
+                viewModelScope.launch {
+                    _patientDataState.update {
+                        it.copy(
+                            isAddingPatientData = false,
+                            isEditingPatientData = false,
+                            id = 0,
+                            name = "",
+                            age = ""
+                        )
+                    }
+                }
 
-                _patientDataState.update { it.copy(
-                    isAddingPatientData = false,
-                    isEditingPatientData = false,
-                    id = 0,
-                    name = "",
-                    age = ""
-                ) }
             }
+
             PatientDataEvent.ShowAddPatientDialog -> {
-                _patientDataState.update { it.copy(
-                    isAddingPatientData = true
-                ) }
-                Log.d("TAG", "Show Add: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                _patientDataState.update {
+                    it.copy(
+                        isAddingPatientData = true
+                    )
+                }
+                Log.d(
+                    "TAG", "Show Add: " +
+                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
             }
+
             is PatientDataEvent.ShowEditPatientDialog -> {
                 viewModelScope.launch {
                     patientDataDao.getPatientData(event.id).collect { data ->
@@ -94,8 +104,9 @@ class PatientDataViewModel(
                             )
                         }
                     }
-                    Log.d("TAG", "Show Edit: " +
-                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                    Log.d(
+                        "TAG", "Show Edit: " +
+                                "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                     )
                 }
             }
@@ -116,25 +127,33 @@ class PatientDataViewModel(
                     name = name
                 )
 
-                Log.d("TAG", "Save: " +
-                        "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
+                Log.d(
+                    "TAG", "Save: " +
+                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
-                viewModelScope.launch{
+                viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)
-                    onEvent(PatientDataEvent.HideDialog) // aqui não duplica tela (edit + save)
+                    onEvent(PatientDataEvent.HideDialog)
                 }
 
             }
+
             is PatientDataEvent.SetPatientAge -> {
-                _patientDataState.update { it.copy(
-                    age = event.age
-                ) }
+                _patientDataState.update {
+                    it.copy(
+                        age = event.age
+                    )
+                }
             }
+
             is PatientDataEvent.SetPatientName -> {
-                _patientDataState.update { it.copy(
-                    name = event.name
-                ) }
+                _patientDataState.update {
+                    it.copy(
+                        name = event.name
+                    )
+                }
             }
+
             else -> {}
         }
     }

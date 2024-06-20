@@ -70,7 +70,9 @@ fun PatientDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
+                    Button(onClick = {
+                        onEvent(PatientDataEvent.SavePatientData)
+                    }) {
                         Text(text = "Add")
                     }
                 }
@@ -94,7 +96,9 @@ fun PatientDialog(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        Button(onClick = { onEvent(PatientDataEvent.SavePatientData) }) {
+                        Button(onClick = {
+                            onEvent(PatientDataEvent.SavePatientData)
+                        }) {
                             Text(text = "Save")
                         }
                     }
