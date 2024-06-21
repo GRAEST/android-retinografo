@@ -42,17 +42,23 @@ fun PatientScreen(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = patientData.name,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = "${patientData.age} anos",
-                        fontSize = 12.sp
-                    )
+                    if (patientData != null) {
+                        Text(
+                            text = patientData.name,
+                            fontSize = 20.sp
+                        )
+                    }
+                    if (patientData != null) {
+                        Text(
+                            text = "${patientData.age} anos",
+                            fontSize = 12.sp
+                        )
+                    }
                 }
                 IconButton(onClick = {
-                    onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.id))
+                    if (patientData != null) {
+                        onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.id))
+                    }
                 }) {
                     Icon(
                         imageVector = Icons.Default.Edit,

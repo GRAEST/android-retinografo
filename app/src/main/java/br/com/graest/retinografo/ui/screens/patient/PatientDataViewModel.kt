@@ -95,13 +95,15 @@ class PatientDataViewModel(
             is PatientDataEvent.ShowEditPatientDialog -> {
                 viewModelScope.launch {
                     patientDataDao.getPatientData(event.id).collect { data ->
-                        _patientDataState.update { currentState ->
-                            currentState.copy(
-                                isEditingPatientData = true,
-                                id = event.id,
-                                name = data.name,
-                                age = data.age.toString()
-                            )
+                        if (data != null) {
+                            _patientDataState.update { currentState ->
+                                currentState.copy(
+                                    isEditingPatientData = true,
+                                    id = event.id,
+                                    name = data.name,
+                                    age = data.age.toString()
+                                )
+                            }
                         }
                     }
                     Log.d(

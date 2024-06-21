@@ -20,9 +20,9 @@ interface PatientDataDao {
     suspend fun deletePatientDataById(id: Int)
 
     @Query("SELECT * FROM patient_data WHERE id = :id")
-    fun getPatientData(id: Int) : Flow<PatientData>
+    fun getPatientData(id: Int) : Flow<PatientData?>
 
     @Query("SELECT * FROM patient_data ORDER BY name ASC")
-    fun getPatientsData() : Flow<List<PatientData>>
+    fun getPatientsData() : Flow<List<PatientData?>>
 
 }
