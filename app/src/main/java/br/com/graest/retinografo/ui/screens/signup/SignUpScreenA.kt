@@ -135,7 +135,7 @@ fun SignUpScreenA(
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
                 singleLine = true,
                 modifier = Modifier
