@@ -120,6 +120,7 @@ class MainActivity : ComponentActivity() {
                     selectedItemIndex = selectedItemIndex,
                     onSelectedItemChange = ::onSelectedItemChange,
                     scope = scope,
+                    onImageClick = {navController.navigate("UserData")},
                     drawerState = drawerState,
                     onPatientEvent = patientViewModel::onEvent
                 ) {

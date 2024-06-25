@@ -30,6 +30,7 @@ fun MainScreenComposable(
     onSelectedItemChange: (Int) -> Unit,
     scope: CoroutineScope,
     drawerState: DrawerState,
+    onImageClick: () -> Unit,
     onPatientEvent: (PatientDataEvent) -> Unit,
     composable: @Composable () -> Unit
 ) {
@@ -46,7 +47,7 @@ fun MainScreenComposable(
             Scaffold(
                 topBar = {
                     if ( showAppBar ) {
-                        TopBarComposable(scope, drawerState)
+                        TopBarComposable(scope, drawerState, onImageClick)
                     }
                 },
                 floatingActionButton = {

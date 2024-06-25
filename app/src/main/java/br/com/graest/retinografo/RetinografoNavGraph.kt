@@ -19,6 +19,8 @@ import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenA
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenB
+import br.com.graest.retinografo.ui.screens.user.EditUserData
+import br.com.graest.retinografo.ui.screens.user.UserData
 
 @Composable
 fun RetinografoNavGraph(
@@ -88,7 +90,15 @@ fun RetinografoNavGraph(
                 state = patientDataState,
                 onEvent = patientViewModel::onEvent
             )
+        }
+        composable("UserData") {
+
+            UserData(onClickEdit = { navController.navigate("EditUserData") })
 
         }
+        composable("EditUserData"){
+            EditUserData()
+        }
+
     }
 }
