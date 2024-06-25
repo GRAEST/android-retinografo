@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
-import br.com.graest.retinografo.ui.components.topBarComposable
+import br.com.graest.retinografo.ui.components.TopBarComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import kotlinx.coroutines.CoroutineScope
 
@@ -46,7 +46,7 @@ fun MainScreenComposable(
             Scaffold(
                 topBar = {
                     if ( showAppBar ) {
-                        topBarComposable(scope, drawerState)
+                        TopBarComposable(scope, drawerState)
                     }
                 },
                 floatingActionButton = {
