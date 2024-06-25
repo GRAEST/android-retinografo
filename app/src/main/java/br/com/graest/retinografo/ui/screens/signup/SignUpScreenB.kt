@@ -1,8 +1,9 @@
-package br.com.graest.retinografo.ui.screens.login
+package br.com.graest.retinografo.ui.screens.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,10 +34,9 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
 
 @Composable
-fun SignUpScreen(
+fun SignUpScreenB(
     onClickSignUp: () -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -66,28 +66,11 @@ fun SignUpScreen(
         ) {
 
             Text(
-                text = "Cadastro de Conta",
+                text = "Dados Pessoais",
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(10.dp)
                     .align(Alignment.Start)
-            )
-
-            OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Username") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
             )
 
             OutlinedTextField(
@@ -140,14 +123,21 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
             )
+
+
             Spacer(modifier = Modifier.height(10.dp))
 
-            Button(
-                onClick = { onClickSignUp() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Sign Up")
+            Row {
+                Column(modifier = Modifier.weight(1f)) {}
+                Button(
+                    onClick = { onClickSignUp() },
+                    modifier = Modifier.fillMaxWidth().weight(3f)
+                ) {
+                    Text("Next")
+                }
+                Column(modifier = Modifier.weight(1f)) {}
             }
+
         }
     }
 
@@ -156,8 +146,8 @@ fun SignUpScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSignUpScreen() {
-    SignUpScreen(
+fun PreviewSignUpScreenB() {
+    SignUpScreenB(
         onClickSignUp = {}
     )
 }

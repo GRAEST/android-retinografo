@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     mutableIntStateOf(0)
                 }
 
-                val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreen")
+                val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
                 val navController: NavHostController = rememberNavController()
                 var showAppBar by remember { mutableStateOf(true) }
                 LaunchedEffect(navController) {

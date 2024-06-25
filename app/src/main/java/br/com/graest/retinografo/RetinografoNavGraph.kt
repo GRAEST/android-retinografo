@@ -14,11 +14,11 @@ import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
 import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
-import br.com.graest.retinografo.ui.screens.login.SignUpScreen
-import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
+import br.com.graest.retinografo.ui.screens.signup.SignUpScreenA
+import br.com.graest.retinografo.ui.screens.signup.SignUpScreenB
 
 @Composable
 fun RetinografoNavGraph(
@@ -40,7 +40,7 @@ fun RetinografoNavGraph(
         composable("InitialScreen") {
             InitialScreenMain(
                 onLoginClick = { navController.navigate("LogInScreen") },
-                onSignUpClick = { navController.navigate("SignUpScreen") }
+                onSignUpClick = { navController.navigate("SignUpScreenA") }
             )
         }
 
@@ -50,8 +50,14 @@ fun RetinografoNavGraph(
             )
         }
 
-        composable("SignUpScreen") {
-            SignUpScreen(
+        composable("SignUpScreenA") {
+            SignUpScreenA(
+                onClickSignUp = { navController.navigate("SignUpScreenB") }
+            )
+        }
+
+        composable("SignUpScreenB") {
+            SignUpScreenB(
                 onClickSignUp = { navController.navigate("LogInScreen") }
             )
         }
