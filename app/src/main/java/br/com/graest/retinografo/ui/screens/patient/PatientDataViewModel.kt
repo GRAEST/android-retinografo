@@ -30,7 +30,7 @@ class PatientDataViewModel(
 
     fun onEvent(event: PatientDataEvent) {
         when (event) {
-
+            // Estamos com 2 Deletes, um deles pode ir embora
             PatientDataEvent.DeletePatientData -> {
 
                 val patientData = PatientData(
@@ -56,8 +56,6 @@ class PatientDataViewModel(
                 }
 
                 onEvent(PatientDataEvent.HideDialog)
-                //quando o id deixa de existir, o state que lia do sql crasha
-                //acho que o erro era que alguma coisa era enviada como String para Int (idade)
             }
 
             PatientDataEvent.HideDialog -> {
@@ -114,7 +112,7 @@ class PatientDataViewModel(
             }
 
             PatientDataEvent.SavePatientData -> {
-                //arrumar isso aqui
+                //Aquele problema com Create voltar a aparecer Edit ainda existe
                 val id = patientDataState.value.id
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
