@@ -36,6 +36,7 @@ class PatientDataViewModel(
                 val patientData = PatientData(
                     patientDataState.value.name,
                     patientDataState.value.age.toInt(),
+                    patientDataState.value.image,
                     patientDataState.value.id
                 )
 
@@ -124,7 +125,8 @@ class PatientDataViewModel(
                 val patientData = PatientData(
                     id = id,
                     age = age.toInt(),
-                    name = name
+                    name = name,
+                    image = ByteArray(1)
                 )
 
                 Log.d(

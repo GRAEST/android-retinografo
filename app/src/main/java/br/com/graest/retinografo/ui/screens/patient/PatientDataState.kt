@@ -7,6 +7,7 @@ data class PatientDataState(
     val id: Int = 0,
     val name: String = "",
     val age: String = "",
+    val image: ByteArray = ByteArray(1),
     val isAddingPatientData: Boolean = false,
     val isEditingPatientData: Boolean = false,
 )
