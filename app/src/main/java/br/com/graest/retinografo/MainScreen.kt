@@ -13,8 +13,10 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import br.com.graest.retinografo.data.NavigationItem
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.TopBarComposable
@@ -51,7 +53,7 @@ fun MainScreenComposable(
                     }
                 },
                 floatingActionButton = {
-                    if (selectedItemIndex == 2) {
+                    if (getCurrentRoute(navController = navController) == "Patient") {
                         FloatingActionButton(onClick = {
                             onPatientEvent(PatientDataEvent.ShowAddPatientDialog)
                         }) {
