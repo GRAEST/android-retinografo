@@ -4,14 +4,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.PhotoCamera
@@ -20,13 +22,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.utils.CameraUtils.takePhoto
@@ -37,23 +34,22 @@ fun PatientCameraComposable(
     applicationContext: Context,
     controller: LifecycleCameraController,
     onPhotoTaken: (Bitmap) -> Unit
-){
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.Black)
     ) {
         CameraViewScreen(
             controller = controller,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    clip = true
+                    shape = CircleShape
+                }
+                .aspectRatio(1f)
         )
-
-        CircularOpeningOverlay(
-            modifier = Modifier.fillMaxSize(),
-            circleRadius = 100f, // Adjust the radius as needed
-            circleCenter = Offset(300f, 300f), // Adjust the center as needed
-            backgroundColor = Color.Gray.copy(alpha = 0.5f) // Semi-transparent background
-        )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,7 +61,7 @@ fun PatientCameraComposable(
                 ),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            IconButton (
+            IconButton(
                 onClick = {
                     controller.cameraSelector =
                         if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
@@ -76,6 +72,7 @@ fun PatientCameraComposable(
             ) {
                 Icon(
                     imageVector = Icons.Default.Cameraswitch,
+                    tint = Color.White,
                     contentDescription = "Switch Camera"
                 )
             }
@@ -91,6 +88,7 @@ fun PatientCameraComposable(
             ) {
                 Icon(
                     imageVector = Icons.Default.PhotoCamera,
+                    tint = Color.White,
                     contentDescription = "Take Photo"
                 )
             }
@@ -98,45 +96,8 @@ fun PatientCameraComposable(
                 onClick = { },
                 modifier = Modifier.offset(16.dp, 16.dp)
             ) {
-
+                //fake button -> just to make it symmetrical
             }
-        }
-    }
-}
-
-@Composable
-fun CircularOpeningOverlay(
-    modifier: Modifier = Modifier,
-    circleRadius: Float,
-    circleCenter: Offset,
-    backgroundColor: Color
-) {
-    Canvas(modifier = modifier) {
-        // Create a path for the full background
-        val backgroundPath = Path().apply {
-            addRect(Rect(0f, 0f, size.width, size.height))
-        }
-        // Draw the semi-transparent background
-        drawPath(path = backgroundPath, color = backgroundColor)
-
-        // Create a path for the circular opening
-        val circlePath = Path().apply {
-            addRoundRect(
-                RoundRect(
-                    Rect(
-                        left = circleCenter.x - circleRadius,
-                        top = circleCenter.y - circleRadius,
-                        right = circleCenter.x + circleRadius,
-                        bottom = circleCenter.y + circleRadius
-                    ),
-                    cornerRadius = CornerRadius(circleRadius, circleRadius)
-                )
-            )
-        }
-
-        // Clip the circular path to create the opening
-        clipPath(circlePath) {
-            drawRect(Color.Transparent)
         }
     }
 }
