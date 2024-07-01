@@ -32,11 +32,12 @@ import br.com.graest.retinografo.R
 @Composable
 fun PatientScreen(
     state: PatientDataState,
-    onEvent: (PatientDataEvent) -> Unit
+    onEvent: (PatientDataEvent) -> Unit,
+    onLaunchCamera: () -> Unit
 ) {
 
     if (state.isAddingPatientData || state.isEditingPatientData) {
-        PatientDialog(state = state, onEvent = onEvent)
+        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera)
     }
 
     LazyColumn(

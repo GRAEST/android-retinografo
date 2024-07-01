@@ -25,7 +25,8 @@ import androidx.compose.ui.unit.dp
 fun PatientDialog(
     state: PatientDataState,
     onEvent: (PatientDataEvent) -> Unit,
-    modifier: Modifier = Modifier
+    onLaunchCamera: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -59,6 +60,16 @@ fun PatientDialog(
                         Text(text = "Age")
                     }
                 )
+                Button(onClick = {
+                    onLaunchCamera()
+                }) {
+                    if (state.isAddingPatientData) {
+                        Text(text = "Add photo")
+                    }
+                    if (state.isEditingPatientData) {
+                        Text(text = "Edit photo")
+                    }
+                }
             }
         },
         onDismissRequest = {

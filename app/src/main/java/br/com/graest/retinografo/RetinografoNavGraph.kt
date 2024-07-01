@@ -17,6 +17,7 @@ import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
 import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
 import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
+import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
@@ -91,7 +92,17 @@ fun RetinografoNavGraph(
 
             PatientScreen(
                 state = patientDataState,
-                onEvent = patientViewModel::onEvent
+                onEvent = patientViewModel::onEvent,
+                onLaunchCamera = { navController.navigate("PatientCamera")}
+            )
+        }
+        composable("PatientCamera") {
+            PatientCameraComposable(
+                applicationContext = applicationContext,
+                controller = controller,
+                onPhotoTaken = {
+
+                }
             )
         }
         composable("UserData") {
@@ -102,6 +113,9 @@ fun RetinografoNavGraph(
         composable("EditUserData"){
             EditUserData()
         }
+
+
+
     }
 }
 
