@@ -65,14 +65,6 @@ fun EditUserData() {
             .padding(15.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = "My data",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.W600,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
 
         Box(
             contentAlignment = Alignment.BottomEnd,

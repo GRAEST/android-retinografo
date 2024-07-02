@@ -93,13 +93,12 @@ class MainActivity : ComponentActivity() {
                 val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
                 val navController: NavHostController = rememberNavController()
                 var showAppBar by remember { mutableStateOf(true) }
+
                 LaunchedEffect(navController) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
                         showAppBar = destination.route !in hideAppBarRoutes
                     }
                 }
-
-
                 var selectedItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }

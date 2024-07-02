@@ -49,7 +49,7 @@ fun MainScreenComposable(
             Scaffold(
                 topBar = {
                     if ( showAppBar ) {
-                        TopBarComposable(scope, drawerState, onImageClick)
+                        TopBarComposable(navController, scope, drawerState, onImageClick)
                     }
                 },
                 floatingActionButton = {
