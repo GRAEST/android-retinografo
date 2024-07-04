@@ -46,25 +46,13 @@ class PatientDataViewModel(
             }
 
             is PatientDataEvent.DeletePatientDataById -> {
-
-                Log.d(
-                    "TAG", "Delete: " +
-                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                )
-
                 viewModelScope.launch {
                     patientDataDao.deletePatientDataById(event.id)
                 }
-
                 onEvent(PatientDataEvent.HideDialog)
             }
 
             PatientDataEvent.HideDialog -> {
-
-                Log.d(
-                    "TAG", "Hide Add: " +
-                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                )
                 viewModelScope.launch {
                     _patientDataState.update {
                         it.copy(
@@ -76,7 +64,6 @@ class PatientDataViewModel(
                         )
                     }
                 }
-
             }
 
             PatientDataEvent.ShowAddPatientDialog -> {
@@ -85,10 +72,6 @@ class PatientDataViewModel(
                         isAddingPatientData = true
                     )
                 }
-                Log.d(
-                    "TAG", "Show Add: " +
-                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                )
             }
 
             is PatientDataEvent.ShowEditPatientDialog -> {
@@ -105,33 +88,23 @@ class PatientDataViewModel(
                             }
                         }
                     }
-                    Log.d(
-                        "TAG", "Show Edit: " +
-                                "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
-                    )
                 }
             }
 
             PatientDataEvent.SavePatientData -> {
                 //Aquele problema com Create voltar a aparecer Edit ainda existe
-                val id = patientDataState.value.id
+                val id = patientDataState.value.id //id é necessário para caso de EDIT
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
 
                 if (age.isBlank() || name.isBlank()) {
                     return
                 }
-
                 val patientData = PatientData(
                     id = id,
                     age = age.toInt(),
                     name = name,
                     image = ByteArray(1)
-                )
-
-                Log.d(
-                    "TAG", "Save: " +
-                            "${_patientDataState.value.id} + ${_patientDataState.value.name} + ${_patientDataState.value.age}"
                 )
                 viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)

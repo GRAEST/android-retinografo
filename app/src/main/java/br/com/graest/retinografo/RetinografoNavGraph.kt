@@ -14,8 +14,10 @@ import androidx.navigation.compose.rememberNavController
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.camera.CameraComposableScreen
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
-import br.com.graest.retinografo.ui.screens.image.ImageDetailsScreen
-import br.com.graest.retinografo.ui.screens.image.VerticalGridImages
+import br.com.graest.retinografo.ui.screens.exam.ExamDataState
+import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
+import br.com.graest.retinografo.ui.screens.exam.ImageDetailsScreen
+import br.com.graest.retinografo.ui.screens.exam.VerticalGridImages
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
@@ -36,6 +38,8 @@ fun RetinografoNavGraph(
     cameraViewModel: CameraViewModel,
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
+    examDataViewModel: ExamDataViewModel,
+    examDataState: ExamDataState
 
 ) {
     NavHost(
@@ -79,7 +83,7 @@ fun RetinografoNavGraph(
         }
         composable("Images") {
 
-            VerticalGridImages(bitmaps)
+            VerticalGridImages(examDataState)
 
         }
         composable("ImageDetails") {

@@ -32,6 +32,7 @@ import androidx.room.Room
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
+import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
@@ -51,7 +52,16 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PatientDataViewModel(db.dao) as T
+                    return PatientDataViewModel(db.patientDataDao) as T
+                }
+            }
+        }
+    )
+    private val examViewModel by viewModels<ExamDataViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ExamDataViewModel(db.examDataDao) as T
                 }
             }
         }
@@ -72,6 +82,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             RetinografoTheme {
 
+                val examDataState by examViewModel.examDataState.collectAsState()
+
                 val patientDataState by patientViewModel.patientDataState.collectAsState()
 
                 val controller = remember {
@@ -83,9 +95,10 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val cameraViewModel = viewModel<CameraViewModel>()
+                    val cameraViewModel = viewModel<CameraViewModel>()
 
                 val bitmaps by cameraViewModel.bitmaps.collectAsState()
+
                 val bitmapSelectedIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }
@@ -131,7 +144,9 @@ class MainActivity : ComponentActivity() {
                         bitmapSelectedIndex,
                         cameraViewModel,
                         patientViewModel,
-                        patientDataState
+                        patientDataState,
+                        examViewModel,
+                        examDataState
                     )
                 }
             }

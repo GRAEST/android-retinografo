@@ -114,6 +114,7 @@ fun PatientDialog(
                         }
                     }
                     IconButton(onClick = {
+                        //verificar se tem diferença em usar um deles, se sim, deletar o defeituoso
                         //onEvent(PatientDataEvent.DeletePatientDataById(state.id))
                         onEvent(PatientDataEvent.DeletePatientData)
                     }) {

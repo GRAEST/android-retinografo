@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens.image
+package br.com.graest.retinografo.ui.screens.exam
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -16,11 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @Composable
 fun VerticalGridImages(
-    bitmaps: List<Bitmap>
+    state: ExamDataState,
 ) {
+    val bitmaps = mutableListOf<Bitmap>()
+
+    state.examsData.forEach { examData ->
+        examData?.image?.let { imageByteArray ->
+            bitmaps.add(byteArrayToBitmap(imageByteArray))
+        }
+    }
+
 
     if (bitmaps.isEmpty()) {
         Box(
