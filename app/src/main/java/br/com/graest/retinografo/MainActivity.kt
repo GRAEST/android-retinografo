@@ -67,6 +67,16 @@ class MainActivity : ComponentActivity() {
         }
     )
 
+    private val cameraViewModel by viewModels<CameraViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return CameraViewModel(db.examDataDao) as T
+                }
+            }
+        }
+    )
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +105,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                    val cameraViewModel = viewModel<CameraViewModel>()
+                //val cameraViewModel = viewModel<CameraViewModel>()
 
                 val bitmaps by cameraViewModel.bitmaps.collectAsState()
 
