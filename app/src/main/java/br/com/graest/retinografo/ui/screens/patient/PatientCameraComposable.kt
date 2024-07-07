@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import br.com.graest.retinografo.ui.components.CameraViewScreen
-import br.com.graest.retinografo.utils.CameraUtils.takePhoto
+import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
 
 
 @Composable

@@ -12,8 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
-import br.com.graest.retinografo.ui.screens.camera.CameraComposableScreen
-import br.com.graest.retinografo.ui.screens.camera.CameraViewModel
+import br.com.graest.retinografo.ui.screens.exam.ExamCameraComposableScreen
 import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.exam.ImageDetailsScreen
@@ -35,7 +34,6 @@ fun RetinografoNavGraph(
     applicationContext : Context,
     bitmaps: List<Bitmap>,
     bitmapSelectedIndex: Int,
-    cameraViewModel: CameraViewModel,
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
@@ -74,10 +72,10 @@ fun RetinografoNavGraph(
 
         composable("Camera") {
 
-            CameraComposableScreen(
+            ExamCameraComposableScreen(
                 applicationContext = applicationContext,
                 controller = controller,
-                onPhotoTaken = cameraViewModel::onTakePhoto
+                onPhotoTaken = examDataViewModel::onTakePhoto
             )
 
         }

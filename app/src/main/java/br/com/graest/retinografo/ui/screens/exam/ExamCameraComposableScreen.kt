@@ -1,4 +1,4 @@
-package br.com.graest.retinografo.ui.screens.camera
+package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,10 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.graest.retinografo.ui.components.CameraViewScreen
-import br.com.graest.retinografo.utils.CameraUtils.takePhoto
+import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
+import kotlin.reflect.KFunction1
 
 @Composable
-fun CameraComposableScreen(
+fun ExamCameraComposableScreen(
     applicationContext: Context,
     controller: LifecycleCameraController,
     onPhotoTaken: (Bitmap) -> Unit
@@ -61,6 +62,7 @@ fun CameraComposableScreen(
         ) {
 
             IconButton(
+
                 onClick = {
                     takePhoto(
                         applicationContext = applicationContext,

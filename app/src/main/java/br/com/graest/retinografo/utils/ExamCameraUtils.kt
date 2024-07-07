@@ -9,13 +9,14 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
 import androidx.core.content.ContextCompat
+import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 
-object CameraUtils {
+object ExamCameraUtils {
 
     fun takePhoto(
         applicationContext: Context,
         controller: LifecycleCameraController,
-        onPhotoTaken: (Bitmap) -> Unit
+        onPhotoTaken: (Bitmap) -> Unit,
     ) {
         controller.takePicture(
             ContextCompat.getMainExecutor(applicationContext),
