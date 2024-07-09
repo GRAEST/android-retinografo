@@ -62,7 +62,6 @@ fun ExamCameraComposableScreen(
         ) {
 
             IconButton(
-
                 onClick = {
                     takePhoto(
                         applicationContext = applicationContext,

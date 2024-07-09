@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
 data class ExamData (
     val image: ByteArray,
     @PrimaryKey(autoGenerate = true)
-    val id: Int? = 0
+    val id: Int = 0
 )

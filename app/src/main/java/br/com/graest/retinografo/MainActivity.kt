@@ -94,7 +94,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                //val cameraViewModel = viewModel<CameraViewModel>()
 
                 val bitmaps by examViewModel.bitmaps.collectAsState()
 
