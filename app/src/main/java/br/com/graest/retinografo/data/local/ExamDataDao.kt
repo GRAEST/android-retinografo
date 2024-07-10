@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface ExamDataDao {
     //ver se da para diminuir esse nome gigantesco antes de ExamData
     @Insert
-    suspend fun insertExam(image: br.com.graest.retinografo.data.model.ExamData): Long
+    suspend fun insertExam(image: ExamData): Long
 
     @Query("SELECT * FROM exam_data ORDER BY id ASC")
     fun getExamData() : Flow<List<ExamData>>

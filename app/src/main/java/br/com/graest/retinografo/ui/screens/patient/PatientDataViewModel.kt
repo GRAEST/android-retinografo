@@ -1,10 +1,12 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -66,6 +68,7 @@ class PatientDataViewModel(
                         it.copy(
                             isAddingPatientData = false,
                             isEditingPatientData = false,
+                            isEditingImage = false,
                             id = 0,
                             name = "",
                             age = ""
@@ -73,6 +76,14 @@ class PatientDataViewModel(
                     }
                 }
             }
+            PatientDataEvent.ClickEditImage -> {
+                _patientDataState.update {
+                    it.copy(
+                        isEditingImage = true
+                    )
+                }
+            }
+
 
             PatientDataEvent.ShowAddPatientDialog -> {
                 _patientDataState.update {
@@ -91,6 +102,7 @@ class PatientDataViewModel(
                                     isEditingPatientData = true,
                                     id = event.id,
                                     name = data.name,
+                                    image = data.image,
                                     age = data.age.toString()
                                 )
                             }
@@ -100,10 +112,15 @@ class PatientDataViewModel(
             }
 
             PatientDataEvent.SavePatientData -> {
-                //Aquele problema com Create voltar a aparecer Edit ainda existe
+                /*
+                * quanto você edita algo, por algum motivo fica salvo
+                * então algumas vezes você tenta abrir um "criar Paciente"
+                * e depois de criado o paciente, volta a abrir a tela de Edit
+                * */
                 val id = patientDataState.value.id //id é necessário para caso de EDIT
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
+                val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
 
                 if (age.isBlank() || name.isBlank()) {
                     return
@@ -112,7 +129,7 @@ class PatientDataViewModel(
                     id = id,
                     age = age.toInt(),
                     name = name,
-                    image = ByteArray(1)
+                    image = bitmapToByteArray(bitmap)
                 )
                 viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)
@@ -136,7 +153,6 @@ class PatientDataViewModel(
                     )
                 }
             }
-
             else -> {}
         }
     }
@@ -149,14 +165,4 @@ class PatientDataViewModel(
         _errorMessage.value = message
     }
 
-    fun onTakePhoto(bitmap: Bitmap) {
-
-//        viewModelScope.launch {
-//            val image = ExamData(image = bitmapToByteArray(bitmap))
-//            //examDataDao.insertExam(image)
-//            patientDataDao.insertImage(image)
-//            // Update the _bitmaps state flow
-//            //_bitmaps.value = _bitmaps.value + bitmap
-//        }
-    }
 }

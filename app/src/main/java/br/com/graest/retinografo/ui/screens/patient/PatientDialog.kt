@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @Composable
 fun PatientDialog(
@@ -56,10 +57,24 @@ fun PatientDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (capturedImagePath.value != null) {
-                    val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
+                if (state.isAddingPatientData || state.isEditingImage) {
+                    if (capturedImagePath.value != null) {
+                        val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "Captured Image",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+                if (state.isEditingPatientData && !state.isEditingImage) {
                     Image(
-                        bitmap = bitmap.asImageBitmap(),
+                        bitmap = byteArrayToBitmap(state.image).asImageBitmap(),
                         contentDescription = "Captured Image",
                         modifier = Modifier
                             .clip(CircleShape)
@@ -93,6 +108,7 @@ fun PatientDialog(
                 ) {
                     Button(onClick = {
                         onLaunchCamera()
+                        onEvent(PatientDataEvent.ClickEditImage)
                     }) {
                         if (state.isAddingPatientData) {
                             Text(text = "Add photo")
@@ -153,8 +169,8 @@ fun PatientDialog(
                     }
                     IconButton(onClick = {
                         //verificar se tem diferença em usar um deles(delete), se sim, deletar o defeituoso
-                        //onEvent(PatientDataEvent.DeletePatientDataById(state.id))
-                        onEvent(PatientDataEvent.DeletePatientData)
+                        onEvent(PatientDataEvent.DeletePatientDataById(state.id))
+                        //onEvent(PatientDataEvent.DeletePatientData)
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,

@@ -7,6 +7,7 @@ sealed interface PatientDataEvent {
 
     data class SetPatientName(val name: String) : PatientDataEvent
     data class SetPatientAge(val age: String) : PatientDataEvent
+    object ClickEditImage : PatientDataEvent
     data class ShowEditPatientDialog (val id: Int) : PatientDataEvent
     object ShowAddPatientDialog : PatientDataEvent
     object HideDialog : PatientDataEvent

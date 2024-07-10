@@ -10,4 +10,5 @@ data class PatientDataState(
     val image: ByteArray = ByteArray(1),
     val isAddingPatientData: Boolean = false,
     val isEditingPatientData: Boolean = false,
+    val isEditingImage: Boolean = false
 )
