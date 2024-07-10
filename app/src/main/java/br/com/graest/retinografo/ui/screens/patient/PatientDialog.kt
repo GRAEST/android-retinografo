@@ -2,12 +2,17 @@ package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
@@ -22,9 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 
 @Composable
 fun PatientDialog(
@@ -52,9 +58,17 @@ fun PatientDialog(
             ) {
                 if (capturedImagePath.value != null) {
                     val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
-                    Image(bitmap = bitmap.asImageBitmap(), contentDescription = "Captured Image")
-                } else {
-                    Text(text = "No image captured yet.")
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Captured Image",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .aspectRatio(1f)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+
                 }
 
                 TextField(
@@ -75,14 +89,24 @@ fun PatientDialog(
                         Text(text = "Age")
                     }
                 )
-                Button(onClick = {
-                    onLaunchCamera()
-                }) {
-                    if (state.isAddingPatientData) {
-                        Text(text = "Add photo")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(onClick = {
+                        onLaunchCamera()
+                    }) {
+                        if (state.isAddingPatientData) {
+                            Text(text = "Add photo")
+                        }
+                        if (state.isEditingPatientData) {
+                            Text(text = "Edit photo")
+                        }
                     }
-                    if (state.isEditingPatientData) {
-                        Text(text = "Edit photo")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    if (capturedImagePath.value != null) {
+                        Text(text = "Image Added")
+                    } else {
+                        Text(text = "No image yet.")
                     }
                 }
             }
@@ -129,7 +153,7 @@ fun PatientDialog(
                         }
                     }
                     IconButton(onClick = {
-                        //verificar se tem diferença em usar um deles, se sim, deletar o defeituoso
+                        //verificar se tem diferença em usar um deles(delete), se sim, deletar o defeituoso
                         //onEvent(PatientDataEvent.DeletePatientDataById(state.id))
                         onEvent(PatientDataEvent.DeletePatientData)
                     }) {
