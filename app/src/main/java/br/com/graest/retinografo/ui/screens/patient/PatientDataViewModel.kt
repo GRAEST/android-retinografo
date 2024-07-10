@@ -1,14 +1,10 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
-import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.data.model.PatientData
-import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
-import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

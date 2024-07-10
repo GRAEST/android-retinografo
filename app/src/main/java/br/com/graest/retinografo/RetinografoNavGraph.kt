@@ -103,6 +103,7 @@ fun RetinografoNavGraph(
             PatientCameraComposable(
                 applicationContext = applicationContext,
                 controller = controller,
+                navController = navController,
                 viewModel = patientViewModel
             )
         }

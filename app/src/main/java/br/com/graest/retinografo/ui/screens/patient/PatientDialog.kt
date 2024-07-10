@@ -68,7 +68,6 @@ fun PatientDialog(
                             .fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
-
                 }
 
                 TextField(
