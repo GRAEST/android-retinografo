@@ -37,7 +37,7 @@ fun RetinografoNavGraph(
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
-    examDataState: ExamDataState
+    examDataState: ExamDataState,
 
 ) {
     NavHost(
@@ -95,16 +95,15 @@ fun RetinografoNavGraph(
             PatientScreen(
                 state = patientDataState,
                 onEvent = patientViewModel::onEvent,
-                onLaunchCamera = { navController.navigate("PatientCamera")}
+                onLaunchCamera = { navController.navigate("PatientCamera") },
+                viewModel = patientViewModel
             )
         }
         composable("PatientCamera") {
             PatientCameraComposable(
                 applicationContext = applicationContext,
                 controller = controller,
-                onPhotoTaken = {
-
-                }
+                viewModel = patientViewModel
             )
         }
         composable("UserData") {

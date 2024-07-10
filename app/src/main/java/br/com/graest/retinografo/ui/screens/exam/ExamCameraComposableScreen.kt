@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
-import kotlin.reflect.KFunction1
 
 @Composable
 fun ExamCameraComposableScreen(

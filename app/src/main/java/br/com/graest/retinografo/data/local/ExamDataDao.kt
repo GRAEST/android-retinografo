@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExamDataDao {
+    //ver se da para diminuir esse nome gigantesco antes de ExamData
     @Insert
     suspend fun insertExam(image: br.com.graest.retinografo.data.model.ExamData): Long
 

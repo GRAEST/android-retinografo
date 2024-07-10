@@ -31,11 +31,12 @@ import br.com.graest.retinografo.R
 fun PatientScreen(
     state: PatientDataState,
     onEvent: (PatientDataEvent) -> Unit,
-    onLaunchCamera: () -> Unit
+    onLaunchCamera: () -> Unit,
+    viewModel: PatientDataViewModel
 ) {
 
     if (state.isAddingPatientData || state.isEditingPatientData) {
-        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera)
+        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera, viewModel = viewModel)
     }
 
     LazyColumn(

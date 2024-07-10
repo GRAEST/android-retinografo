@@ -7,5 +7,5 @@ import br.com.graest.retinografo.data.model.PatientData
 data class ExamDataState(
     val examsData: List<ExamData?> = emptyList(),
     val id: Int = 0,
-    @ColumnInfo(name = "image_data") val image: ByteArray = ByteArray(1)
+    val image: ByteArray = ByteArray(1)
 )

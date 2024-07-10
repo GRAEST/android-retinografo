@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,9 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 
 @Composable
 fun PatientDialog(
@@ -27,7 +32,10 @@ fun PatientDialog(
     onEvent: (PatientDataEvent) -> Unit,
     onLaunchCamera: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: PatientDataViewModel
 ) {
+    val capturedImagePath = viewModel.capturedImagePath.collectAsState()
+
     AlertDialog(
         modifier = modifier,
         title = {
@@ -42,6 +50,13 @@ fun PatientDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                if (capturedImagePath.value != null) {
+                    val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
+                    Image(bitmap = bitmap.asImageBitmap(), contentDescription = "Captured Image")
+                } else {
+                    Text(text = "No image captured yet.")
+                }
+
                 TextField(
                     value = state.name,
                     onValueChange = {

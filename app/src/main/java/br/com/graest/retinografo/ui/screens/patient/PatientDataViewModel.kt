@@ -1,13 +1,19 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
+import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,6 +33,12 @@ class PatientDataViewModel(
             patientsData = patientsData
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
+
+    private val _capturedImagePath = MutableStateFlow<String?>(null)
+    val capturedImagePath: StateFlow<String?> = _capturedImagePath.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     fun onEvent(event: PatientDataEvent) {
         when (event) {
@@ -131,5 +143,24 @@ class PatientDataViewModel(
 
             else -> {}
         }
+    }
+
+    fun setCapturedImagePath(path: String?) {
+        _capturedImagePath.value = path
+    }
+
+    fun setErrorMessage(message: String?) {
+        _errorMessage.value = message
+    }
+
+    fun onTakePhoto(bitmap: Bitmap) {
+
+//        viewModelScope.launch {
+//            val image = ExamData(image = bitmapToByteArray(bitmap))
+//            //examDataDao.insertExam(image)
+//            patientDataDao.insertImage(image)
+//            // Update the _bitmaps state flow
+//            //_bitmaps.value = _bitmaps.value + bitmap
+//        }
     }
 }

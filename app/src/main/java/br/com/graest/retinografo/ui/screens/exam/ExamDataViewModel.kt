@@ -10,6 +10,7 @@ import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -21,7 +22,6 @@ class ExamDataViewModel(
 
     private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
     val bitmaps = _bitmaps.asStateFlow()
-
 
     init {
         viewModelScope.launch {
@@ -46,6 +46,8 @@ class ExamDataViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 
 
+    //tem que melhorar bastante essa parte aqui,
+    //mas digo que isso vai funcionar melhor quando o exame completo for implementado
     fun onEvent(event: ExamDataEvent) {
         when (event) {
             ExamDataEvent.DeleteExamData -> {
