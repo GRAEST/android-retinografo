@@ -1,6 +1,5 @@
 package br.com.graest.retinografo.ui.screens.patient
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -76,6 +75,7 @@ class PatientDataViewModel(
                     }
                 }
             }
+
             PatientDataEvent.ClickEditImage -> {
                 _patientDataState.update {
                     it.copy(
@@ -133,6 +133,7 @@ class PatientDataViewModel(
                 )
                 viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)
+                    //por algum motivo esse hide dialog não funciona da forma que deveria, ainda mais aqui
                     onEvent(PatientDataEvent.HideDialog)
                 }
 
@@ -153,6 +154,7 @@ class PatientDataViewModel(
                     )
                 }
             }
+
             else -> {}
         }
     }
