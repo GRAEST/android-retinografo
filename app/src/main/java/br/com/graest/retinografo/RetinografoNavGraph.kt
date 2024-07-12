@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -73,6 +74,10 @@ fun RetinografoNavGraph(
         composable("Camera") {
 
             ExamCameraComposableScreen(
+                patientDataState = patientDataState,
+                examDataState = examDataState,
+                examDataViewModel = examDataViewModel,
+                onEvent = examDataViewModel::onEvent,
                 applicationContext = applicationContext,
                 controller = controller,
                 onPhotoTaken = examDataViewModel::onTakePhoto

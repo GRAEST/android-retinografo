@@ -3,8 +3,10 @@ package br.com.graest.retinografo.ui.screens.exam
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
+import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ExamDataViewModel(
@@ -71,6 +74,22 @@ class ExamDataViewModel(
                     //examDataDao.insertExam(event.image)
                 }
             }
+            ExamDataEvent.ShowDialog -> {
+                _examDataState.update {
+                    it.copy(
+                        showDialog = true
+                    )
+                }
+            }
+            ExamDataEvent.HideDialog -> {
+                _examDataState.update {
+                    it.copy(
+                        showDialog = false
+                    )
+                }
+            }
+
+
             else ->  { }
         }
     }

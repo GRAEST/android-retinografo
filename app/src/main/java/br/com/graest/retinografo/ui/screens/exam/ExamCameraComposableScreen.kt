@@ -38,17 +38,31 @@ import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.ui.components.CameraViewScreen
+import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
 import br.com.graest.retinografo.utils.ShapeUtils
 
 @Composable
 fun ExamCameraComposableScreen(
+    patientDataState: PatientDataState,
+    examDataState: ExamDataState,
+    examDataViewModel: ExamDataViewModel,
+    onEvent: (ExamDataEvent) -> Unit,
     applicationContext: Context,
     controller: LifecycleCameraController,
     onPhotoTaken: (Bitmap) -> Unit
 ) {
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    }
+
+    if(examDataState.showDialog) {
+        ExamDialog(
+            patientDataState = patientDataState,
+            examDataState = examDataState,
+            examDataViewModel = examDataViewModel,
+            onEvent = onEvent
+        )
     }
 
     Box(
@@ -72,7 +86,9 @@ fun ExamCameraComposableScreen(
                 .padding(15.dp)
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    onEvent(ExamDataEvent.ShowDialog)
+                },
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),

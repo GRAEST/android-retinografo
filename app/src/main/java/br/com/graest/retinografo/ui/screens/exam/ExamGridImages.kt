@@ -30,7 +30,6 @@ fun VerticalGridImages(
         }
     }
 
-
     if (bitmaps.isEmpty()) {
         Box(
             modifier = Modifier.padding(16.dp),

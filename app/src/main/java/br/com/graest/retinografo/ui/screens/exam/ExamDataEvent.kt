@@ -8,4 +8,6 @@ sealed interface ExamDataEvent {
     data class SetExamImage(val image: ByteArray) : ExamDataEvent
     data class DeleteExamDataById(val id: Int) : ExamDataEvent
     object DeleteExamData : ExamDataEvent
+    object ShowDialog: ExamDataEvent
+    object HideDialog: ExamDataEvent
 }
