@@ -88,8 +88,6 @@ fun ExamDialog(
             onEvent(ExamDataEvent.HideDialog)
         },
         confirmButton = {
-            LazyColumn {
-
-            }
+            //not using a button because it could get inaccessible as the patient number grows
         })
 }

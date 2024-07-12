@@ -13,5 +13,5 @@ data class PatientData(
     val age: Int = 0,
     val image: ByteArray = ByteArray(1),
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val patientId: Int = 0
 )

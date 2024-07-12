@@ -42,11 +42,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
+import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
-import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
+import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
 import br.com.graest.retinografo.utils.ShapeUtils
 
 @Composable
@@ -57,6 +58,7 @@ fun ExamCameraComposableScreen(
     onEvent: (ExamDataEvent) -> Unit,
     applicationContext: Context,
     controller: LifecycleCameraController,
+    navController: NavController,
     onPhotoTaken: (Bitmap) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -71,7 +73,7 @@ fun ExamCameraComposableScreen(
                     .background(Color.Red, shape = RoundedCornerShape(8.dp))
                     .padding(16.dp)
             ) {
-                Text( 
+                Text(
                     text = "First Select a Patient!",
                     color = Color.White,
                     fontWeight = FontWeight(800)
@@ -231,12 +233,21 @@ fun ExamCameraComposableScreen(
 
             IconButton(
                 onClick = {
-                    if(examDataState.patientSelected){
-                        takePhoto(
-                            applicationContext = applicationContext,
+                    if (examDataState.patientSelected) {
+                        captureImage(
+                            context = applicationContext,
                             controller = controller,
-                            onPhotoTaken = onPhotoTaken
+                            navController = navController,
+                            onImageCaptured = { file ->
+                                examDataViewModel.addImagePath(file.absolutePath)
+                                examDataViewModel.setErrorMessage(null)
+                                //começar contagem e dar algum sinal de tela carregando
+                            },
+                            onError = { error ->
+                                examDataViewModel.setErrorMessage(error.message)
+                            }
                         )
+
                     } else {
                         //Toast.makeText(applicationContext, "First Select a Patient!", Toast.LENGTH_SHORT).show()
                         onEvent(ExamDataEvent.OnShowToast)

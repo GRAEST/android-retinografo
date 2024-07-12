@@ -100,7 +100,7 @@ fun PatientScreen(
                 }
                 IconButton(onClick = {
                     if (patientData != null) {
-                        onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.id))
+                        onEvent(PatientDataEvent.ShowEditPatientDialog(patientData.patientId))
                     }
                 }) {
                     Icon(

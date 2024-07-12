@@ -117,7 +117,7 @@ class PatientDataViewModel(
                 * então algumas vezes você tenta abrir um "criar Paciente"
                 * e depois de criado o paciente, volta a abrir a tela de Edit
                 * */
-                val id = patientDataState.value.id //id é necessário para caso de EDIT
+                val patientId = patientDataState.value.id //id é necessário para caso de EDIT
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
                 val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
@@ -126,7 +126,7 @@ class PatientDataViewModel(
                     return
                 }
                 val patientData = PatientData(
-                    id = id,
+                    patientId = patientId,
                     age = age.toInt(),
                     name = name,
                     image = bitmapToByteArray(bitmap)
