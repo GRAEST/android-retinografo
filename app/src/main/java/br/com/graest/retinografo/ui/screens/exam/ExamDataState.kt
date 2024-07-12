@@ -8,5 +8,8 @@ data class ExamDataState(
     val examsData: List<ExamData?> = emptyList(),
     val id: Int = 0,
     val image: ByteArray = ByteArray(1),
-    val showDialog: Boolean = false
+    val showDialog: Boolean = false,
+    val showToast: Boolean = false,
+    val patientSelected: Boolean = false,
+    val patientData: PatientData? = null,
 )

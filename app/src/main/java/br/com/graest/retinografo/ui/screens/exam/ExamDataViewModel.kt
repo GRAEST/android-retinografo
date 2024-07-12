@@ -10,6 +10,8 @@ import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -86,6 +88,33 @@ class ExamDataViewModel(
                     it.copy(
                         showDialog = false
                     )
+                }
+            }
+            is ExamDataEvent.PatientSelected -> {
+                _examDataState.update {
+                    it.copy(
+                        patientData = event.patientData,
+                        patientSelected = true
+                    )
+                }
+            }
+            ExamDataEvent.NoPatientSelected -> {
+                _examDataState.update {
+                    it.copy(
+                        patientData = null,
+                        patientSelected = false
+                    )
+                }
+            }
+            ExamDataEvent.OnShowToast -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(showToast = true)
+                    }
+                    delay(2000)
+                    _examDataState.update {
+                        it.copy(showToast = false)
+                    }
                 }
             }
 
