@@ -63,6 +63,7 @@ class ExamDataViewModel(
                         imagePath2 = saveImageToFile(event.context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
                         imagePath3 = saveImageToFile(event.context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
                         imagePath4 = saveImageToFile(event.context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
+                        examLocation = "Manaus", //ainda vou adicionar o sistema de localizacao
                         patientId = it
                     )
                 }

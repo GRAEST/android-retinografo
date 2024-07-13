@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     tableName = "exam_data",
@@ -21,6 +22,8 @@ data class ExamData (
     val imagePath2: String,
     val imagePath3: String,
     val imagePath4: String,
+    val examTime: Long = System.currentTimeMillis(),
+    val examLocation: String,
     val patientId: Int,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
