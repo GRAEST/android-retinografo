@@ -9,6 +9,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import java.io.File

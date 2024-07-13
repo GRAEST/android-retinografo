@@ -12,5 +12,7 @@ sealed interface ExamDataEvent {
     data object HideDialog: ExamDataEvent
     data class PatientSelected(val patientData: PatientData): ExamDataEvent
     data object NoPatientSelected: ExamDataEvent
-    data object OnShowToast: ExamDataEvent
+    data object OnShowToastRed: ExamDataEvent
+    data object OnShowToastGreen: ExamDataEvent
+    data object OnCancelExam: ExamDataEvent
 }

@@ -1,7 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -44,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.ui.components.CameraViewScreen
@@ -70,7 +68,7 @@ fun ExamCameraComposableScreen(
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     }
 
-    if (examDataState.showToast) {
+    if (examDataState.showToastRed) {
         Popup(alignment = Alignment.TopCenter) {
             Box(
                 modifier = Modifier
@@ -80,6 +78,22 @@ fun ExamCameraComposableScreen(
             ) {
                 Text(
                     text = "First Select a Patient!",
+                    color = Color.White,
+                    fontWeight = FontWeight(800)
+                )
+            }
+        }
+    }
+    if (examDataState.showToastGreen) {
+        Popup(alignment = Alignment.TopCenter) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .background(Color.Green, shape = RoundedCornerShape(8.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Exam Saved!",
                     color = Color.White,
                     fontWeight = FontWeight(800)
                 )
@@ -206,6 +220,7 @@ fun ExamCameraComposableScreen(
                 IconButton(
                     onClick = {
                         onEvent(ExamDataEvent.NoPatientSelected)
+                        onEvent(ExamDataEvent.OnCancelExam)
                     },
                     colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
                 ) {
@@ -235,7 +250,8 @@ fun ExamCameraComposableScreen(
         ) {
 
             Text(
-                text = "${capturedImagePaths.size}"
+                text = "${capturedImagePaths.size}",
+                color = Color.White
             )
 
             IconButton(
@@ -246,7 +262,9 @@ fun ExamCameraComposableScreen(
                             controller = controller,
                             navController = navController,
                             onImageCaptured = { file ->
-                                examDataViewModel.addImagePath(file.absolutePath)
+                                examDataViewModel.addImagePath(
+                                    path = file.absolutePath
+                                )
                                 examDataViewModel.setErrorMessage(null)
                                 //começar contagem e dar algum sinal de tela carregando
                             },
@@ -257,7 +275,7 @@ fun ExamCameraComposableScreen(
 
                     } else {
                         //Toast.makeText(applicationContext, "First Select a Patient!", Toast.LENGTH_SHORT).show()
-                        onEvent(ExamDataEvent.OnShowToast)
+                        onEvent(ExamDataEvent.OnShowToastRed)
                     }
                 }
             ) {
@@ -268,10 +286,15 @@ fun ExamCameraComposableScreen(
                 )
             }
             Text(
-                text = "${capturedImagePaths.size}"
-                //isso junto com um when consegue o comportamento do figma
+                text = "${capturedImagePaths.size}",
+                color = Color.White
+                //isso junto com um when consegue o comportamento do figma (D-1) (D-2) (E-1) (E-2)
             )
         }
+    }
+    if (capturedImagePaths.size == 4) {
+        onEvent(ExamDataEvent.SaveExamData)
+        onEvent(ExamDataEvent.OnCancelExam)
     }
 }
 

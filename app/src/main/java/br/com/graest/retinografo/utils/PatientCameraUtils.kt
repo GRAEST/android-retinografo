@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Environment
 import androidx.camera.view.LifecycleCameraController
 import androidx.navigation.NavController
+import br.com.graest.retinografo.getCurrentRoute
 import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
 import java.io.File
 import java.io.FileOutputStream
@@ -19,11 +20,15 @@ object PatientCameraUtils {
         onImageCaptured: (File) -> Unit,
         onError: (Exception) -> Unit
     ) {
+        val currentRoute = navController.currentDestination?.route
+
         takePhoto(context, controller) { bitmap ->
             val tempFile = createTempImageFile(context)
             if (saveBitmapToFile(bitmap, tempFile)) {
                 onImageCaptured(tempFile)
-                navController.popBackStack()
+                if (currentRoute == "PatientCamera") {
+                    navController.popBackStack()
+                }
             } else {
                 onError(IOException("Failed to save image to file"))
             }

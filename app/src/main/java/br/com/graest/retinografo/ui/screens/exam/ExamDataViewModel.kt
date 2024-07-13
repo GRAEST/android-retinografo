@@ -1,17 +1,11 @@
 package br.com.graest.retinografo.ui.screens.exam
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
-import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
-import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +37,7 @@ class ExamDataViewModel(
 //    }
 
 
-    private val _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
+    private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
     val capturedImagePaths: StateFlow<List<String>> = _capturedImagePaths.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -91,6 +85,7 @@ class ExamDataViewModel(
                     viewModelScope.launch {
                         examDataDao.insertExam(examData)
                     }
+                    onEvent(ExamDataEvent.OnShowToastGreen)
                 }
 
             }
@@ -131,17 +126,32 @@ class ExamDataViewModel(
                     )
                 }
             }
-            ExamDataEvent.OnShowToast -> {
+            ExamDataEvent.OnShowToastRed -> {
                 viewModelScope.launch {
                     _examDataState.update {
-                        it.copy(showToast = true)
+                        it.copy(showToastRed = true)
                     }
                     delay(2000)
                     _examDataState.update {
-                        it.copy(showToast = false)
+                        it.copy(showToastRed = false)
                     }
                 }
             }
+            ExamDataEvent.OnShowToastGreen -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(showToastGreen = true)
+                    }
+                    delay(2000)
+                    _examDataState.update {
+                        it.copy(showToastGreen = false)
+                    }
+                }
+            }
+            ExamDataEvent.OnCancelExam -> {
+                _capturedImagePaths.value = emptyList()
+            }
+
 
         }
     }
@@ -156,12 +166,9 @@ class ExamDataViewModel(
 //    }
 
     fun addImagePath(path: String) {
-        _capturedImagePaths.value = if (_capturedImagePaths.value.size < 4) {
-            _capturedImagePaths.value + path
-        } else {
-            _capturedImagePaths.value
+        if (_capturedImagePaths.value.size < 4) {
+            _capturedImagePaths.value += path
         }
-        //vou precisar de uma
     }
 
     fun setErrorMessage(message: String?) {

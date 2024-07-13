@@ -50,7 +50,7 @@ fun RetinografoNavGraph(
 
         composable("LogInScreen") {
             LoginScreen(
-                onClickLogIn = { navController.navigate("Camera") }
+                onClickLogIn = { navController.navigate("ExamCamera") }
             )
         }
 
@@ -66,7 +66,7 @@ fun RetinografoNavGraph(
             )
         }
 
-        composable("Camera") {
+        composable("ExamCamera") {
             ExamCameraComposableScreen(
                 patientDataState = patientDataState,
                 examDataState = examDataState,

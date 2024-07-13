@@ -12,7 +12,8 @@ data class ExamDataState(
     val image3: ByteArray = ByteArray(1),
     val image4: ByteArray = ByteArray(1),
     val showDialog: Boolean = false,
-    val showToast: Boolean = false,
+    val showToastRed: Boolean = false,
+    val showToastGreen: Boolean = false,
     val patientSelected: Boolean = false,
     val patientData: PatientData? = null,
 )
