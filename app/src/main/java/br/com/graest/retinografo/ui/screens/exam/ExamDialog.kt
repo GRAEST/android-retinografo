@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,44 +37,53 @@ fun ExamDialog(
             Text(text = "Add Patient")
         },
         text = {
-            LazyColumn {
-                items(patientDataState.patientsData) { patientData ->
-                    if (patientData != null) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(10.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(4f)
-                            ) {
-                                Text(
-                                    text = patientData.name,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight(700)
-                                )
-                                Text(
-                                    text = "${patientData.age.toString()} years old",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight(500)
-                                )
-                            }
-                            Spacer(
+            if (patientDataState.patientsData.isEmpty()) {
+                Box(
+                    modifier = Modifier.padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("There are no patients registered yet")
+                }
+            } else {
+                LazyColumn {
+                    items(patientDataState.patientsData) { patientData ->
+                        if (patientData != null) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(10.dp)
-                            )
-                            IconButton(
-                                onClick = {
-                                    onEvent(ExamDataEvent.PatientSelected(patientData))
-                                    onEvent(ExamDataEvent.HideDialog)
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(Color.Gray),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
+                                Column(
+                                    modifier = Modifier.weight(4f)
+                                ) {
+                                    Text(
+                                        text = patientData.name,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight(700)
+                                    )
+                                    Text(
+                                        text = "${patientData.age.toString()} years old",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight(500)
+                                    )
+                                }
+                                Spacer(
+                                    modifier = Modifier.padding(10.dp)
                                 )
+                                IconButton(
+                                    onClick = {
+                                        onEvent(ExamDataEvent.PatientSelected(patientData))
+                                        onEvent(ExamDataEvent.HideDialog)
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(Color.Gray),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add",
+                                    )
+                                }
                             }
                         }
                     }

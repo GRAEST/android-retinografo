@@ -78,7 +78,7 @@ fun RetinografoNavGraph(
             )
 
         }
-        composable("Images") {
+        composable("Exams") {
 
             ExamGridImages(examDataState)
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.graest.retinografo.data.NavigationItem
+import br.com.graest.retinografo.getCurrentRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -30,9 +31,9 @@ fun DrawerContentExpanded(
     drawerState: DrawerState,
     navController: NavController
 ) {
+    val currentRoute = getCurrentRoute(navController)
 
     ModalDrawerSheet {
-
         Spacer(modifier = Modifier.height(16.dp))
         items.forEachIndexed { index, item ->
             NavigationDrawerItem(
@@ -41,10 +42,12 @@ fun DrawerContentExpanded(
                 },
                 selected = index == selectedItemIndex,
                 onClick = {
-                    onSelectedItemChange(index)
-                    navController.navigate(item.route)
-                    scope.launch {
-                        drawerState.close()
+                    if (currentRoute != item.route) {
+                        onSelectedItemChange(index)
+                        navController.navigate(item.route)
+                        scope.launch {
+                            drawerState.close()
+                        }
                     }
                 },
                 icon = {

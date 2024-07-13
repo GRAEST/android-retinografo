@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,13 +34,6 @@ fun ExamGridImages(
     state: ExamDataState,
 ) {
 
-
-//    state.examsData.forEach { examData ->
-//        examData?.image?.let { imageByteArray ->
-//            bitmaps.add(byteArrayToBitmap(imageByteArray))
-//        }
-//    }
-
     if (state.examsData.isEmpty()) {
         Box(
             modifier = Modifier.padding(16.dp),
@@ -54,7 +48,8 @@ fun ExamGridImages(
         ) {
             items(state.examsData) { examData ->
                 Row(
-
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     if (examData != null) {
                         val bitmap = BitmapFactory.decodeFile(examData.imagePath1)
@@ -65,13 +60,18 @@ fun ExamGridImages(
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                                 .aspectRatio(1f)
-                                .fillMaxWidth(),
+                                .weight(1f)
+                            ,
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Text(
-                        text = "Name "
-                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    if (examData != null) {
+                        Text(
+                            text = examData.patientId.toString(),
+                            modifier = Modifier.weight(4f)
+                        )
+                    }
                 }
             }
         }

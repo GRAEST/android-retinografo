@@ -7,7 +7,6 @@ import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 
 sealed interface ExamDataEvent {
     data class SaveExamData(val context: Context) : ExamDataEvent
-    data class SetExamImage(val image: ByteArray) : ExamDataEvent
     data class DeleteExamDataById(val id: Int) : ExamDataEvent
     data object ShowDialog: ExamDataEvent
     data object HideDialog: ExamDataEvent

@@ -22,7 +22,6 @@ class ExamDataViewModel(
     private val examDataDao: ExamDataDao
 ) : ViewModel() {
 
-
     private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
     val capturedImagePaths: StateFlow<List<String>> = _capturedImagePaths.asStateFlow()
 
@@ -39,9 +38,6 @@ class ExamDataViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 
-
-    //tem que melhorar bastante essa parte aqui,
-    //mas digo que isso vai funcionar melhor quando o exame completo for implementado
 
     fun onEvent(event: ExamDataEvent) {
         when (event) {
@@ -72,15 +68,8 @@ class ExamDataViewModel(
                     viewModelScope.launch {
                         examDataDao.insertExam(examData)
                     }
-                    onEvent(ExamDataEvent.OnShowToastGreen)
                 }
 
-            }
-
-            is ExamDataEvent.SetExamImage -> {
-                viewModelScope.launch {
-                    //examDataDao.insertExam(event.image)
-                }
             }
 
             ExamDataEvent.ShowDialog -> {
@@ -136,10 +125,9 @@ class ExamDataViewModel(
                 }
             }
             ExamDataEvent.OnCancelExam -> {
-                _capturedImagePaths.value = emptyList()
+                cleanupPath()
+                cleanupTemporaryImages()
             }
-
-
         }
     }
 
@@ -149,11 +137,15 @@ class ExamDataViewModel(
         }
     }
 
+    private fun cleanupPath() {
+        _capturedImagePaths.value = emptyList()
+    }
+
     fun setErrorMessage(message: String?) {
         _errorMessage.value = message
     }
 
-    fun cleanupTemporaryImages() {
+    private fun cleanupTemporaryImages() {
         capturedImagePaths.value.forEach { path ->
             File(path).delete()
         }

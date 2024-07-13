@@ -138,7 +138,7 @@ fun PatientDialog(
                     Button(onClick = {
                         onEvent(PatientDataEvent.SavePatientData)
                     }) {
-                        Text(text = "Add")
+                        Text(text = "Save")
                     }
                 }
             }
