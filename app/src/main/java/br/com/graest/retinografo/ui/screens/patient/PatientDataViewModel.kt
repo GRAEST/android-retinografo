@@ -39,20 +39,6 @@ class PatientDataViewModel(
 
     fun onEvent(event: PatientDataEvent) {
         when (event) {
-            // Estamos com 2 Deletes, um deles pode ir embora
-            PatientDataEvent.DeletePatientData -> {
-
-                val patientData = PatientData(
-                    patientDataState.value.name,
-                    patientDataState.value.age.toInt(),
-                    patientDataState.value.image,
-                    patientDataState.value.id
-                )
-
-                viewModelScope.launch {
-                    patientDataDao.deletePatientData(patientData)
-                }
-            }
 
             is PatientDataEvent.DeletePatientDataById -> {
                 viewModelScope.launch {

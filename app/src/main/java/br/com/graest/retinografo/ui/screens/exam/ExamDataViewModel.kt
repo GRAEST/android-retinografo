@@ -1,6 +1,7 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.util.copy
@@ -61,37 +62,45 @@ class ExamDataViewModel(
 
     //tem que melhorar bastante essa parte aqui,
     //mas digo que isso vai funcionar melhor quando o exame completo for implementado
+
     fun onEvent(event: ExamDataEvent) {
         when (event) {
-            ExamDataEvent.DeleteExamData -> {
-                val examData = examDataState.value.patientData?.let {
-                    ExamData(
-                        image1 = examDataState.value.image1,
-                        image2 = examDataState.value.image2,
-                        image3 = examDataState.value.image3,
-                        image4 = examDataState.value.image4,
-                        patientId = it.patientId
-                    )
-                }
-                viewModelScope.launch {
-                    if (examData != null) {
-                        examDataDao.deleteExamData(examData)
-                    }
-                }
-            }
             is ExamDataEvent.DeleteExamDataById -> {
                 viewModelScope.launch {
                     examDataDao.deleteExamById(event.id)
                 }
             }
+
             ExamDataEvent.SaveExamData -> {
+                val image1 = BitmapFactory.decodeFile(capturedImagePaths.value[0])
+                val image2 = BitmapFactory.decodeFile(capturedImagePaths.value[1])
+                val image3 = BitmapFactory.decodeFile(capturedImagePaths.value[2])
+                val image4 = BitmapFactory.decodeFile(capturedImagePaths.value[3])
+                val patientId = examDataState.value.patientData?.patientId
+
+                val examData= patientId?.let {
+                    ExamData(
+                        image1 = bitmapToByteArray(image1),
+                        image2 = bitmapToByteArray(image2),
+                        image3 = bitmapToByteArray(image3),
+                        image4 = bitmapToByteArray(image4),
+                        patientId = it
+                    )
+                }
+                if (examData != null) {
+                    viewModelScope.launch {
+                        examDataDao.insertExam(examData)
+                    }
+                }
 
             }
+
             is ExamDataEvent.SetExamImage -> {
                 viewModelScope.launch {
                     //examDataDao.insertExam(event.image)
                 }
             }
+
             ExamDataEvent.ShowDialog -> {
                 _examDataState.update {
                     it.copy(
@@ -134,8 +143,6 @@ class ExamDataViewModel(
                 }
             }
 
-
-            else ->  { }
         }
     }
 
@@ -149,7 +156,12 @@ class ExamDataViewModel(
 //    }
 
     fun addImagePath(path: String) {
-        _capturedImagePaths.value = _capturedImagePaths.value + path
+        _capturedImagePaths.value = if (_capturedImagePaths.value.size < 4) {
+            _capturedImagePaths.value + path
+        } else {
+            _capturedImagePaths.value
+        }
+        //vou precisar de uma
     }
 
     fun setErrorMessage(message: String?) {

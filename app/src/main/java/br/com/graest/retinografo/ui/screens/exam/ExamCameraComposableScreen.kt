@@ -28,6 +28,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.ui.components.CameraViewScreen
@@ -58,9 +61,11 @@ fun ExamCameraComposableScreen(
     onEvent: (ExamDataEvent) -> Unit,
     applicationContext: Context,
     controller: LifecycleCameraController,
-    navController: NavController,
-    onPhotoTaken: (Bitmap) -> Unit
+    navController: NavController
 ) {
+
+    val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
+
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     }
@@ -85,8 +90,6 @@ fun ExamCameraComposableScreen(
     if (examDataState.showDialog) {
         ExamDialog(
             patientDataState = patientDataState,
-            examDataState = examDataState,
-            examDataViewModel = examDataViewModel,
             onEvent = onEvent
         )
     }
@@ -231,6 +234,10 @@ fun ExamCameraComposableScreen(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
 
+            Text(
+                text = "${capturedImagePaths.size}"
+            )
+
             IconButton(
                 onClick = {
                     if (examDataState.patientSelected) {
@@ -260,6 +267,10 @@ fun ExamCameraComposableScreen(
                     contentDescription = "Take Photo"
                 )
             }
+            Text(
+                text = "${capturedImagePaths.size}"
+                //isso junto com um when consegue o comportamento do figma
+            )
         }
     }
 }

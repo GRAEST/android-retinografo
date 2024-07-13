@@ -1,7 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,7 +13,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,8 +26,6 @@ import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 @Composable
 fun ExamDialog(
     patientDataState: PatientDataState,
-    examDataState: ExamDataState,
-    examDataViewModel: ExamDataViewModel,
     onEvent: (ExamDataEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {

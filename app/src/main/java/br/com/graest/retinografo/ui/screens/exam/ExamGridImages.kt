@@ -22,7 +22,7 @@ import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 
 @Composable
-fun VerticalGridImages(
+fun ExamGridImages(
     state: ExamDataState,
 ) {
 

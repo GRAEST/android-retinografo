@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-                val bitmaps by examViewModel.bitmaps.collectAsState()
+                //val bitmaps by examViewModel.bitmaps.collectAsState()
 
                 val bitmapSelectedIndex by rememberSaveable {
                     mutableIntStateOf(0)
@@ -138,8 +138,6 @@ class MainActivity : ComponentActivity() {
                         navController,
                         controller,
                         applicationContext,
-                        bitmaps,
-                        bitmapSelectedIndex,
                         patientViewModel,
                         patientDataState,
                         examViewModel,

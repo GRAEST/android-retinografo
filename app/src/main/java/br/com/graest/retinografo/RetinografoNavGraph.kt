@@ -1,11 +1,9 @@
 package br.com.graest.retinografo
 
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,8 +14,7 @@ import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.exam.ExamCameraComposableScreen
 import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
-import br.com.graest.retinografo.ui.screens.exam.ImageDetailsScreen
-import br.com.graest.retinografo.ui.screens.exam.VerticalGridImages
+import br.com.graest.retinografo.ui.screens.exam.ExamGridImages
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
@@ -33,14 +30,12 @@ fun RetinografoNavGraph(
     navController: NavHostController = rememberNavController(),
     controller: LifecycleCameraController,
     applicationContext : Context,
-    bitmaps: List<Bitmap>,
-    bitmapSelectedIndex: Int,
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
     examDataState: ExamDataState,
 
-) {
+    ) {
     NavHost(
         navController = navController,
         startDestination = "InitialScreen"
@@ -72,7 +67,6 @@ fun RetinografoNavGraph(
         }
 
         composable("Camera") {
-
             ExamCameraComposableScreen(
                 patientDataState = patientDataState,
                 examDataState = examDataState,
@@ -80,21 +74,21 @@ fun RetinografoNavGraph(
                 onEvent = examDataViewModel::onEvent,
                 applicationContext = applicationContext,
                 controller = controller,
-                onPhotoTaken = examDataViewModel::onTakePhoto
+                navController = navController
             )
 
         }
         composable("Images") {
 
-            VerticalGridImages(examDataState)
+            ExamGridImages(examDataState)
 
         }
-        composable("ImageDetails") {
-            ImageDetailsScreen(
-                bitmaps = bitmaps,
-                bitmapSelectedIndex
-            )
-        }
+//        composable("ImageDetails") {
+//            ImageDetailsScreen(
+//                bitmaps = bitmaps,
+//                bitmapSelectedIndex
+//            )
+//        }
         composable("Patient") {
 
             PatientScreen(
