@@ -17,10 +17,10 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["patientId"])]
 )
 data class ExamData (
-    val image1: ByteArray,
-    val image2: ByteArray,
-    val image3: ByteArray,
-    val image4: ByteArray,
+    val imagePath1: String,
+    val imagePath2: String,
+    val imagePath3: String,
+    val imagePath4: String,
     val patientId: Int,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

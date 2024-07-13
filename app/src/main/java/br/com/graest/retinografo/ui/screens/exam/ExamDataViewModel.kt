@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
-import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import br.com.graest.retinografo.utils.ExamCameraUtils.saveImageToFile
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,26 +15,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+
 
 class ExamDataViewModel(
     private val examDataDao: ExamDataDao
 ) : ViewModel() {
-
-//    private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
-//    val bitmaps = _bitmaps.asStateFlow()
-//
-//
-//    init {
-//        viewModelScope.launch {
-//            examDataDao.getExamData()
-//                .collect { entities ->
-//                    val loadedBitmaps = entities.map { entity ->
-//                        byteArrayToBitmap(entity.image)
-//                    }
-//                    _bitmaps.value = loadedBitmaps
-//                }
-//        }
-//    }
 
 
     private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
@@ -65,19 +51,20 @@ class ExamDataViewModel(
                 }
             }
 
-            ExamDataEvent.SaveExamData -> {
+            is ExamDataEvent.SaveExamData -> {
+
                 val image1 = BitmapFactory.decodeFile(capturedImagePaths.value[0])
                 val image2 = BitmapFactory.decodeFile(capturedImagePaths.value[1])
                 val image3 = BitmapFactory.decodeFile(capturedImagePaths.value[2])
                 val image4 = BitmapFactory.decodeFile(capturedImagePaths.value[3])
                 val patientId = examDataState.value.patientData?.patientId
 
-                val examData= patientId?.let {
+                val examData = patientId?.let {
                     ExamData(
-                        image1 = bitmapToByteArray(image1),
-                        image2 = bitmapToByteArray(image2),
-                        image3 = bitmapToByteArray(image3),
-                        image4 = bitmapToByteArray(image4),
+                        imagePath1 = saveImageToFile(event.context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
+                        imagePath2 = saveImageToFile(event.context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
+                        imagePath3 = saveImageToFile(event.context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
+                        imagePath4 = saveImageToFile(event.context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
                         patientId = it
                     )
                 }
@@ -156,15 +143,6 @@ class ExamDataViewModel(
         }
     }
 
-//    fun onTakePhoto(bitmap: Bitmap) {
-//        viewModelScope.launch {
-//            val image = ExamData(image = bitmapToByteArray(bitmap))
-//            examDataDao.insertExam(image)
-//            // Update the _bitmaps state flow
-//            _bitmaps.value = _bitmaps.value + bitmap
-//        }
-//    }
-
     fun addImagePath(path: String) {
         if (_capturedImagePaths.value.size < 4) {
             _capturedImagePaths.value += path
@@ -175,5 +153,10 @@ class ExamDataViewModel(
         _errorMessage.value = message
     }
 
+    fun cleanupTemporaryImages() {
+        capturedImagePaths.value.forEach { path ->
+            File(path).delete()
+        }
+    }
 
 }

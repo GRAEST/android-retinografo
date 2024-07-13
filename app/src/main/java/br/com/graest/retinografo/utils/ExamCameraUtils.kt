@@ -9,12 +9,9 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
-import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
-import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
 object ExamCameraUtils {
 
@@ -25,7 +22,7 @@ object ExamCameraUtils {
     ) {
         controller.takePicture(
             ContextCompat.getMainExecutor(applicationContext),
-            object: ImageCapture.OnImageCapturedCallback() {
+            object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
 
@@ -54,5 +51,40 @@ object ExamCameraUtils {
             }
         )
     }
+
+    //    fun saveImageToFile(context: Context, bitmap: Bitmap, fileName: String): String? {
+//        return try {
+//            val file = File(context.filesDir, fileName)
+//            FileOutputStream(file).use { out ->
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+//            }
+//            file.absolutePath
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            null
+//        }
+//    }
+    fun createImageFile(context: Context, prefix: String = "image", suffix: String = ".jpg"): File {
+        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            prefix, /* prefix */
+            suffix, /* suffix */
+            storageDir /* directory */
+        )
+    }
+    fun saveImageToFile(context: Context, bitmap: Bitmap, fileName: String): String? {
+        return try {
+            val file = createImageFile(context, prefix = fileName)
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+            file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
 
 }

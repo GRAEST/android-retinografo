@@ -1,11 +1,12 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import android.content.Context
 import android.graphics.Bitmap
 import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 
 sealed interface ExamDataEvent {
-    data object SaveExamData : ExamDataEvent
+    data class SaveExamData(val context: Context) : ExamDataEvent
     data class SetExamImage(val image: ByteArray) : ExamDataEvent
     data class DeleteExamDataById(val id: Int) : ExamDataEvent
     data object ShowDialog: ExamDataEvent

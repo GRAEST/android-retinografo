@@ -293,7 +293,9 @@ fun ExamCameraComposableScreen(
         }
     }
     if (capturedImagePaths.size == 4) {
-        onEvent(ExamDataEvent.SaveExamData)
+        onEvent(ExamDataEvent.SaveExamData(context = applicationContext))
+        examDataViewModel.cleanupTemporaryImages()
+        onEvent(ExamDataEvent.OnShowToastGreen)
         onEvent(ExamDataEvent.OnCancelExam)
     }
 }
