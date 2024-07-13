@@ -28,13 +28,15 @@ class ExamDataViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val _examsData = examDataDao.getExamData()
+    //private val _examsData = examDataDao.getExamData()
+
+    private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
     private val _examDataState = MutableStateFlow(ExamDataState())
 
-    val examDataState = combine(_examDataState, _examsData) { examDataState, examsData ->
+    val examDataState = combine(_examDataState, _examsDataWithPatient) { examDataState, examsDataWithPatient ->
         examDataState.copy(
-            examsData = examsData
+            examsDataWithPatient = examsDataWithPatient
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 

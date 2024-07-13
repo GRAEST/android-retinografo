@@ -14,7 +14,7 @@ import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.exam.ExamCameraComposableScreen
 import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
-import br.com.graest.retinografo.ui.screens.exam.ExamGridImages
+import br.com.graest.retinografo.ui.screens.exam.ExamList
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
@@ -80,7 +80,7 @@ fun RetinografoNavGraph(
         }
         composable("Exams") {
 
-            ExamGridImages(examDataState)
+            ExamList(examDataState)
 
         }
 //        composable("ImageDetails") {

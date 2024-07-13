@@ -1,6 +1,5 @@
 package br.com.graest.retinografo.ui.screens.exam
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,16 +23,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import br.com.graest.retinografo.data.model.ExamData
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 
 @Composable
-fun ExamGridImages(
-    state: ExamDataState,
+fun ExamList(
+    examState: ExamDataState,
 ) {
 
-    if (state.examsData.isEmpty()) {
+    if (examState.examsDataWithPatient.isEmpty()) {
         Box(
             modifier = Modifier.padding(16.dp),
             contentAlignment = Alignment.Center
@@ -46,13 +42,13 @@ fun ExamGridImages(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(8.dp)
         ) {
-            items(state.examsData) { examData ->
+            items(examState.examsDataWithPatient) { examDataWithPatient ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if (examData != null) {
-                        val bitmap = BitmapFactory.decodeFile(examData.imagePath1)
+                    if (examDataWithPatient != null) {
+                        val bitmap = BitmapFactory.decodeFile(examDataWithPatient.examData.imagePath1)
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured Image",
@@ -66,9 +62,9 @@ fun ExamGridImages(
                         )
                     }
                     Spacer(modifier = Modifier.padding(10.dp))
-                    if (examData != null) {
+                    if (examDataWithPatient != null) {
                         Text(
-                            text = examData.patientId.toString(),
+                            text = examDataWithPatient.patientData.name,
                             modifier = Modifier.weight(4f)
                         )
                     }
