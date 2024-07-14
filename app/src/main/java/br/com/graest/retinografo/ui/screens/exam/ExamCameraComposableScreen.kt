@@ -1,6 +1,7 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
+import android.location.Location
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -59,7 +60,8 @@ fun ExamCameraComposableScreen(
     onEvent: (ExamDataEvent) -> Unit,
     applicationContext: Context,
     controller: LifecycleCameraController,
-    navController: NavController
+    navController: NavController,
+    location: Location?,
 ) {
 
     val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
@@ -293,7 +295,7 @@ fun ExamCameraComposableScreen(
         }
     }
     if (capturedImagePaths.size == 4) {
-        onEvent(ExamDataEvent.SaveExamData(context = applicationContext))
+        onEvent(ExamDataEvent.SaveExamData(applicationContext, location))
         onEvent(ExamDataEvent.OnShowToastGreen)
         onEvent(ExamDataEvent.OnCancelExam)
     }

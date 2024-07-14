@@ -1,6 +1,9 @@
 package br.com.graest.retinografo
 
 import android.content.Context
+import android.location.Location
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +28,7 @@ import br.com.graest.retinografo.ui.screens.signup.SignUpScreenB
 import br.com.graest.retinografo.ui.screens.user.EditUserData
 import br.com.graest.retinografo.ui.screens.user.UserData
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RetinografoNavGraph(
     navController: NavHostController = rememberNavController(),
@@ -34,7 +38,7 @@ fun RetinografoNavGraph(
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
     examDataState: ExamDataState,
-
+    location: Location
     ) {
     NavHost(
         navController = navController,
@@ -74,21 +78,23 @@ fun RetinografoNavGraph(
                 onEvent = examDataViewModel::onEvent,
                 applicationContext = applicationContext,
                 controller = controller,
-                navController = navController
+                navController = navController,
+                location = location,
             )
 
         }
+
         composable("Exams") {
-
             ExamList(examDataState)
-
         }
+
 //        composable("ImageDetails") {
 //            ImageDetailsScreen(
 //                bitmaps = bitmaps,
 //                bitmapSelectedIndex
 //            )
 //        }
+
         composable("Patient") {
 
             PatientScreen(

@@ -28,8 +28,6 @@ class ExamDataViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    //private val _examsData = examDataDao.getExamData()
-
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
     private val _examDataState = MutableStateFlow(ExamDataState())
@@ -63,7 +61,7 @@ class ExamDataViewModel(
                         imagePath2 = saveImageToFile(event.context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
                         imagePath3 = saveImageToFile(event.context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
                         imagePath4 = saveImageToFile(event.context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
-                        examLocation = "Manaus", //ainda vou adicionar o sistema de localizacao
+                        examLocation = event.location.toString(),
                         patientId = it
                     )
                 }
