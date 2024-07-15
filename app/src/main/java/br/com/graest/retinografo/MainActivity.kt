@@ -35,7 +35,6 @@ import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
-import br.com.graest.retinografo.utils.LocationService
 
 
 class MainActivity : ComponentActivity() {
@@ -67,8 +66,6 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-    private lateinit var locationService: LocationService
-
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +76,6 @@ class MainActivity : ComponentActivity() {
                 this, CAMERAX_PERMISSIONS, 0
             )
         }
-
-        locationService = LocationService(this)
 
         enableEdgeToEdge()
         setContent {
