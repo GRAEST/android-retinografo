@@ -1,13 +1,12 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.location.Location
+import androidx.compose.runtime.MutableState
 import br.com.graest.retinografo.data.model.PatientData
-import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 
 sealed interface ExamDataEvent {
-    data class SaveExamData(val context: Context, val location: Location?) : ExamDataEvent
+    data class SaveExamData(val context: Context) : ExamDataEvent
     data class DeleteExamDataById(val id: Int) : ExamDataEvent
     data object ShowDialog: ExamDataEvent
     data object HideDialog: ExamDataEvent

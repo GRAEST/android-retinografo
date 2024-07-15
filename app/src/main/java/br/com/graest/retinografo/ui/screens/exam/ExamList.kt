@@ -80,6 +80,14 @@ fun ExamList(
                             )
                         }
                     }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(2f)
+                    ) {
+                        if (examDataWithPatient != null) {
+                            Text(text = examDataWithPatient.examData.examLocation)
+                        }
+                    }
                 }
             }
         }

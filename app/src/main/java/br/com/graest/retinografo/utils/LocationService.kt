@@ -1,76 +1,47 @@
 package br.com.graest.retinografo.utils
 
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.util.Log
 
 class LocationService(private val context: Context) {
 
-    private lateinit var locationManager: LocationManager
-    private lateinit var locationListener: LocationListener
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    fun getLocation(activity: Activity, onLocationReceived: (Location?) -> Unit) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        } else {
-            requestLocation(onLocationReceived)
-        }
-    }
+    fun getCurrentLocation(callback: (Location?) -> Unit) {
+        try {
+            val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-    fun onRequestPermissionsResult(
-        requestCode: Int, grantResults: IntArray, onLocationReceived: (Location?) -> Unit
-    ) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                requestLocation(onLocationReceived)
+            if (isGpsEnabled || isNetworkEnabled) {
+                val locationListener = object : LocationListener {
+                    override fun onLocationChanged(location: Location) {
+                        callback(location)
+                        locationManager.removeUpdates(this)
+                    }
+
+                    override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {}
+                    override fun onProviderEnabled(provider: String) {}
+                    override fun onProviderDisabled(provider: String) {}
+                }
+
+                if (isGpsEnabled) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
+                } else if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, locationListener)
+                }
             } else {
-                // Permission denied, handle as needed
-                onLocationReceived(null)
+                callback(null)
             }
+        } catch (ex: SecurityException) {
+            Log.e("LocationService", "Permission denied: ${ex.message}")
+            callback(null)
         }
     }
 
-    private fun requestLocation(onLocationReceived: (Location?) -> Unit) {
-        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        locationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                onLocationReceived(location)
-                locationManager.removeUpdates(this)  // Stop further updates once location is received
-            }
-
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {}
-        }
-
-        if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request location permissions if not already granted
-            onLocationReceived(null)
-            return
-        }
-
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER, 0L, 0f, locationListener
-        )
-    }
-
-    companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 1
-    }
 }

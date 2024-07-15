@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -37,8 +38,7 @@ fun RetinografoNavGraph(
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
-    examDataState: ExamDataState,
-    location: Location
+    examDataState: ExamDataState
     ) {
     NavHost(
         navController = navController,
@@ -78,8 +78,7 @@ fun RetinografoNavGraph(
                 onEvent = examDataViewModel::onEvent,
                 applicationContext = applicationContext,
                 controller = controller,
-                navController = navController,
-                location = location,
+                navController = navController
             )
 
         }

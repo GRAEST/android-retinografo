@@ -1,12 +1,7 @@
 package br.com.graest.retinografo
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.health.connect.datatypes.ExerciseRoute
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,14 +27,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
-import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 import br.com.graest.retinografo.utils.LocationService
@@ -93,8 +86,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             RetinografoTheme {
 
-                val locationState = remember { mutableStateOf<Location?>(null) }
-
                 val examDataState by examViewModel.examDataState.collectAsState()
 
                 val patientDataState by patientViewModel.patientDataState.collectAsState()
@@ -117,6 +108,7 @@ class MainActivity : ComponentActivity() {
                         showAppBar = destination.route !in hideAppBarRoutes
                     }
                 }
+
                 var selectedItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }
@@ -141,18 +133,15 @@ class MainActivity : ComponentActivity() {
                     drawerState = drawerState,
                     onPatientEvent = patientViewModel::onEvent
                 ) {
-                    locationState.value?.let {
-                        RetinografoNavGraph(
-                            navController,
-                            controller,
-                            applicationContext,
-                            patientViewModel,
-                            patientDataState,
-                            examViewModel,
-                            examDataState,
-                            it
-                        )
-                    }
+                    RetinografoNavGraph(
+                        navController,
+                        controller,
+                        applicationContext,
+                        patientViewModel,
+                        patientDataState,
+                        examViewModel,
+                        examDataState
+                    )
                 }
             }
         }

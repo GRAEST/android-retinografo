@@ -1,11 +1,14 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.utils.ExamCameraUtils.saveImageToFile
+import br.com.graest.retinografo.utils.LocationService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,32 +49,7 @@ class ExamDataViewModel(
                     examDataDao.deleteExamById(event.id)
                 }
             }
-
-            is ExamDataEvent.SaveExamData -> {
-
-                val image1 = BitmapFactory.decodeFile(capturedImagePaths.value[0])
-                val image2 = BitmapFactory.decodeFile(capturedImagePaths.value[1])
-                val image3 = BitmapFactory.decodeFile(capturedImagePaths.value[2])
-                val image4 = BitmapFactory.decodeFile(capturedImagePaths.value[3])
-                val patientId = examDataState.value.patientData?.patientId
-
-                val examData = patientId?.let {
-                    ExamData(
-                        imagePath1 = saveImageToFile(event.context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
-                        imagePath2 = saveImageToFile(event.context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
-                        imagePath3 = saveImageToFile(event.context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
-                        imagePath4 = saveImageToFile(event.context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
-                        examLocation = event.location.toString(),
-                        patientId = it
-                    )
-                }
-                if (examData != null) {
-                    viewModelScope.launch {
-                        examDataDao.insertExam(examData)
-                    }
-                }
-
-            }
+            is ExamDataEvent.SaveExamData -> { saveExamWithLocation(event.context) }
 
             ExamDataEvent.ShowDialog -> {
                 _examDataState.update {
@@ -129,6 +107,7 @@ class ExamDataViewModel(
                 cleanupPath()
                 cleanupTemporaryImages()
             }
+            else -> {}
         }
     }
 
@@ -149,6 +128,49 @@ class ExamDataViewModel(
     private fun cleanupTemporaryImages() {
         capturedImagePaths.value.forEach { path ->
             File(path).delete()
+        }
+    }
+
+    private fun saveExamWithLocation(context: Context) {
+        val locationService = LocationService(context)
+        locationService.getCurrentLocation { location ->
+            val examData = createExamData(context, location?.latitude, location?.longitude)
+            if (examData != null) {
+                viewModelScope.launch {
+                    try {
+                        examDataDao.insertExam(examData)
+                        Log.d("ExamDataViewModel", "ExamData inserted successfully")
+                    } catch (e: Exception) {
+                        Log.e("ExamDataViewModel", "Error inserting ExamData", e)
+                        setErrorMessage("Error saving exam data")
+                    }
+                }
+            }
+
+        }
+    }
+
+    private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
+        return try {
+            val image1 = BitmapFactory.decodeFile(_capturedImagePaths.value[0])
+            val image2 = BitmapFactory.decodeFile(_capturedImagePaths.value[1])
+            val image3 = BitmapFactory.decodeFile(_capturedImagePaths.value[2])
+            val image4 = BitmapFactory.decodeFile(_capturedImagePaths.value[3])
+            val patientId = _examDataState.value.patientData?.patientId
+
+            patientId?.let {
+                ExamData(
+                    imagePath1 = saveImageToFile(context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
+                    imagePath2 = saveImageToFile(context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
+                    imagePath3 = saveImageToFile(context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
+                    imagePath4 = saveImageToFile(context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
+                    examLocation = "$latitude,$longitude",
+                    patientId = it
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("ExamDataViewModel", "Error creating ExamData", e)
+            null
         }
     }
 
