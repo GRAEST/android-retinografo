@@ -52,18 +52,6 @@ object ExamCameraUtils {
         )
     }
 
-    //    fun saveImageToFile(context: Context, bitmap: Bitmap, fileName: String): String? {
-//        return try {
-//            val file = File(context.filesDir, fileName)
-//            FileOutputStream(file).use { out ->
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-//            }
-//            file.absolutePath
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            null
-//        }
-//    }
     fun createImageFile(context: Context, prefix: String = "image", suffix: String = ".jpg"): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(

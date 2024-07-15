@@ -56,10 +56,4 @@ object PatientCameraUtils {
         }
     }
 
-    fun handleCancellation(tempFile: File) {
-        if (tempFile.exists()) {
-            tempFile.delete()
-        }
-    }
-
 }
