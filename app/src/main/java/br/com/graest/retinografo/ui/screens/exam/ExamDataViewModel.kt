@@ -134,19 +134,26 @@ class ExamDataViewModel(
     private fun saveExamWithLocation(context: Context) {
         val locationService = LocationService(context)
         locationService.getCurrentLocation { location ->
-            val examData = createExamData(context, location?.latitude, location?.longitude)
-            if (examData != null) {
-                viewModelScope.launch {
-                    try {
-                        examDataDao.insertExam(examData)
-                        Log.d("ExamDataViewModel", "ExamData inserted successfully")
-                    } catch (e: Exception) {
-                        Log.e("ExamDataViewModel", "Error inserting ExamData", e)
-                        setErrorMessage("Error saving exam data")
+            Log.d("ExamDataViewModel", "Location obtained: $location")
+            if (_capturedImagePaths.value.size == 4) {
+                val examData = createExamData(context, location?.latitude, location?.longitude)
+                if (examData != null) {
+                    viewModelScope.launch {
+                        try {
+                            examDataDao.insertExam(examData)
+                            Log.d("ExamDataViewModel", "ExamData inserted successfully")
+                        } catch (e: Exception) {
+                            Log.e("ExamDataViewModel", "Error inserting ExamData", e)
+                            setErrorMessage("Error saving exam data")
+                        } finally {
+                            onEvent(ExamDataEvent.OnCancelExam)
+                        }
                     }
                 }
+            } else {
+                setErrorMessage("Not enough images captured")
+                Log.e("ExamDataViewModel", "Not enough images captured")
             }
-
         }
     }
 

@@ -1,7 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
-import android.location.Location
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -21,6 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -28,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -248,7 +248,8 @@ fun ExamCameraComposableScreen(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Text(
@@ -256,36 +257,46 @@ fun ExamCameraComposableScreen(
                 color = Color.White
             )
 
-            IconButton(
-                onClick = {
-                    if (examDataState.patientSelected) {
-                        captureImage(
-                            context = applicationContext,
-                            controller = controller,
-                            navController = navController,
-                            onImageCaptured = { file ->
-                                examDataViewModel.addImagePath(
-                                    path = file.absolutePath
-                                )
-                                examDataViewModel.setErrorMessage(null)
-                                //começar contagem e dar algum sinal de tela carregando
-                            },
-                            onError = { error ->
-                                examDataViewModel.setErrorMessage(error.message)
-                            }
-                        )
-
-                    } else {
-                        //Toast.makeText(applicationContext, "First Select a Patient!", Toast.LENGTH_SHORT).show()
-                        onEvent(ExamDataEvent.OnShowToastRed)
-                    }
+            if ((capturedImagePaths.size == 4)) {
+                Button(
+                    onClick = {
+                        onEvent(ExamDataEvent.SaveExamData(applicationContext))
+                        onEvent(ExamDataEvent.OnShowToastGreen)
+                    },
+                    colors = ButtonDefaults.buttonColors(Color.Green)
+                ) {
+                    Text(text = "Save Exam")
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PhotoCamera,
-                    tint = Color.White,
-                    contentDescription = "Take Photo"
-                )
+            } else {
+                IconButton(
+                    onClick = {
+                        if (examDataState.patientSelected) {
+                            captureImage(
+                                context = applicationContext,
+                                controller = controller,
+                                navController = navController,
+                                onImageCaptured = { file ->
+                                    examDataViewModel.addImagePath(
+                                        path = file.absolutePath
+                                    )
+                                    examDataViewModel.setErrorMessage(null)
+                                    //começar contagem e dar algum sinal de tela carregando
+                                },
+                                onError = { error ->
+                                    examDataViewModel.setErrorMessage(error.message)
+                                }
+                            )
+                        } else {
+                            onEvent(ExamDataEvent.OnShowToastRed)
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PhotoCamera,
+                        tint = Color.White,
+                        contentDescription = "Take Photo"
+                    )
+                }
             }
             Text(
                 text = "${capturedImagePaths.size}",
@@ -294,10 +305,10 @@ fun ExamCameraComposableScreen(
             )
         }
     }
-    if (capturedImagePaths.size == 4) {
-        onEvent(ExamDataEvent.SaveExamData(applicationContext))
-        onEvent(ExamDataEvent.OnShowToastGreen)
-        onEvent(ExamDataEvent.OnCancelExam)
-    }
+//    if (capturedImagePaths.size == 4) {
+//        onEvent(ExamDataEvent.SaveExamData(applicationContext))
+//        onEvent(ExamDataEvent.OnShowToastGreen)
+//        onEvent(ExamDataEvent.OnCancelExam)
+//    }
 }
 
