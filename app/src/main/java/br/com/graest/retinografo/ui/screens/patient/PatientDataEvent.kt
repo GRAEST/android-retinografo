@@ -1,9 +1,10 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.content.Context
 import br.com.graest.retinografo.data.model.PatientData
 
 sealed interface PatientDataEvent {
-    data object SavePatientData : PatientDataEvent
+    data class SavePatientData(val context: Context) : PatientDataEvent
     data class SetPatientName(val name: String) : PatientDataEvent
     data class SetPatientAge(val age: String) : PatientDataEvent
     data object ClickEditImage : PatientDataEvent

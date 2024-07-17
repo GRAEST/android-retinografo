@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,11 +37,12 @@ fun PatientScreen(
     state: PatientDataState,
     onEvent: (PatientDataEvent) -> Unit,
     onLaunchCamera: () -> Unit,
-    viewModel: PatientDataViewModel
+    viewModel: PatientDataViewModel,
+    applicationContext: Context
 ) {
 
     if (state.isAddingPatientData || state.isEditingPatientData) {
-        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera, viewModel = viewModel)
+        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera, viewModel = viewModel, applicationContext = applicationContext)
     }
 
     LazyColumn(

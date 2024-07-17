@@ -1,11 +1,14 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.BitmapFactory
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import br.com.graest.retinografo.utils.ImageConvertingUtils.getBitmapFromDrawable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -100,7 +103,7 @@ class PatientDataViewModel(
                 }
             }
 
-            PatientDataEvent.SavePatientData -> {
+            is PatientDataEvent.SavePatientData -> {
                 /*
                 * quanto você edita algo, por algum motivo fica salvo
                 * então algumas vezes você tenta abrir um "criar Paciente"
@@ -111,7 +114,13 @@ class PatientDataViewModel(
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
-                val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
+
+                val bitmap =  if (capturedImagePath.value == null){
+                    getBitmapFromDrawable(event.context, R.drawable.user_icon)
+                } else {
+                    BitmapFactory.decodeFile(capturedImagePath.value)
+                }
+
 
                 val newPatientId = patientId ?: ByteBuffer.wrap(ByteArray(16))
                     .putLong(UUID.randomUUID().mostSignificantBits)

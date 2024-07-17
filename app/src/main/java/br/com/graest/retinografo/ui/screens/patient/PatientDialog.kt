@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.patient
 
+import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,7 +40,8 @@ fun PatientDialog(
     onEvent: (PatientDataEvent) -> Unit,
     onLaunchCamera: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PatientDataViewModel
+    viewModel: PatientDataViewModel,
+    applicationContext: Context
 ) {
     val capturedImagePath = viewModel.capturedImagePath.collectAsState()
 
@@ -135,7 +137,7 @@ fun PatientDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(onClick = {
-                        onEvent(PatientDataEvent.SavePatientData)
+                        onEvent(PatientDataEvent.SavePatientData(applicationContext))
                     }) {
                         Text(text = "Save")
                     }
@@ -161,7 +163,7 @@ fun PatientDialog(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(onClick = {
-                            onEvent(PatientDataEvent.SavePatientData)
+                            onEvent(PatientDataEvent.SavePatientData(applicationContext))
                         }) {
                             Text(text = "Save")
                         }
