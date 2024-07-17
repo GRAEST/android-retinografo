@@ -167,7 +167,7 @@ fun PatientDialog(
                         }
                     }
                     IconButton(onClick = {
-                        onEvent(PatientDataEvent.DeletePatientDataById(state.id))
+                        onEvent(PatientDataEvent.DeletePatientDataById(state.patientId))
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,

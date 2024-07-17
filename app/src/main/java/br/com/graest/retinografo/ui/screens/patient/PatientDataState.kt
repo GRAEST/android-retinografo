@@ -4,7 +4,7 @@ import br.com.graest.retinografo.data.model.PatientData
 
 data class PatientDataState(
     val patientsData: List<PatientData?> = emptyList(),
-    val id: Int = 0,
+    val patientId: ByteArray = ByteArray(1),
     val name: String = "",
     val age: String = "",
     val image: ByteArray = ByteArray(1),

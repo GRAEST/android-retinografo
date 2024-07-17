@@ -14,12 +14,12 @@ interface PatientDataDao {
     suspend fun upsertPatientData(patientData: PatientData)
 
     @Query("DELETE FROM patient_data WHERE patientId = :patientId")
-    suspend fun deletePatientDataById(patientId: Int)
+    suspend fun deletePatientDataById(patientId: ByteArray)
 
     @Query("SELECT * FROM patient_data WHERE patientId = :patientId")
-    fun getPatientData(patientId: Int) : Flow<PatientData?>
+    fun getPatientData(patientId: ByteArray) : Flow<PatientData?>
 
-    @Query("SELECT * FROM patient_data ORDER BY name ASC")
+    @Query("SELECT * FROM patient_data ORDER BY dataCreated DESC")
     fun getPatientsData() : Flow<List<PatientData?>>
 
 }

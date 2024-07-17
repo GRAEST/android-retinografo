@@ -5,7 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.nio.ByteBuffer
 import java.util.Date
+import java.util.UUID
 
 @Entity(
     tableName = "exam_data",
@@ -26,7 +28,7 @@ data class ExamData (
     val examTime: Long = System.currentTimeMillis(),
     val examCoordinates: String,
     val examLocation: String = "Default Input",
-    val patientId: Int,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val patientId: ByteArray,
+    @PrimaryKey
+    val id: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
 )

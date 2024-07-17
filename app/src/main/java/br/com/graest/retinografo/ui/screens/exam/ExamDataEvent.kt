@@ -5,7 +5,7 @@ import br.com.graest.retinografo.data.model.PatientData
 
 sealed interface ExamDataEvent {
     data class SaveExamData(val context: Context) : ExamDataEvent
-    data class DeleteExamDataById(val id: Int) : ExamDataEvent
+    data class DeleteExamDataById(val id: ByteArray) : ExamDataEvent
     data object ShowAddPatientDialog: ExamDataEvent
     data object HideAddPatientDialog: ExamDataEvent
     data object SetIsLocationAddedFalse: ExamDataEvent

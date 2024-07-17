@@ -22,5 +22,5 @@ interface ExamDataDao {
     fun getExamDataWithPatients(): Flow<List<ExamDataWithPatient>>
 
     @Query("DELETE FROM exam_data WHERE id = :id")
-    suspend fun deleteExamById(id: Int)
+    suspend fun deleteExamById(id: ByteArray)
 }
