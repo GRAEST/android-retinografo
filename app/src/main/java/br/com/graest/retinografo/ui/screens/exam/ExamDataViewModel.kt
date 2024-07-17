@@ -98,7 +98,8 @@ class ExamDataViewModel(
                 _examDataState.update {
                     it.copy(
                         patientData = null,
-                        patientSelected = false
+                        patientSelected = false,
+                        isLocationAdded = false
                     )
                 }
             }
@@ -129,7 +130,8 @@ class ExamDataViewModel(
                 cleanupTemporaryImages()
                 _examDataState.update {
                     it.copy(
-                        examLocation = ""
+                        examLocation = "",
+                        isLocationAdded = false
                     )
                 }
             }

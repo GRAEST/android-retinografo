@@ -32,3 +32,4 @@ data class ExamData (
     @PrimaryKey
     val id: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
 )
+//adicionar um campo para identificar se o exame está sincronizado com a parte do servidor

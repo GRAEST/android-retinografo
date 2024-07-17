@@ -261,8 +261,10 @@ fun ExamCameraComposableScreen(
             if ((capturedImagePaths.size == 4)) {
                 Button(
                     onClick = {
-                        onEvent(ExamDataEvent.SaveExamData(applicationContext))
-                        onEvent(ExamDataEvent.OnShowToastGreen)
+                        if (examDataState.isLocationAdded) {
+                            onEvent(ExamDataEvent.SaveExamData(applicationContext))
+                            onEvent(ExamDataEvent.OnShowToastGreen)
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(Color.Green)
                 ) {
