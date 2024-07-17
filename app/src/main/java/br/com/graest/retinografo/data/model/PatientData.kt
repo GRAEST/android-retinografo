@@ -14,5 +14,5 @@ data class PatientData(
     val dataCreated: Long = System.currentTimeMillis(),
     val image: ByteArray = ByteArray(1),
     @PrimaryKey
-    val patientId: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array(),
+    val patientId: ByteArray = ByteArray(1)
 )

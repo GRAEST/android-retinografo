@@ -15,10 +15,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.nio.ByteBuffer
+import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PatientDataViewModel(
-    private val patientDataDao: PatientDataDao
+    private val patientDataDao: PatientDataDao,
 ) : ViewModel() {
 
     private val _patientsData = patientDataDao.getPatientsData()
@@ -74,7 +76,8 @@ class PatientDataViewModel(
             PatientDataEvent.ShowAddPatientDialog -> {
                 _patientDataState.update {
                     it.copy(
-                        isAddingPatientData = true
+                        isAddingPatientData = true,
+                        patientId = null,
                     )
                 }
             }
@@ -103,20 +106,39 @@ class PatientDataViewModel(
                 * então algumas vezes você tenta abrir um "criar Paciente"
                 * e depois de criado o paciente, volta a abrir a tela de Edit
                 * */
+
+
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
                 val age = patientDataState.value.age
                 val name = patientDataState.value.name
                 val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
 
+                val newPatientId = patientId ?: ByteBuffer.wrap(ByteArray(16))
+                    .putLong(UUID.randomUUID().mostSignificantBits)
+                    .putLong(UUID.randomUUID().leastSignificantBits)
+                    .array()
+
+
                 if (age.isBlank() || name.isBlank()) {
                     return
                 }
-                val patientData = PatientData(
-                    patientId = patientId,
-                    age = age.toInt(),
-                    name = name,
-                    image = bitmapToByteArray(bitmap)
-                )
+                val patientData = if (patientId != null) {
+                    PatientData(
+                        patientId = patientId,
+                        age = age.toInt(),
+                        name = name,
+                        image = bitmapToByteArray(bitmap)
+                    )
+                } else {
+                    PatientData(
+                        patientId = newPatientId,
+                        age = age.toInt(),
+                        name = name,
+                        image = bitmapToByteArray(bitmap)
+                    )
+                }
+
+
                 viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)
                     //por algum motivo esse hide dialog não funciona da forma que deveria, ainda mais aqui
