@@ -57,7 +57,7 @@ fun ExamCameraComposableScreen(
     onEvent: (ExamDataEvent) -> Unit,
     applicationContext: Context,
     controller: LifecycleCameraController,
-    navController: NavController
+    navController: NavController,
 ) {
 
     val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
@@ -106,10 +106,11 @@ fun ExamCameraComposableScreen(
         )
     }
 
-    if (capturedImagePaths.size == 4 && !examDataState.isLocationAdded) {
+    if (capturedImagePaths.size == 4) {
         ExamAddLocationDialog(
             examDataState = examDataState,
-            onEvent = onEvent
+            onEvent = onEvent,
+            applicationContext = applicationContext
         )
     }
 
@@ -258,49 +259,37 @@ fun ExamCameraComposableScreen(
                 color = Color.White
             )
 
-            if ((capturedImagePaths.size == 4)) {
-                Button(
-                    onClick = {
-                        if (examDataState.isLocationAdded) {
-                            onEvent(ExamDataEvent.SaveExamData(applicationContext))
-                            onEvent(ExamDataEvent.OnShowToastGreen)
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(Color.Green)
-                ) {
-                    Text(text = "Save Exam")
-                }
-            } else {
-                IconButton(
-                    onClick = {
-                        if (examDataState.patientSelected) {
-                            captureImage(
-                                context = applicationContext,
-                                controller = controller,
-                                navController = navController,
-                                onImageCaptured = { file ->
-                                    examDataViewModel.addImagePath(
-                                        path = file.absolutePath
-                                    )
-                                    examDataViewModel.setErrorMessage(null)
-                                    //começar contagem e dar algum sinal de tela carregando
-                                },
-                                onError = { error ->
-                                    examDataViewModel.setErrorMessage(error.message)
-                                }
-                            )
-                        } else {
-                            onEvent(ExamDataEvent.OnShowToastRed)
-                        }
+
+            IconButton(
+                onClick = {
+                    if (examDataState.patientSelected) {
+                        captureImage(
+                            context = applicationContext,
+                            controller = controller,
+                            navController = navController,
+                            onImageCaptured = { file ->
+                                examDataViewModel.addImagePath(
+                                    path = file.absolutePath
+                                )
+                                examDataViewModel.setErrorMessage(null)
+                                //começar contagem e dar algum sinal de tela carregando
+                            },
+                            onError = { error ->
+                                examDataViewModel.setErrorMessage(error.message)
+                            }
+                        )
+                    } else {
+                        onEvent(ExamDataEvent.OnShowToastRed)
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PhotoCamera,
-                        tint = Color.White,
-                        contentDescription = "Take Photo"
-                    )
                 }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PhotoCamera,
+                    tint = Color.White,
+                    contentDescription = "Take Photo"
+                )
             }
+
             Text(
                 text = "${capturedImagePaths.size}",
                 color = Color.White
