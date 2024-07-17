@@ -11,6 +11,7 @@ import br.com.graest.retinografo.R
 data class PatientData(
     val name: String,
     val age: Int = 0,
+    val dataCreated: Long = System.currentTimeMillis(),
     val image: ByteArray = ByteArray(1),
     @PrimaryKey(autoGenerate = true)
     val patientId: Int = 0

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 
 @Composable
-fun ExamDialog(
+fun ExamAddPatientDialog(
     patientDataState: PatientDataState,
     onEvent: (ExamDataEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -72,7 +72,7 @@ fun ExamDialog(
                                 IconButton(
                                     onClick = {
                                         onEvent(ExamDataEvent.PatientSelected(patientData))
-                                        onEvent(ExamDataEvent.HideDialog)
+                                        onEvent(ExamDataEvent.HideAddPatientDialog)
                                     },
                                     colors = IconButtonDefaults.iconButtonColors(Color.Gray),
                                     modifier = Modifier
@@ -91,7 +91,7 @@ fun ExamDialog(
             }
         },
         onDismissRequest = {
-            onEvent(ExamDataEvent.HideDialog)
+            onEvent(ExamDataEvent.HideAddPatientDialog)
         },
         confirmButton = {
             //not using a button because it could get inaccessible as the patient number grows

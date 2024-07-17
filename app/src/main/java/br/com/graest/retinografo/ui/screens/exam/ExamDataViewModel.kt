@@ -51,17 +51,38 @@ class ExamDataViewModel(
             }
             is ExamDataEvent.SaveExamData -> { saveExamWithLocation(event.context) }
 
-            ExamDataEvent.ShowDialog -> {
+            ExamDataEvent.ShowAddPatientDialog -> {
                 _examDataState.update {
                     it.copy(
-                        showDialog = true
+                        showAddPatientDialog = true
                     )
                 }
             }
-            ExamDataEvent.HideDialog -> {
+            ExamDataEvent.HideAddPatientDialog -> {
                 _examDataState.update {
                     it.copy(
-                        showDialog = false
+                        showAddPatientDialog = false
+                    )
+                }
+            }
+            ExamDataEvent.SetIsLocationAddedFalse -> {
+                _examDataState.update {
+                    it.copy(
+                        isLocationAdded = false,
+                    )
+                }
+            }
+            ExamDataEvent.SetIsLocationAddedTrue -> {
+                _examDataState.update {
+                    it.copy(
+                        isLocationAdded = true
+                    )
+                }
+            }
+            is ExamDataEvent.SetExamLocation -> {
+                _examDataState.update {
+                    it.copy(
+                        examLocation = event.examLocation
                     )
                 }
             }
@@ -106,6 +127,11 @@ class ExamDataViewModel(
             ExamDataEvent.OnCancelExam -> {
                 cleanupPath()
                 cleanupTemporaryImages()
+                _examDataState.update {
+                    it.copy(
+                        examLocation = ""
+                    )
+                }
             }
             else -> {}
         }
@@ -147,6 +173,7 @@ class ExamDataViewModel(
                             setErrorMessage("Error saving exam data")
                         } finally {
                             onEvent(ExamDataEvent.OnCancelExam)
+                            onEvent(ExamDataEvent.SetIsLocationAddedFalse)
                         }
                     }
                 }
@@ -171,7 +198,8 @@ class ExamDataViewModel(
                     imagePath2 = saveImageToFile(context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
                     imagePath3 = saveImageToFile(context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
                     imagePath4 = saveImageToFile(context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
-                    examLocation = "$latitude,$longitude",
+                    examCoordinates = "$latitude,$longitude",
+                    examLocation = examDataState.value.examLocation,
                     patientId = it
                 )
             }

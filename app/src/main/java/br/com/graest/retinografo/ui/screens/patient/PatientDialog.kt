@@ -84,7 +84,6 @@ fun PatientDialog(
                         contentScale = ContentScale.Crop
                     )
                 }
-
                 TextField(
                     value = state.name,
                     onValueChange = {

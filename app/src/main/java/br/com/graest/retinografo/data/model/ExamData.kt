@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.data.model
 
+import android.location.Location
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -23,7 +24,8 @@ data class ExamData (
     val imagePath3: String,
     val imagePath4: String,
     val examTime: Long = System.currentTimeMillis(),
-    val examLocation: String,
+    val examCoordinates: String,
+    val examLocation: String = "Default Input",
     val patientId: Int,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

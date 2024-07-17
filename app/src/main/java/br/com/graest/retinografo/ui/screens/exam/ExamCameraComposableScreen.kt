@@ -99,9 +99,16 @@ fun ExamCameraComposableScreen(
         }
     }
 
-    if (examDataState.showDialog) {
-        ExamDialog(
+    if (examDataState.showAddPatientDialog) {
+        ExamAddPatientDialog(
             patientDataState = patientDataState,
+            onEvent = onEvent
+        )
+    }
+
+    if (capturedImagePaths.size == 4 && !examDataState.isLocationAdded) {
+        ExamAddLocationDialog(
+            examDataState = examDataState,
             onEvent = onEvent
         )
     }
@@ -122,7 +129,7 @@ fun ExamCameraComposableScreen(
 
                 Button(
                     onClick = {
-                        onEvent(ExamDataEvent.ShowDialog)
+                        onEvent(ExamDataEvent.ShowAddPatientDialog)
                     },
                 ) {
                     Image(

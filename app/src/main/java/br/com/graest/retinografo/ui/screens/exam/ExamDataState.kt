@@ -1,14 +1,14 @@
 package br.com.graest.retinografo.ui.screens.exam
 
-import androidx.room.ColumnInfo
-import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.data.model.ExamDataWithPatient
 import br.com.graest.retinografo.data.model.PatientData
 
 data class ExamDataState(
     val examsDataWithPatient: List<ExamDataWithPatient?> = emptyList(),
-    val id: Int = 0, //Exam ID
-    val showDialog: Boolean = false,
+    val id: Int = 0, //Exam ID //acho que não é usado
+    val examLocation: String = "",
+    val showAddPatientDialog: Boolean = false,
+    val isLocationAdded: Boolean = false,
     val showToastRed: Boolean = false,
     val showToastGreen: Boolean = false,
     val patientSelected: Boolean = false,
