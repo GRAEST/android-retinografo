@@ -28,6 +28,7 @@ data class ExamData (
     val examTime: Long = System.currentTimeMillis(),
     val examCoordinates: String,
     val examLocation: String = "Default Input",
+    val sentToServer: Boolean = false,
     val patientId: ByteArray,
     @PrimaryKey
     val id: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()

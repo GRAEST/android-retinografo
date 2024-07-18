@@ -74,7 +74,7 @@ fun ExamAddLocationDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "4 images already captured")
-                    Text(text = examDataState.examLocation)
+                    Text(text = "Location: ${examDataState.examLocation}")
                 }
             } else {
                 TextField(
