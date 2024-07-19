@@ -2,10 +2,11 @@ package br.com.graest.retinografo.ui.screens.patient
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PatientDialog(
     state: PatientDataState,
@@ -131,23 +132,32 @@ fun PatientDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row {
-                    OutlinedTextField(
-                        value = state.age,
-                        onValueChange = { onEvent(PatientDataEvent.SetPatientAge(it)) },
-                        placeholder = { Text(text = "Age") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
-                        ),
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
-
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        OutlinedTextField(
+                            value = state.birthDate,
+                            onValueChange = { onEvent(PatientDataEvent.SetPatientBirthDate(it)) },
+                            placeholder = { Text(text = "Enter date (dd-MM-yyyy)") },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                            ),
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                        if (state.errorMessageBirthDate.isNotEmpty()) {
+                            Text(
+                                text = state.errorMessageBirthDate,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
 
                     Column(
                         modifier = Modifier

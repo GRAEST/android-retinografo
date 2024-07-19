@@ -11,7 +11,7 @@ sealed interface PatientDataEvent {
     data object HideDialog : PatientDataEvent
     data class DeletePatientDataById(val id: ByteArray) : PatientDataEvent
     data class SetPatientName(val name: String) : PatientDataEvent
-    data class SetPatientAge(val age: String) : PatientDataEvent
+    data class SetPatientBirthDate(val birthDate: String) : PatientDataEvent
     data class SetPatientGender(val gender: Gender) : PatientDataEvent
     data class SetPatientCPF(val cpf: String) : PatientDataEvent
     data class SetPatientEmail(val email: String) : PatientDataEvent

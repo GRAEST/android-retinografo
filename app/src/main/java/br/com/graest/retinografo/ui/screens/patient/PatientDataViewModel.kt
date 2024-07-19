@@ -1,8 +1,11 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.BitmapFactory
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.Gender
@@ -19,6 +22,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,6 +48,7 @@ class PatientDataViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: PatientDataEvent) {
         when (event) {
 
@@ -61,7 +68,7 @@ class PatientDataViewModel(
                             isEditingImage = false,
                             patientId = ByteArray(0),
                             name = "",
-                            age = "",
+                            birthDate = "",
                             gender = Gender.OTHER,
                             cpf = "",
                             email = "",
@@ -97,13 +104,14 @@ class PatientDataViewModel(
                 viewModelScope.launch {
                     patientDataDao.getPatientData(event.id).collect { data ->
                         if (data != null) {
+                            val birthDate = if (data.birthDate == null) {""} else { data.birthDate.toString() }
                             _patientDataState.update { currentState ->
                                 currentState.copy(
                                     isEditingPatientData = true,
                                     patientId = event.id,
                                     name = data.name,
                                     profilePicture = data.profilePicture,
-                                    age = data.age.toString(),
+                                    birthDate = birthDate,
                                     gender = data.gender,
                                     cpf = data.cpf,
                                     email = data.email,
@@ -127,9 +135,9 @@ class PatientDataViewModel(
                 * */
 
 
+
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
                 val name = patientDataState.value.name
-                val age = patientDataState.value.age
                 val gender = patientDataState.value.gender
                 val cpf = patientDataState.value.cpf
                 val email = patientDataState.value.email
@@ -140,28 +148,29 @@ class PatientDataViewModel(
                 val description = patientDataState.value.description
 
 
+                val birthDate = validateAndSetBirthDate(patientDataState.value.birthDate)
+
                 val bitmap =  if (capturedImagePath.value == null){
                     getBitmapFromDrawable(event.context, R.drawable.user_icon)
                 } else {
                     BitmapFactory.decodeFile(capturedImagePath.value)
                 }
 
-
                 val newPatientId = patientId ?: ByteBuffer.wrap(ByteArray(16))
                     .putLong(UUID.randomUUID().mostSignificantBits)
                     .putLong(UUID.randomUUID().leastSignificantBits)
                     .array()
 
-
-                if (age.isBlank() || name.isBlank()) {
+                if (name.isBlank() || patientDataState.value.errorMessageBirthDate == "") {
                     return
                 }
+
                 val patientData = if (patientId != null) {
                     PatientData(
                         patientId = patientId,
                         profilePicture = bitmapToByteArray(bitmap),
                         name = name,
-                        age = age.toInt(),
+                        birthDate = birthDate,
                         gender = gender,
                         cpf = cpf,
                         email = email,
@@ -176,7 +185,7 @@ class PatientDataViewModel(
                         patientId = newPatientId,
                         profilePicture = bitmapToByteArray(bitmap),
                         name = name,
-                        age = age.toInt(),
+                        birthDate = birthDate,
                         gender = gender,
                         cpf = cpf,
                         email = email,
@@ -205,10 +214,10 @@ class PatientDataViewModel(
                 }
             }
 
-            is PatientDataEvent.SetPatientAge -> {
+            is PatientDataEvent.SetPatientBirthDate -> {
                 _patientDataState.update {
                     it.copy(
-                        age = event.age
+                        birthDate = event.birthDate
                     )
                 }
             }
@@ -303,6 +312,30 @@ class PatientDataViewModel(
 
     fun setErrorMessage(message: String?) {
         _errorMessage.value = message
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun validateAndSetBirthDate(
+        birthDateString: String,
+    ): LocalDate? {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val localDate = LocalDate.parse(birthDateString, formatter)
+            onEvent(PatientDataEvent.SetPatientBirthDate(localDate.toString()))
+            _patientDataState.update {
+                it.copy(
+                    errorMessageBirthDate = ""
+                )
+            }
+            localDate
+        } catch (e: DateTimeParseException) {
+            _patientDataState.update {
+                it.copy(
+                    errorMessageBirthDate = "Invalid date format. Please use dd-MM-yyyy."
+                )
+            }
+            null
+        }
     }
 
 }

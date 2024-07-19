@@ -208,7 +208,7 @@ fun ExamCameraComposableScreen(
                     }
                     if (examDataState.patientData != null) {
                         Text(
-                            text = "${examDataState.patientData.age} anos",
+                            text = "${examDataState.patientData.dataCreated} anos",
                             fontSize = 12.sp
                         )
                     }

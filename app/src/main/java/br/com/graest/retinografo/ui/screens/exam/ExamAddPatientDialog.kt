@@ -61,7 +61,7 @@ fun ExamAddPatientDialog(
                                         fontWeight = FontWeight(700)
                                     )
                                     Text(
-                                        text = "${patientData.age.toString()} years old",
+                                        text = "${patientData.dataCreated.toString()} years old",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight(500)
                                     )

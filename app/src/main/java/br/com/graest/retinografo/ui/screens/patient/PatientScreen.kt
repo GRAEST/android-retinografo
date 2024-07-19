@@ -1,6 +1,8 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PatientScreen(
     state: PatientDataState,
@@ -95,7 +98,7 @@ fun PatientScreen(
                     }
                     if (patientData != null) {
                         Text(
-                            text = "${patientData.age} anos",
+                            text = "${patientData.dataCreated} anos",
                             fontSize = 12.sp
                         )
                     }
