@@ -1,11 +1,11 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.graphics.BitmapFactory
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.local.PatientDataDao
+import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import br.com.graest.retinografo.utils.ImageConvertingUtils.getBitmapFromDrawable
@@ -59,9 +59,17 @@ class PatientDataViewModel(
                             isAddingPatientData = false,
                             isEditingPatientData = false,
                             isEditingImage = false,
-                            patientId = ByteArray(1),
+                            patientId = ByteArray(0),
                             name = "",
-                            age = ""
+                            age = "",
+                            gender = Gender.OTHER,
+                            cpf = "",
+                            email = "",
+                            telNumber = "",
+                            isDiabetic = false,
+                            hasHyperTension = false,
+                            hasGlaucoma = false,
+                            description = ""
                         )
                     }
                 }
@@ -94,8 +102,16 @@ class PatientDataViewModel(
                                     isEditingPatientData = true,
                                     patientId = event.id,
                                     name = data.name,
-                                    image = data.image,
-                                    age = data.age.toString()
+                                    profilePicture = data.profilePicture,
+                                    age = data.age.toString(),
+                                    gender = data.gender,
+                                    cpf = data.cpf,
+                                    email = data.email,
+                                    telNumber = data.telNumber,
+                                    isDiabetic = data.isDiabetic,
+                                    hasHyperTension = data.hasHyperTension,
+                                    hasGlaucoma = data.hasGlaucoma,
+                                    description = data.description
                                 )
                             }
                         }
@@ -112,8 +128,17 @@ class PatientDataViewModel(
 
 
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
-                val age = patientDataState.value.age
                 val name = patientDataState.value.name
+                val age = patientDataState.value.age
+                val gender = patientDataState.value.gender
+                val cpf = patientDataState.value.cpf
+                val email = patientDataState.value.email
+                val telNumber = patientDataState.value.telNumber
+                val isDiabetic = patientDataState.value.isDiabetic
+                val hasHyperTension = patientDataState.value.hasHyperTension
+                val hasGlaucoma = patientDataState.value.hasGlaucoma
+                val description = patientDataState.value.description
+
 
                 val bitmap =  if (capturedImagePath.value == null){
                     getBitmapFromDrawable(event.context, R.drawable.user_icon)
@@ -134,16 +159,32 @@ class PatientDataViewModel(
                 val patientData = if (patientId != null) {
                     PatientData(
                         patientId = patientId,
-                        age = age.toInt(),
+                        profilePicture = bitmapToByteArray(bitmap),
                         name = name,
-                        image = bitmapToByteArray(bitmap)
+                        age = age.toInt(),
+                        gender = gender,
+                        cpf = cpf,
+                        email = email,
+                        telNumber = telNumber,
+                        isDiabetic = isDiabetic,
+                        hasHyperTension = hasHyperTension,
+                        hasGlaucoma = hasGlaucoma,
+                        description = description
                     )
                 } else {
                     PatientData(
                         patientId = newPatientId,
-                        age = age.toInt(),
+                        profilePicture = bitmapToByteArray(bitmap),
                         name = name,
-                        image = bitmapToByteArray(bitmap)
+                        age = age.toInt(),
+                        gender = gender,
+                        cpf = cpf,
+                        email = email,
+                        telNumber = telNumber,
+                        isDiabetic = isDiabetic,
+                        hasHyperTension = hasHyperTension,
+                        hasGlaucoma = hasGlaucoma,
+                        description = description
                     )
                 }
 
@@ -156,6 +197,14 @@ class PatientDataViewModel(
 
             }
 
+            is PatientDataEvent.SetPatientName -> {
+                _patientDataState.update {
+                    it.copy(
+                        name = event.name
+                    )
+                }
+            }
+
             is PatientDataEvent.SetPatientAge -> {
                 _patientDataState.update {
                     it.copy(
@@ -164,10 +213,82 @@ class PatientDataViewModel(
                 }
             }
 
-            is PatientDataEvent.SetPatientName -> {
+            is PatientDataEvent.SetPatientGender -> {
                 _patientDataState.update {
                     it.copy(
-                        name = event.name
+                        gender = event.gender
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetPatientCPF -> {
+                _patientDataState.update {
+                    it.copy(
+                        cpf = event.cpf
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetPatientEmail -> {
+                _patientDataState.update {
+                    it.copy(
+                        email = event.email
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetPatientTelNumber -> {
+                _patientDataState.update {
+                    it.copy(
+                        telNumber = event.telNumber
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetIsDiabetic -> {
+                _patientDataState.update {
+                    it.copy(
+                        isDiabetic = event.isDiabetic
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetHasHyperTension -> {
+                _patientDataState.update {
+                    it.copy(
+                        hasHyperTension = event.hasHyperTension
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetHasGlaucoma -> {
+                _patientDataState.update {
+                    it.copy(
+                        hasGlaucoma = event.hasGlaucoma
+                    )
+                }
+            }
+
+            is PatientDataEvent.SetDescription -> {
+                _patientDataState.update {
+                    it.copy(
+                        description = event.description
+                    )
+                }
+            }
+
+            PatientDataEvent.ExpandGenderMenu -> {
+                _patientDataState.update {
+                    it.copy(
+                        genderMenuExpanded = true
+                    )
+                }
+            }
+
+            PatientDataEvent.ShrinkGenderMenu -> {
+                _patientDataState.update {
+                    it.copy(
+                        genderMenuExpanded = false
                     )
                 }
             }

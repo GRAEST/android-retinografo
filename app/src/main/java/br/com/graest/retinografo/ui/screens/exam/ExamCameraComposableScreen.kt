@@ -172,7 +172,7 @@ fun ExamCameraComposableScreen(
             ) {
                 if (examDataState.patientData != null) {
                     Image(
-                        bitmap = byteArrayToBitmap(examDataState.patientData.image).asImageBitmap(),
+                        bitmap = byteArrayToBitmap(examDataState.patientData.profilePicture).asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
                             .weight(1f)

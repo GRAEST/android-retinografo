@@ -10,28 +10,51 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.IndeterminateCheckBox
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Man
+import androidx.compose.material.icons.outlined.Woman2
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @Composable
@@ -41,9 +64,12 @@ fun PatientDialog(
     onLaunchCamera: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PatientDataViewModel,
-    applicationContext: Context
+    applicationContext: Context,
 ) {
     val capturedImagePath = viewModel.capturedImagePath.collectAsState()
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     AlertDialog(
         modifier = modifier,
@@ -57,7 +83,10 @@ fun PatientDialog(
         },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(10.dp)
             ) {
                 if (state.isAddingPatientData || state.isEditingImage) {
                     if (capturedImagePath.value != null) {
@@ -76,7 +105,7 @@ fun PatientDialog(
                 }
                 if (state.isEditingPatientData && !state.isEditingImage) {
                     Image(
-                        bitmap = byteArrayToBitmap(state.image).asImageBitmap(),
+                        bitmap = byteArrayToBitmap(state.profilePicture).asImageBitmap(),
                         contentDescription = "Captured Image",
                         modifier = Modifier
                             .clip(CircleShape)
@@ -86,24 +115,222 @@ fun PatientDialog(
                         contentScale = ContentScale.Crop
                     )
                 }
-                TextField(
+
+                OutlinedTextField(
                     value = state.name,
-                    onValueChange = {
-                        onEvent(PatientDataEvent.SetPatientName(it))
-                    },
-                    placeholder = {
-                        Text(text = "Name")
-                    }
+                    onValueChange = { onEvent(PatientDataEvent.SetPatientName(it)) },
+                    placeholder = { Text(text = "Name") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
                 )
-                TextField(
-                    value = state.age,
-                    onValueChange = {
-                        onEvent(PatientDataEvent.SetPatientAge(it))
-                    },
-                    placeholder = {
-                        Text(text = "Age")
+                Row {
+                    OutlinedTextField(
+                        value = state.age,
+                        onValueChange = { onEvent(PatientDataEvent.SetPatientAge(it)) },
+                        placeholder = { Text(text = "Age") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        ),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(text=state.gender.toString()) },
+                            onClick = { onEvent(PatientDataEvent.ExpandGenderMenu) },
+                            leadingIcon = {
+                                when (state.gender) {
+                                    Gender.MALE -> { Icon(Icons.Outlined.Man, contentDescription = null)}
+                                    Gender.FEMALE -> { Icon(Icons.Outlined.Woman2, contentDescription = null)}
+                                    Gender.OTHER -> { Icon(Icons.Outlined.IndeterminateCheckBox, contentDescription = null) }
+                                }
+                            },
+                            trailingIcon = {
+                                Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
+                            }
+                        )
+                        DropdownMenu(
+                            expanded = state.genderMenuExpanded,
+                            onDismissRequest = {
+                                onEvent(PatientDataEvent.ShrinkGenderMenu)
+                            }) {
+                            DropdownMenuItem(
+                                text = { Text("Male") },
+                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.MALE)) },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.Man,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingIcon = {
+                                    if (state.gender == Gender.MALE) {
+                                        Icon(Icons.Outlined.Check, contentDescription = null)
+                                    }
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Female") },
+                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.FEMALE)) },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.Woman2,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingIcon = {
+                                    if (state.gender == Gender.FEMALE) {
+                                        Icon(Icons.Outlined.Check, contentDescription = null)
+                                    }
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Other") },
+                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.OTHER)) },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.IndeterminateCheckBox,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingIcon = {
+                                    if (state.gender == Gender.OTHER) {
+                                        Icon(Icons.Outlined.Check, contentDescription = null)
+                                    }
+                                }
+                            )
+                        }
                     }
+                }
+
+                OutlinedTextField(
+                    value = state.cpf,
+                    onValueChange = { onEvent(PatientDataEvent.SetPatientCPF(it)) },
+                    placeholder = { Text(text = "CPF") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
                 )
+                OutlinedTextField(
+                    value = state.email,
+                    onValueChange = { onEvent(PatientDataEvent.SetPatientEmail(it)) },
+                    placeholder = { Text(text = "Email") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = state.telNumber,
+                    onValueChange = { onEvent(PatientDataEvent.SetPatientTelNumber(it)) },
+                    placeholder = { Text(text = "Phone Number") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Is Diabetic?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(500)
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Switch(
+                        checked = state.isDiabetic,
+                        onCheckedChange = {
+                            onEvent(PatientDataEvent.SetIsDiabetic(it))
+                        }
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Has HyperTension?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(500)
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Switch(
+                        checked = state.hasHyperTension,
+                        onCheckedChange = {
+                            onEvent(PatientDataEvent.SetHasHyperTension(it))
+                        }
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Has Glaucoma?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(500)
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Switch(
+                        checked = state.hasGlaucoma,
+                        onCheckedChange = {
+                            onEvent(PatientDataEvent.SetHasGlaucoma(it))
+                        }
+                    )
+                }
+
+                OutlinedTextField(
+                    value = state.description,
+                    onValueChange = { onEvent(PatientDataEvent.SetDescription(it)) },
+                    placeholder = { Text(text = "Description") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    maxLines = 5
+                )
+
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {

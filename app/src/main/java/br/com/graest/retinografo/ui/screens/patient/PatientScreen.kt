@@ -59,7 +59,7 @@ fun PatientScreen(
             ) {
                 if (patientData != null) {
                     Image(
-                        bitmap = byteArrayToBitmap(patientData.image).asImageBitmap(),
+                        bitmap = byteArrayToBitmap(patientData.profilePicture).asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
                             .weight(1f)
