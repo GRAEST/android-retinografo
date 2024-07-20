@@ -26,12 +26,10 @@ object ImageConvertingUtils {
             inputStream?.readBytes() ?: ByteArray(0)
         }
     }
+
     fun getBitmapFromDrawable(context: Context, drawableId: Int): Bitmap {
         return BitmapFactory.decodeResource(context.resources, drawableId)
     }
-
-
-
 
 
 }

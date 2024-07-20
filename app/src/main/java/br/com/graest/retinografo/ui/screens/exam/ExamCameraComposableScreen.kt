@@ -171,16 +171,18 @@ fun ExamCameraComposableScreen(
 
             ) {
                 if (examDataState.patientData != null) {
-                    Image(
-                        bitmap = byteArrayToBitmap(examDataState.patientData.profilePicture).asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
-                    )
+                    byteArrayToBitmap(examDataState.patientData.profilePicture)?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.ic_launcher_foreground),

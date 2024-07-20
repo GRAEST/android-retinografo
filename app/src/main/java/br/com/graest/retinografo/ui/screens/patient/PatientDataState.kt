@@ -17,7 +17,7 @@ data class PatientDataState(
     val hasHyperTension: Boolean = false,
     val hasGlaucoma: Boolean = false,
     val description: String = "",
-    val profilePicture: ByteArray = ByteArray(0),
+    val profilePicture: ByteArray? = null,
     val tempImagePath: String? = null,
     val isAddingPatientData: Boolean = false,
     val isEditingPatientData: Boolean = false,

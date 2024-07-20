@@ -10,6 +10,7 @@ import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 import br.com.graest.retinografo.utils.ImageConvertingUtils.getBitmapFromDrawable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,25 +69,6 @@ class PatientDataViewModel(
                 }
             }
 
-            PatientDataEvent.ClearStateData -> {
-                viewModelScope.launch {
-                    _patientDataState.update {
-                        it.copy(
-                            patientId = ByteArray(0),
-                            name = "",
-                            birthDate = "",
-                            gender = Gender.OTHER,
-                            cpf = "",
-                            email = "",
-                            telNumber = "",
-                            isDiabetic = false,
-                            hasHyperTension = false,
-                            hasGlaucoma = false,
-                            description = ""
-                        )
-                    }
-                }
-            }
 
             PatientDataEvent.ClickEditImage -> {
                 _patientDataState.update {
@@ -98,11 +80,10 @@ class PatientDataViewModel(
 
 
             PatientDataEvent.ShowAddPatientDialog -> {
+                clearStates()
                 _patientDataState.update {
                     it.copy(
                         isAddingPatientData = true,
-                        tempImagePath = null,
-                        patientId = null,
                     )
                 }
             }
@@ -161,8 +142,11 @@ class PatientDataViewModel(
 
                 val birthDate = validateAndSetBirthDate(patientDataState.value.birthDate)
 
-                val bitmap = if (patientDataState.value.tempImagePath == null) {
+
+                val bitmap = if (patientDataState.value.isAddingPatientData && patientDataState.value.tempImagePath == null) {
                     getBitmapFromDrawable(event.context, R.drawable.user_icon)
+                } else if (patientDataState.value.isEditingPatientData && patientDataState.value.tempImagePath == null) {
+                    byteArrayToBitmap(patientDataState.value.profilePicture!!)
                 } else {
                     BitmapFactory.decodeFile(patientDataState.value.tempImagePath)
                 }
@@ -177,43 +161,47 @@ class PatientDataViewModel(
                 }
 
                 val patientData = if (patientId != null) {
-                    PatientData(
-                        patientId = patientId,
-                        profilePicture = bitmapToByteArray(bitmap),
-                        name = name,
-                        birthDate = birthDate,
-                        gender = gender,
-                        cpf = cpf,
-                        email = email,
-                        telNumber = telNumber,
-                        isDiabetic = isDiabetic,
-                        hasHyperTension = hasHyperTension,
-                        hasGlaucoma = hasGlaucoma,
-                        description = description
-                    )
+                    bitmap?.let { bitmapToByteArray(it) }?.let {
+                        PatientData(
+                            patientId = patientId,
+                            profilePicture = it,
+                            name = name,
+                            birthDate = birthDate,
+                            gender = gender,
+                            cpf = cpf,
+                            email = email,
+                            telNumber = telNumber,
+                            isDiabetic = isDiabetic,
+                            hasHyperTension = hasHyperTension,
+                            hasGlaucoma = hasGlaucoma,
+                            description = description
+                        )
+                    }
                 } else {
-                    PatientData(
-                        patientId = newPatientId,
-                        profilePicture = bitmapToByteArray(bitmap),
-                        name = name,
-                        birthDate = birthDate,
-                        gender = gender,
-                        cpf = cpf,
-                        email = email,
-                        telNumber = telNumber,
-                        isDiabetic = isDiabetic,
-                        hasHyperTension = hasHyperTension,
-                        hasGlaucoma = hasGlaucoma,
-                        description = description
-                    )
+                    bitmap?.let { bitmapToByteArray(it) }?.let {
+                        PatientData(
+                            patientId = newPatientId,
+                            profilePicture = it,
+                            name = name,
+                            birthDate = birthDate,
+                            gender = gender,
+                            cpf = cpf,
+                            email = email,
+                            telNumber = telNumber,
+                            isDiabetic = isDiabetic,
+                            hasHyperTension = hasHyperTension,
+                            hasGlaucoma = hasGlaucoma,
+                            description = description
+                        )
+                    }
                 }
 
 
                 viewModelScope.launch {
-                    patientDataDao.upsertPatientData(patientData)
-                    //por algum motivo esse hide dialog não funciona da forma que deveria, ainda mais aqui
-                    onEvent(PatientDataEvent.ClearStateData)
-                    onEvent(PatientDataEvent.HideDialog)
+                    if (patientData != null) {
+                        patientDataDao.upsertPatientData(patientData)
+                    }
+                    closeDialogs()
                 }
 
             }
@@ -315,6 +303,38 @@ class PatientDataViewModel(
             }
 
             else -> {}
+        }
+    }
+
+    private fun closeDialogs() {
+        _patientDataState.update {
+            it.copy(
+                isAddingPatientData = false,
+                isEditingImage = false
+            )
+        }
+    }
+
+
+    private fun clearStates() {
+        _patientDataState.update {
+            it.copy(
+                patientId = null,
+                name = "",
+                birthDate = "",
+                errorMessageBirthDate = "",
+                gender = Gender.OTHER,
+                cpf = "",
+                email = "",
+                telNumber = "",
+                isDiabetic = false,
+                hasHyperTension = false,
+                hasGlaucoma = false,
+                description = "",
+                isAddingPatientData = true,
+                tempImagePath = null,
+                profilePicture = null
+            )
         }
     }
 

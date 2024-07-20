@@ -103,16 +103,18 @@ fun PatientDialog(
                     }
                 }
                 if (state.isEditingPatientData && !state.isEditingImage) {
-                    Image(
-                        bitmap = byteArrayToBitmap(state.profilePicture).asImageBitmap(),
-                        contentDescription = "Captured Image",
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
+                    state.profilePicture?.let { byteArrayToBitmap(it).asImageBitmap() }?.let {
+                        Image(
+                            bitmap = it,
+                            contentDescription = "Captured Image",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
                 OutlinedTextField(
