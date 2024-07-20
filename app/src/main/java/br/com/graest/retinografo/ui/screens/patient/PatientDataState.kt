@@ -19,6 +19,7 @@ data class PatientDataState(
     val description: String = "",
     val profilePicture: ByteArray? = null,
     val tempImagePath: String? = null,
+    val tempImageErrorMessage: String? = null,
     val isAddingPatientData: Boolean = false,
     val isEditingPatientData: Boolean = false,
     val isEditingImage: Boolean = false,

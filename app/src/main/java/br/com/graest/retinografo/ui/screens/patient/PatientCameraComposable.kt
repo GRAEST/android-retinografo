@@ -87,6 +87,7 @@ fun PatientCameraComposable(
                         onImageCaptured = { file ->
                             viewModel.setCapturedImagePath(file.absolutePath)
                             viewModel.setErrorMessage(null)
+                            viewModel.imageAlreadyEdited()
                         },
                         onError = { error ->
                             viewModel.setErrorMessage(error.message)

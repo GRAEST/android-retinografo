@@ -1,6 +1,8 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -46,9 +48,11 @@ import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
+import br.com.graest.retinografo.utils.FormatTime.calculateAge
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExamCameraComposableScreen(
     patientDataState: PatientDataState,
@@ -210,7 +214,7 @@ fun ExamCameraComposableScreen(
                     }
                     if (examDataState.patientData != null) {
                         Text(
-                            text = "${examDataState.patientData.dataCreated} anos",
+                            text = "${calculateAge(examDataState.patientData.birthDate)} anos",
                             fontSize = 12.sp
                         )
                     }

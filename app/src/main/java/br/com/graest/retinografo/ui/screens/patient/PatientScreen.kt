@@ -61,18 +61,16 @@ fun PatientScreen(
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 if (patientData != null) {
-                    byteArrayToBitmap(patientData.profilePicture)?.let {
-                        Image(
-                            bitmap = it.asImageBitmap(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                    Image(
+                        bitmap = byteArrayToBitmap(patientData.profilePicture).asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop
+                    )
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.ic_launcher_foreground),

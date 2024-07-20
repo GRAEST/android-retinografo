@@ -40,11 +40,9 @@ class PatientDataViewModel(
         patientState.copy(
             patientsData = patientsData
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), PatientDataState())
 
-    //error message da temp image
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    /* O MUTABLE STATE PERSISTE DADOS MESMO QUANDO EU SOBRESCREVO, OU SEJA, QUANDO TEM DELETE, EDIT OU ADD, DA PROBLEMA */
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: PatientDataEvent) {
@@ -53,19 +51,16 @@ class PatientDataViewModel(
             is PatientDataEvent.DeletePatientDataById -> {
                 viewModelScope.launch {
                     patientDataDao.deletePatientDataById(event.id)
+                    closeDialogs()
+                    clearStates()
                 }
-                onEvent(PatientDataEvent.HideDialog)
+
             }
 
             PatientDataEvent.HideDialog -> {
                 viewModelScope.launch {
-                    _patientDataState.update {
-                        it.copy(
-                            isAddingPatientData = false,
-                            isEditingPatientData = false,
-                            isEditingImage = false,
-                        )
-                    }
+                    closeDialogs()
+                    clearStates()
                 }
             }
 
@@ -121,12 +116,6 @@ class PatientDataViewModel(
             }
 
             is PatientDataEvent.SavePatientData -> {
-                /*
-                * quanto você edita algo, por algum motivo fica salvo
-                * então algumas vezes você tenta abrir um "criar Paciente"
-                * e depois de criado o paciente, volta a abrir a tela de Edit
-                * */
-
 
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
                 val name = patientDataState.value.name
@@ -200,10 +189,10 @@ class PatientDataViewModel(
                 viewModelScope.launch {
                     if (patientData != null) {
                         patientDataDao.upsertPatientData(patientData)
+                        clearStates()
+                        closeDialogs()
                     }
-                    closeDialogs()
                 }
-
             }
 
             is PatientDataEvent.SetPatientName -> {
@@ -306,15 +295,22 @@ class PatientDataViewModel(
         }
     }
 
-    private fun closeDialogs() {
+    fun imageAlreadyEdited(){
         _patientDataState.update {
             it.copy(
-                isAddingPatientData = false,
-                isEditingImage = false
+                isEditingImage = false,
             )
         }
     }
 
+    private fun closeDialogs() {
+        _patientDataState.update {
+            it.copy(
+                isAddingPatientData = false,
+                isEditingPatientData = false
+            )
+        }
+    }
 
     private fun clearStates() {
         _patientDataState.update {
@@ -331,7 +327,6 @@ class PatientDataViewModel(
                 hasHyperTension = false,
                 hasGlaucoma = false,
                 description = "",
-                isAddingPatientData = true,
                 tempImagePath = null,
                 profilePicture = null
             )
@@ -339,7 +334,6 @@ class PatientDataViewModel(
     }
 
     fun setCapturedImagePath(path: String?) {
-        //_capturedImagePath.value = path
         _patientDataState.update {
             it.copy(
                 tempImagePath = path
@@ -348,7 +342,11 @@ class PatientDataViewModel(
     }
 
     fun setErrorMessage(message: String?) {
-        _errorMessage.value = message
+        _patientDataState.update {
+            it.copy(
+                tempImageErrorMessage = message
+            )
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
