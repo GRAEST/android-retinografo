@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.utils.FormatTime.calculateAge
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -98,19 +99,17 @@ fun PatientScreen(
                     }
                     if (patientData != null) {
                         Text(
-                            text = "${patientData.dataCreated} anos",
+                            text = "${calculateAge(patientData.birthDate)} anos",
                             fontSize = 12.sp
                         )
                     }
                 }
                 IconButton(onClick = {
-                    if (patientData != null) {
-                        patientData.patientId?.let {
-                            PatientDataEvent.ShowEditPatientDialog(
-                                it
-                            )
-                        }?.let { onEvent(it) }
-                    }
+                    patientData?.patientId?.let {
+                        PatientDataEvent.ShowEditPatientDialog(
+                            it
+                        )
+                    }?.let { onEvent(it) }
                 }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -121,6 +120,5 @@ fun PatientScreen(
 
         }
     }
-
 }
 

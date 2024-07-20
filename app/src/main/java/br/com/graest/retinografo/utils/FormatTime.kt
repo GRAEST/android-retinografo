@@ -3,7 +3,9 @@ package br.com.graest.retinografo.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -19,5 +21,11 @@ object FormatTime {
 
         // Format LocalDateTime using the formatter
         return formatter.format(localDateTime)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun calculateAge(birthDate: LocalDate?): String {
+        val currentDate = LocalDate.now()
+        return Period.between(birthDate, currentDate).years.toString()
     }
 }
