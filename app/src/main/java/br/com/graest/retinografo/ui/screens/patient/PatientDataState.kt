@@ -18,6 +18,7 @@ data class PatientDataState(
     val hasGlaucoma: Boolean = false,
     val description: String = "",
     val profilePicture: ByteArray = ByteArray(0),
+    val tempImagePath: String? = null,
     val isAddingPatientData: Boolean = false,
     val isEditingPatientData: Boolean = false,
     val isEditingImage: Boolean = false,

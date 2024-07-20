@@ -67,7 +67,6 @@ fun PatientDialog(
     viewModel: PatientDataViewModel,
     applicationContext: Context,
 ) {
-    val capturedImagePath = viewModel.capturedImagePath.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -90,8 +89,8 @@ fun PatientDialog(
                     .padding(10.dp)
             ) {
                 if (state.isAddingPatientData || state.isEditingImage) {
-                    if (capturedImagePath.value != null) {
-                        val bitmap = BitmapFactory.decodeFile(capturedImagePath.value)
+                    if (state.tempImagePath != null) {
+                        val bitmap = BitmapFactory.decodeFile(state.tempImagePath)
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured Image",
@@ -356,7 +355,7 @@ fun PatientDialog(
                         }
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
-                    if (capturedImagePath.value != null) {
+                    if (state.tempImagePath != null) {
                         Text(text = "Image Added")
                     } else {
                         Text(text = "No image yet.")

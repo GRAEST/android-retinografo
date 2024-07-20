@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
+import br.com.graest.retinografo.utils.FormatTime.calculateAge
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExamAddPatientDialog(
     patientDataState: PatientDataState,
@@ -61,7 +65,7 @@ fun ExamAddPatientDialog(
                                         fontWeight = FontWeight(700)
                                     )
                                     Text(
-                                        text = "${patientData.dataCreated.toString()} years old",
+                                        text = "${calculateAge(patientData.birthDate)} years old",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight(500)
                                     )

@@ -99,7 +99,7 @@ fun PatientScreen(
                     }
                     if (patientData != null) {
                         Text(
-                            text = "${calculateAge(patientData.birthDate)} anos",
+                            text = "${calculateAge(patientData.birthDate)} years old",
                             fontSize = 12.sp
                         )
                     }

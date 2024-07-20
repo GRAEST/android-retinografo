@@ -9,6 +9,7 @@ sealed interface PatientDataEvent {
     data class ShowEditPatientDialog(val id: ByteArray) : PatientDataEvent
     data object ShowAddPatientDialog : PatientDataEvent
     data object HideDialog : PatientDataEvent
+    data object ClearStateData: PatientDataEvent
     data class DeletePatientDataById(val id: ByteArray) : PatientDataEvent
     data class SetPatientName(val name: String) : PatientDataEvent
     data class SetPatientBirthDate(val birthDate: String) : PatientDataEvent

@@ -41,9 +41,7 @@ class PatientDataViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PatientDataState())
 
-    private val _capturedImagePath = MutableStateFlow<String?>(null)
-    val capturedImagePath: StateFlow<String?> = _capturedImagePath.asStateFlow()
-
+    //error message da temp image
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -65,6 +63,15 @@ class PatientDataViewModel(
                             isAddingPatientData = false,
                             isEditingPatientData = false,
                             isEditingImage = false,
+                        )
+                    }
+                }
+            }
+
+            PatientDataEvent.ClearStateData -> {
+                viewModelScope.launch {
+                    _patientDataState.update {
+                        it.copy(
                             patientId = ByteArray(0),
                             name = "",
                             birthDate = "",
@@ -94,6 +101,7 @@ class PatientDataViewModel(
                 _patientDataState.update {
                     it.copy(
                         isAddingPatientData = true,
+                        tempImagePath = null,
                         patientId = null,
                     )
                 }
@@ -153,10 +161,10 @@ class PatientDataViewModel(
 
                 val birthDate = validateAndSetBirthDate(patientDataState.value.birthDate)
 
-                val bitmap = if (capturedImagePath.value == null) {
+                val bitmap = if (patientDataState.value.tempImagePath == null) {
                     getBitmapFromDrawable(event.context, R.drawable.user_icon)
                 } else {
-                    BitmapFactory.decodeFile(capturedImagePath.value)
+                    BitmapFactory.decodeFile(patientDataState.value.tempImagePath)
                 }
 
                 val newPatientId = patientId ?: ByteBuffer.wrap(ByteArray(16))
@@ -204,6 +212,7 @@ class PatientDataViewModel(
                 viewModelScope.launch {
                     patientDataDao.upsertPatientData(patientData)
                     //por algum motivo esse hide dialog não funciona da forma que deveria, ainda mais aqui
+                    onEvent(PatientDataEvent.ClearStateData)
                     onEvent(PatientDataEvent.HideDialog)
                 }
 
@@ -310,7 +319,12 @@ class PatientDataViewModel(
     }
 
     fun setCapturedImagePath(path: String?) {
-        _capturedImagePath.value = path
+        //_capturedImagePath.value = path
+        _patientDataState.update {
+            it.copy(
+                tempImagePath = path
+            )
+        }
     }
 
     fun setErrorMessage(message: String?) {
