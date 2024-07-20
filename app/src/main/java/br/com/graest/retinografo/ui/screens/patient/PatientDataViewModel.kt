@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.Gender
@@ -104,7 +103,12 @@ class PatientDataViewModel(
                 viewModelScope.launch {
                     patientDataDao.getPatientData(event.id).collect { data ->
                         if (data != null) {
-                            val birthDate = if (data.birthDate == null) {""} else { data.birthDate.toString() }
+                            val birthDate = if (data.birthDate == null) {
+                                ""
+                            } else {
+                                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                                data.birthDate.format(formatter)
+                            }
                             _patientDataState.update { currentState ->
                                 currentState.copy(
                                     isEditingPatientData = true,
@@ -135,7 +139,6 @@ class PatientDataViewModel(
                 * */
 
 
-
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
                 val name = patientDataState.value.name
                 val gender = patientDataState.value.gender
@@ -150,7 +153,7 @@ class PatientDataViewModel(
 
                 val birthDate = validateAndSetBirthDate(patientDataState.value.birthDate)
 
-                val bitmap =  if (capturedImagePath.value == null){
+                val bitmap = if (capturedImagePath.value == null) {
                     getBitmapFromDrawable(event.context, R.drawable.user_icon)
                 } else {
                     BitmapFactory.decodeFile(capturedImagePath.value)
@@ -161,7 +164,7 @@ class PatientDataViewModel(
                     .putLong(UUID.randomUUID().leastSignificantBits)
                     .array()
 
-                if (name.isBlank() || patientDataState.value.errorMessageBirthDate == "") {
+                if (name.isBlank() || patientDataState.value.errorMessageBirthDate != "") {
                     return
                 }
 
@@ -321,7 +324,8 @@ class PatientDataViewModel(
         return try {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val localDate = LocalDate.parse(birthDateString, formatter)
-            onEvent(PatientDataEvent.SetPatientBirthDate(localDate.toString()))
+            val stringDate = localDate.format(formatter)
+            onEvent(PatientDataEvent.SetPatientBirthDate(stringDate))
             _patientDataState.update {
                 it.copy(
                     errorMessageBirthDate = ""

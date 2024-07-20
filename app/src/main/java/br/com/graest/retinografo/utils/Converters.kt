@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 
 class Converters {
     @RequiresApi(Build.VERSION_CODES.O)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
     @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
