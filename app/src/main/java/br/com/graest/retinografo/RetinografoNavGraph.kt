@@ -87,8 +87,8 @@ fun RetinografoNavGraph(
             ExamList(examDataState)
         }
 
-//        composable("ImageDetails") {
-//            ImageDetailsScreen(
+//        composable("ExamsDetails") {
+//            ExamDetailsScreen(
 //                bitmaps = bitmaps,
 //                bitmapSelectedIndex
 //            )
@@ -100,7 +100,6 @@ fun RetinografoNavGraph(
                 state = patientDataState,
                 onEvent = patientViewModel::onEvent,
                 onLaunchCamera = { navController.navigate("PatientCamera") },
-                viewModel = patientViewModel,
                 applicationContext = applicationContext
             )
         }

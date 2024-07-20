@@ -41,12 +41,11 @@ fun PatientScreen(
     state: PatientDataState,
     onEvent: (PatientDataEvent) -> Unit,
     onLaunchCamera: () -> Unit,
-    viewModel: PatientDataViewModel,
     applicationContext: Context
 ) {
 
     if (state.isAddingPatientData || state.isEditingPatientData) {
-        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera, viewModel = viewModel, applicationContext = applicationContext)
+        PatientDialog(state = state, onEvent = onEvent, onLaunchCamera = onLaunchCamera, applicationContext = applicationContext)
     }
 
     LazyColumn(

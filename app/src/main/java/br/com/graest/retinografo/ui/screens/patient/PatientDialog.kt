@@ -64,7 +64,6 @@ fun PatientDialog(
     onEvent: (PatientDataEvent) -> Unit,
     onLaunchCamera: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PatientDataViewModel,
     applicationContext: Context,
 ) {
 
