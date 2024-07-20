@@ -131,104 +131,114 @@ fun PatientDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        OutlinedTextField(
-                            value = state.birthDate,
-                            onValueChange = { onEvent(PatientDataEvent.SetPatientBirthDate(it)) },
-                            placeholder = { Text(text = "Enter date (dd-MM-yyyy)") },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onNext = { focusManager.moveFocus(FocusDirection.Right) }
-                            ),
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                        if (state.errorMessageBirthDate.isNotEmpty()) {
-                            Text(
-                                text = state.errorMessageBirthDate,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    }
 
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    OutlinedTextField(
+                        value = state.birthDate,
+                        onValueChange = { onEvent(PatientDataEvent.SetPatientBirthDate(it)) },
+                        placeholder = { Text(text = "Enter date (dd-MM-yyyy)") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Right) }
+                        ),
+                        singleLine = true,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(text=state.gender.toString()) },
-                            onClick = { onEvent(PatientDataEvent.ExpandGenderMenu) },
-                            leadingIcon = {
-                                when (state.gender) {
-                                    Gender.MALE -> { Icon(Icons.Outlined.Man, contentDescription = null)}
-                                    Gender.FEMALE -> { Icon(Icons.Outlined.Woman2, contentDescription = null)}
-                                    Gender.OTHER -> { Icon(Icons.Outlined.IndeterminateCheckBox, contentDescription = null) }
-                                }
-                            },
-                            trailingIcon = {
-                                Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
-                            }
+                            .fillMaxWidth()
+                    )
+                    if (state.errorMessageBirthDate.isNotEmpty()) {
+                        Text(
+                            text = state.errorMessageBirthDate,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
-                        DropdownMenu(
-                            expanded = state.genderMenuExpanded,
-                            onDismissRequest = {
-                                onEvent(PatientDataEvent.ShrinkGenderMenu)
-                            }) {
-                            DropdownMenuItem(
-                                text = { Text("Male") },
-                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.MALE)) },
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Outlined.Man,
-                                        contentDescription = null
-                                    )
-                                },
-                                trailingIcon = {
-                                    if (state.gender == Gender.MALE) {
-                                        Icon(Icons.Outlined.Check, contentDescription = null)
-                                    }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = state.gender.toString()) },
+                        onClick = { onEvent(PatientDataEvent.ExpandGenderMenu) },
+                        leadingIcon = {
+                            when (state.gender) {
+                                Gender.MALE -> {
+                                    Icon(Icons.Outlined.Man, contentDescription = null)
                                 }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Female") },
-                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.FEMALE)) },
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Outlined.Woman2,
-                                        contentDescription = null
-                                    )
-                                },
-                                trailingIcon = {
-                                    if (state.gender == Gender.FEMALE) {
-                                        Icon(Icons.Outlined.Check, contentDescription = null)
-                                    }
+
+                                Gender.FEMALE -> {
+                                    Icon(Icons.Outlined.Woman2, contentDescription = null)
                                 }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Other") },
-                                onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.OTHER)) },
-                                leadingIcon = {
+
+                                Gender.OTHER -> {
                                     Icon(
                                         Icons.Outlined.IndeterminateCheckBox,
                                         contentDescription = null
                                     )
-                                },
-                                trailingIcon = {
-                                    if (state.gender == Gender.OTHER) {
-                                        Icon(Icons.Outlined.Check, contentDescription = null)
-                                    }
                                 }
-                            )
+                            }
+                        },
+                        trailingIcon = {
+                            Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
                         }
+                    )
+                    DropdownMenu(
+                        expanded = state.genderMenuExpanded,
+                        onDismissRequest = {
+                            onEvent(PatientDataEvent.ShrinkGenderMenu)
+                        }) {
+                        DropdownMenuItem(
+                            text = { Text("Male") },
+                            onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.MALE)) },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.Man,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                if (state.gender == Gender.MALE) {
+                                    Icon(Icons.Outlined.Check, contentDescription = null)
+                                }
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Female") },
+                            onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.FEMALE)) },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.Woman2,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                if (state.gender == Gender.FEMALE) {
+                                    Icon(Icons.Outlined.Check, contentDescription = null)
+                                }
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Other") },
+                            onClick = { onEvent(PatientDataEvent.SetPatientGender(Gender.OTHER)) },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.IndeterminateCheckBox,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                if (state.gender == Gender.OTHER) {
+                                    Icon(Icons.Outlined.Check, contentDescription = null)
+                                }
+                            }
+                        )
                     }
                 }
 
