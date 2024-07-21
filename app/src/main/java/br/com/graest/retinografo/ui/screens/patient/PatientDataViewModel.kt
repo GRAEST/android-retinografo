@@ -295,6 +295,14 @@ class PatientDataViewModel(
         }
     }
 
+    // to kill all problems, try and avoid cuncurrency problems (async and sync) so move all to async
+    fun resetFlowState(){
+        viewModelScope.launch {
+            _patientDataState.value = PatientDataState()
+        }
+    }
+
+
     fun imageAlreadyEdited(){
         _patientDataState.update {
             it.copy(
