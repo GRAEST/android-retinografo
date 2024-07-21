@@ -83,6 +83,8 @@ dependencies {
     kapt(libs.androidx.room.room.compiler)
     //ksp(libs.androidx.room.room.compiler)
 
+    implementation(libs.com.google.code.gson)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

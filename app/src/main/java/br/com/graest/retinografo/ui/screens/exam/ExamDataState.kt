@@ -5,12 +5,16 @@ import br.com.graest.retinografo.data.model.PatientData
 
 data class ExamDataState(
     val examsDataWithPatient: List<ExamDataWithPatient?> = emptyList(),
-    val id: Int = 0, //Exam ID //acho que não é usado
+    var rightEyeImagePaths: List<String> = emptyList(),
+    val leftEyeImagePaths: List<String> = emptyList(),
     val examLocation: String = "",
     val showAddPatientDialog: Boolean = false,
     val isLocationAdded: Boolean = false,
     val showToastRed: Boolean = false,
     val showToastGreen: Boolean = false,
     val patientSelected: Boolean = false,
+    val readyToSave: Boolean = false,
+    val onLeftEyeSaveMode: Boolean = true,
+    val onRightEyeSaveMode: Boolean = false,
     val patientData: PatientData? = null,
 )

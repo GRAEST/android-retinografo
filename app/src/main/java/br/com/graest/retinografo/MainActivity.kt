@@ -94,7 +94,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
+                val hideAppBarRoutes = if (examDataState.patientSelected) {
+                     setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB", "ExamCamera")
+                } else {
+                    setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
+                }
+                //val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
                 val navController: NavHostController = rememberNavController()
                 var showAppBar by remember { mutableStateOf(true) }
 

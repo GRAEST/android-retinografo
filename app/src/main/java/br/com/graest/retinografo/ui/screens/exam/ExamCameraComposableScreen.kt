@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -30,8 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,7 +61,7 @@ fun ExamCameraComposableScreen(
     navController: NavController,
 ) {
 
-    val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
+//    val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
 
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -110,7 +107,7 @@ fun ExamCameraComposableScreen(
         )
     }
 
-    if (capturedImagePaths.size == 4) {
+    if (examDataState.readyToSave) {
         ExamAddLocationDialog(
             examDataState = examDataState,
             onEvent = onEvent,
@@ -118,11 +115,47 @@ fun ExamCameraComposableScreen(
         )
     }
 
+//    if (examDataState.patientSelected) {
+//        Row {
+//            if (examDataState.onRightEyeSaveMode){
+//                Text(text = "Saving Right Eye Image")
+//                Row {
+//                    Text(text = "R-${examDataState.rightEyeImagePaths.size}")
+//                    Button(onClick = {
+//                        onEvent(ExamDataEvent.OnLeftEyeSaveMode)
+//                    }) {
+//                        Text(text = "Left Eye Save Mode")
+//                    }
+//                }
+//            }
+//            if (examDataState.onLeftEyeSaveMode) {
+//                Text(text = "Saving Left Eye Image")
+//                Row {
+//                    Text(text = "L-${examDataState.leftEyeImagePaths.size}")
+//                    Button(onClick = {
+//                        onEvent(ExamDataEvent.OnRightEyeSaveMode)
+//                    }) {
+//                        Text(text = "Right Eye Image")
+//                    }
+//                }
+//            }
+//            Button(onClick = {
+//                if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()){
+//                    onEvent(ExamDataEvent.OnReadyToSave)
+//                }
+//            }) {
+//                Text("Ready to Save")
+//            }
+//        }
+//    }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
+
 
         if (!examDataState.patientSelected) {
             Row(
@@ -163,21 +196,113 @@ fun ExamCameraComposableScreen(
             }
         }
         if (examDataState.patientSelected) {
+            Column {
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.LightGray)
-                    .padding(8.dp)
+                Row (
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 10.dp
+                    )
+                ) {
+                    if (examDataState.onRightEyeSaveMode) {
+                        Column(
+                            modifier = Modifier.weight(3f),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Saving Right Eye Image",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight(800),
+                                color = Color.White
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "R-${examDataState.rightEyeImagePaths.size}",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight(800),
+                                    color = Color.White
 
-            ) {
-                if (examDataState.patientData != null) {
-                    byteArrayToBitmap(examDataState.patientData.profilePicture)?.let {
+                                )
+                                Spacer(modifier = Modifier.padding(10.dp))
+                                Button(onClick = {
+                                    onEvent(ExamDataEvent.OnLeftEyeSaveMode)
+                                }) {
+                                    Text(text = "Capture Left Eye")
+                                }
+                            }
+                        }
+                    }
+                    if (examDataState.onLeftEyeSaveMode) {
+                        Column(
+                            modifier = Modifier.weight(3f),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Saving Left Eye Image",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight(800),
+                                color = Color.White
+                            )
+                            Row (
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "L-${examDataState.leftEyeImagePaths.size}",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight(800),
+                                    color = Color.White
+                                )
+                                Spacer(modifier = Modifier.padding(10.dp))
+                                Button(onClick = {
+                                    onEvent(ExamDataEvent.OnRightEyeSaveMode)
+                                }) {
+                                    Text(text = "Capture Right Eye")
+                                }
+                            }
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
+                                onEvent(ExamDataEvent.OnReadyToSave)
+                            }
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Finish")
+                    }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.LightGray)
+                        .padding(8.dp)
+
+                ) {
+                    if (examDataState.patientData != null) {
+                        byteArrayToBitmap(examDataState.patientData.profilePicture)?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                    .aspectRatio(1f),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    } else {
                         Image(
-                            bitmap = it.asImageBitmap(),
+                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
                             contentDescription = null,
                             modifier = Modifier
                                 .weight(1f)
@@ -187,55 +312,42 @@ fun ExamCameraComposableScreen(
                             contentScale = ContentScale.Crop
                         )
                     }
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
-                    )
-                }
 
-                Spacer(modifier = Modifier.padding(10.dp))
+                    Spacer(modifier = Modifier.padding(10.dp))
 
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.weight(4f)
-                ) {
-                    if (examDataState.patientData != null) {
-                        Text(
-                            text = examDataState.patientData.name,
-                            fontSize = 20.sp
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.weight(4f)
+                    ) {
+                        if (examDataState.patientData != null) {
+                            Text(
+                                text = examDataState.patientData.name,
+                                fontSize = 20.sp
+                            )
+                        }
+                        if (examDataState.patientData != null) {
+                            Text(
+                                text = "${calculateAge(examDataState.patientData.birthDate)} anos",
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = {
+                            onEvent(ExamDataEvent.NoPatientSelected)
+                            onEvent(ExamDataEvent.OnCancelExam)
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Cancel,
+                            contentDescription = "Cancel Button"
                         )
                     }
-                    if (examDataState.patientData != null) {
-                        Text(
-                            text = "${calculateAge(examDataState.patientData.birthDate)} anos",
-                            fontSize = 12.sp
-                        )
-                    }
                 }
-
-                IconButton(
-                    onClick = {
-                        onEvent(ExamDataEvent.NoPatientSelected)
-                        onEvent(ExamDataEvent.OnCancelExam)
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Cancel,
-                        contentDescription = "Cancel Button"
-                    )
-                }
-
             }
-
         }
+
         Box(
             contentAlignment = Alignment.Center
         ) {
@@ -260,30 +372,64 @@ fun ExamCameraComposableScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text(
-                text = "${capturedImagePaths.size}",
-                color = Color.White
-            )
-
+//            Text(
+//                text = "${capturedImagePaths.size}",
+//                color = Color.White
+//            )
 
             IconButton(
                 onClick = {
                     if (examDataState.patientSelected) {
-                        captureImage(
-                            context = applicationContext,
-                            controller = controller,
-                            navController = navController,
-                            onImageCaptured = { file ->
-                                examDataViewModel.addImagePath(
-                                    path = file.absolutePath
-                                )
-                                examDataViewModel.setErrorMessage(null)
-                                //começar contagem e dar algum sinal de tela carregando
-                            },
-                            onError = { error ->
-                                examDataViewModel.setErrorMessage(error.message)
-                            }
-                        )
+                        if (examDataState.onRightEyeSaveMode) {
+                            captureImage(
+                                context = applicationContext,
+                                controller = controller,
+                                navController = navController,
+                                onImageCaptured = { file ->
+                                    examDataViewModel.addRightEyeImagePath(
+                                        path = file.absolutePath
+                                    )
+                                    examDataViewModel.setErrorMessage(null)
+                                    //começar contagem e dar algum sinal de tela carregando
+                                },
+                                onError = { error ->
+                                    examDataViewModel.setErrorMessage(error.message)
+                                }
+                            )
+                        }
+                        if (examDataState.onLeftEyeSaveMode) {
+                            captureImage(
+                                context = applicationContext,
+                                controller = controller,
+                                navController = navController,
+                                onImageCaptured = { file ->
+                                    examDataViewModel.addLeftEyeImagePath(
+                                        path = file.absolutePath
+                                    )
+                                    examDataViewModel.setErrorMessage(null)
+                                    //começar contagem e dar algum sinal de tela carregando
+                                },
+                                onError = { error ->
+                                    examDataViewModel.setErrorMessage(error.message)
+                                }
+                            )
+                        }
+//
+//                        captureImage(
+//                            context = applicationContext,
+//                            controller = controller,
+//                            navController = navController,
+//                            onImageCaptured = { file ->
+//                                examDataViewModel.addImagePath(
+//                                    path = file.absolutePath
+//                                )
+//                                examDataViewModel.setErrorMessage(null)
+//                                //começar contagem e dar algum sinal de tela carregando
+//                            },
+//                            onError = { error ->
+//                                examDataViewModel.setErrorMessage(error.message)
+//                            }
+//                        )
                     } else {
                         onEvent(ExamDataEvent.OnShowToastRed)
                     }
@@ -296,11 +442,12 @@ fun ExamCameraComposableScreen(
                 )
             }
 
-            Text(
-                text = "${capturedImagePaths.size}",
-                color = Color.White
-                //isso junto com um when consegue o comportamento do figma (D-1) (D-2) (E-1) (E-2)
-            )
+//            Text(
+//                text = "${capturedImagePaths.size}",
+//                color = Color.White
+//                //isso junto com um when consegue o comportamento do figma (D-1) (D-2) (E-1) (E-2)
+//            )
+
         }
     }
 }

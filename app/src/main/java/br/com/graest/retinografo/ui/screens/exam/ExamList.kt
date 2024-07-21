@@ -53,7 +53,7 @@ fun ExamList(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (examDataWithPatient != null) {
-                        val bitmap = BitmapFactory.decodeFile(examDataWithPatient.examData.imagePath1)
+                        val bitmap = BitmapFactory.decodeFile(examDataWithPatient.examData.listImagesRightEye[0])
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured Image",

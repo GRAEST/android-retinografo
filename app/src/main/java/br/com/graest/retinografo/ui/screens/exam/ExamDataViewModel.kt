@@ -22,11 +22,11 @@ import java.io.File
 
 
 class ExamDataViewModel(
-    private val examDataDao: ExamDataDao
+    private val examDataDao: ExamDataDao,
 ) : ViewModel() {
 
-    private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
-    val capturedImagePaths: StateFlow<List<String>> = _capturedImagePaths.asStateFlow()
+//    private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
+//    val capturedImagePaths: StateFlow<List<String>> = _capturedImagePaths.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
@@ -35,11 +35,12 @@ class ExamDataViewModel(
 
     private val _examDataState = MutableStateFlow(ExamDataState())
 
-    val examDataState = combine(_examDataState, _examsDataWithPatient) { examDataState, examsDataWithPatient ->
-        examDataState.copy(
-            examsDataWithPatient = examsDataWithPatient
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
+    val examDataState =
+        combine(_examDataState, _examsDataWithPatient) { examDataState, examsDataWithPatient ->
+            examDataState.copy(
+                examsDataWithPatient = examsDataWithPatient
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 
 
     fun onEvent(event: ExamDataEvent) {
@@ -49,7 +50,10 @@ class ExamDataViewModel(
                     examDataDao.deleteExamById(event.id)
                 }
             }
-            is ExamDataEvent.SaveExamData -> { saveExamWithLocation(event.context) }
+
+            is ExamDataEvent.SaveExamData -> {
+                saveExamWithLocation(event.context)
+            }
 
             ExamDataEvent.ShowAddPatientDialog -> {
                 _examDataState.update {
@@ -58,6 +62,7 @@ class ExamDataViewModel(
                     )
                 }
             }
+
             ExamDataEvent.HideAddPatientDialog -> {
                 _examDataState.update {
                     it.copy(
@@ -65,6 +70,7 @@ class ExamDataViewModel(
                     )
                 }
             }
+
             ExamDataEvent.SetIsLocationAddedFalse -> {
                 _examDataState.update {
                     it.copy(
@@ -72,6 +78,7 @@ class ExamDataViewModel(
                     )
                 }
             }
+
             ExamDataEvent.SetIsLocationAddedTrue -> {
                 _examDataState.update {
                     it.copy(
@@ -79,6 +86,7 @@ class ExamDataViewModel(
                     )
                 }
             }
+
             is ExamDataEvent.SetExamLocation -> {
                 _examDataState.update {
                     it.copy(
@@ -86,6 +94,7 @@ class ExamDataViewModel(
                     )
                 }
             }
+
             is ExamDataEvent.PatientSelected -> {
                 _examDataState.update {
                     it.copy(
@@ -103,6 +112,32 @@ class ExamDataViewModel(
                     )
                 }
             }
+
+            ExamDataEvent.OnRightEyeSaveMode -> {
+                _examDataState.update {
+                    it.copy(
+                        onRightEyeSaveMode = true,
+                        onLeftEyeSaveMode = false
+                    )
+                }
+            }
+            ExamDataEvent.OnLeftEyeSaveMode -> {
+                _examDataState.update {
+                    it.copy(
+                        onRightEyeSaveMode = false,
+                        onLeftEyeSaveMode = true
+                    )
+                }
+            }
+
+            ExamDataEvent.OnReadyToSave -> {
+                _examDataState.update {
+                    it.copy(
+                        readyToSave = true
+                    )
+                }
+            }
+
             ExamDataEvent.OnShowToastRed -> {
                 viewModelScope.launch {
                     _examDataState.update {
@@ -114,6 +149,7 @@ class ExamDataViewModel(
                     }
                 }
             }
+
             ExamDataEvent.OnShowToastGreen -> {
                 viewModelScope.launch {
                     _examDataState.update {
@@ -125,81 +161,179 @@ class ExamDataViewModel(
                     }
                 }
             }
+
             ExamDataEvent.OnCancelExam -> {
                 cleanupPath()
                 cleanupTemporaryImages()
                 _examDataState.update {
                     it.copy(
                         examLocation = "",
-                        isLocationAdded = false
+                        isLocationAdded = false,
+                        readyToSave = false,
+                        onLeftEyeSaveMode = true,
+                        onRightEyeSaveMode = false
                     )
                 }
             }
+
             else -> {}
         }
     }
 
-    fun addImagePath(path: String) {
-        if (_capturedImagePaths.value.size < 4) {
-            _capturedImagePaths.value += path
+//    fun addImagePath(path: String) {
+//        if (_capturedImagePaths.value.size < 4) {
+//            _capturedImagePaths.value += path
+//        }
+//    }
+
+    fun addRightEyeImagePath(path: String) {
+        _examDataState.update {
+            it.copy(
+                rightEyeImagePaths = _examDataState.value.rightEyeImagePaths + path
+            )
         }
+        //_examDataState.value.rightEyeImagePaths += path
     }
 
+    fun addLeftEyeImagePath(path: String) {
+        _examDataState.update {
+            it.copy(
+                leftEyeImagePaths = _examDataState.value.leftEyeImagePaths + path
+            )
+        }
+        //_examDataState.value.leftEyeImagePaths += path
+    }
+
+//    private fun cleanupPath() {
+//        _capturedImagePaths.value = emptyList()
+//    }
+
     private fun cleanupPath() {
-        _capturedImagePaths.value = emptyList()
+        _examDataState.update {
+            it.copy(
+                rightEyeImagePaths = emptyList(),
+                leftEyeImagePaths = emptyList()
+            )
+        }
     }
 
     fun setErrorMessage(message: String?) {
         _errorMessage.value = message
     }
 
+    //    private fun cleanupTemporaryImages() {
+//        capturedImagePaths.value.forEach { path ->
+//            File(path).delete()
+//        }
+//    }
+
     private fun cleanupTemporaryImages() {
-        capturedImagePaths.value.forEach { path ->
+        _examDataState.value.leftEyeImagePaths.forEach { path ->
+            File(path).delete()
+        }
+        _examDataState.value.rightEyeImagePaths.forEach { path ->
             File(path).delete()
         }
     }
+
+
+//    private fun saveExamWithLocation(context: Context) {
+//        val locationService = LocationService(context)
+//        locationService.getCurrentLocation { location ->
+//            Log.d("ExamDataViewModel", "Location obtained: $location")
+//            if (_capturedImagePaths.value.size == 4) {
+//                val examData = createExamData(context, location?.latitude, location?.longitude)
+//                if (examData != null) {
+//                    viewModelScope.launch {
+//                        try {
+//                            examDataDao.insertExam(examData)
+//                            Log.d("ExamDataViewModel", "ExamData inserted successfully")
+//                        } catch (e: Exception) {
+//                            Log.e("ExamDataViewModel", "Error inserting ExamData", e)
+//                            setErrorMessage("Error saving exam data")
+//                        } finally {
+//                            onEvent(ExamDataEvent.OnCancelExam)
+//                            onEvent(ExamDataEvent.SetIsLocationAddedFalse)
+//                        }
+//                    }
+//                }
+//            } else {
+//                setErrorMessage("Not enough images captured")
+//                Log.e("ExamDataViewModel", "Not enough images captured")
+//            }
+//        }
+//    }
 
     private fun saveExamWithLocation(context: Context) {
         val locationService = LocationService(context)
         locationService.getCurrentLocation { location ->
             Log.d("ExamDataViewModel", "Location obtained: $location")
-            if (_capturedImagePaths.value.size == 4) {
-                val examData = createExamData(context, location?.latitude, location?.longitude)
-                if (examData != null) {
-                    viewModelScope.launch {
-                        try {
-                            examDataDao.insertExam(examData)
-                            Log.d("ExamDataViewModel", "ExamData inserted successfully")
-                        } catch (e: Exception) {
-                            Log.e("ExamDataViewModel", "Error inserting ExamData", e)
-                            setErrorMessage("Error saving exam data")
-                        } finally {
-                            onEvent(ExamDataEvent.OnCancelExam)
-                            onEvent(ExamDataEvent.SetIsLocationAddedFalse)
-                        }
+            val examData = createExamData(context, location?.latitude, location?.longitude)
+            viewModelScope.launch {
+                try {
+                    if (examData != null) {
+                        examDataDao.insertExam(examData = examData)
                     }
+                } catch (e: Exception) {
+                    Log.e("ExamDataViewModel", "Error inserting ExamData", e)
+                    setErrorMessage("Error saving exam data")
+                } finally {
+                    onEvent(ExamDataEvent.OnCancelExam)
+                    onEvent(ExamDataEvent.SetIsLocationAddedFalse)
                 }
-            } else {
-                setErrorMessage("Not enough images captured")
-                Log.e("ExamDataViewModel", "Not enough images captured")
             }
         }
     }
 
+//    private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
+//        return try {
+//            val image1 = BitmapFactory.decodeFile(_capturedImagePaths.value[0])
+//            val image2 = BitmapFactory.decodeFile(_capturedImagePaths.value[1])
+//            val image3 = BitmapFactory.decodeFile(_capturedImagePaths.value[2])
+//            val image4 = BitmapFactory.decodeFile(_capturedImagePaths.value[3])
+//            val patientId = _examDataState.value.patientData?.patientId
+//
+//            patientId?.let {
+//                ExamData(
+//                    listImagesRightEye = listOf(""),
+//                    listImagesLeftEye = listOf(""),
+//                    imagePath1 = saveImageToFile(context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
+//                    imagePath2 = saveImageToFile(context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
+//                    imagePath3 = saveImageToFile(context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
+//                    imagePath4 = saveImageToFile(context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
+//                    examCoordinates = "$latitude,$longitude",
+//                    examLocation = examDataState.value.examLocation,
+//                    patientId = it
+//                )
+//            }
+//        } catch (e: Exception) {
+//            Log.e("ExamDataViewModel", "Error creating ExamData", e)
+//            null
+//        }
+//    }
+
     private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
         return try {
-            val image1 = BitmapFactory.decodeFile(_capturedImagePaths.value[0])
-            val image2 = BitmapFactory.decodeFile(_capturedImagePaths.value[1])
-            val image3 = BitmapFactory.decodeFile(_capturedImagePaths.value[2])
-            val image4 = BitmapFactory.decodeFile(_capturedImagePaths.value[3])
+            val leftEyeImagePathList = mutableListOf<String>()
+            val rightEyeImagePathList = mutableListOf<String>()
+
+            //talvez levar o file direto de temp para permanente ao invés de traduzir no meio
+            _examDataState.value.leftEyeImagePaths.forEachIndexed { index, tempImagePath ->
+                val bitmapImageFromTemp = BitmapFactory.decodeFile(tempImagePath)
+                leftEyeImagePathList.add(saveImageToFile(context, bitmapImageFromTemp, "left_eye_image${index}_${System.currentTimeMillis()}.jpg") ?: "")
+            }
+
+            _examDataState.value.rightEyeImagePaths.forEachIndexed { index, tempImagePath ->
+                val bitmapImageFromTemp = BitmapFactory.decodeFile(tempImagePath)
+                rightEyeImagePathList.add(saveImageToFile(context, bitmapImageFromTemp, "right_eye_image${index}_${System.currentTimeMillis()}.jpg") ?: "")
+            }
+
             val patientId = _examDataState.value.patientData?.patientId
 
             patientId?.let {
                 ExamData(
-                    imagePath1 = saveImageToFile(context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
-                    imagePath2 = saveImageToFile(context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
-                    imagePath3 = saveImageToFile(context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
-                    imagePath4 = saveImageToFile(context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
+                    listImagesRightEye = rightEyeImagePathList,
+                    listImagesLeftEye = leftEyeImagePathList,
                     examCoordinates = "$latitude,$longitude",
                     examLocation = examDataState.value.examLocation,
                     patientId = it

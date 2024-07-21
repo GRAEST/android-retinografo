@@ -13,6 +13,9 @@ sealed interface ExamDataEvent {
     data class SetExamLocation(val examLocation: String): ExamDataEvent
     data class PatientSelected(val patientData: PatientData): ExamDataEvent
     data object NoPatientSelected: ExamDataEvent
+    data object OnRightEyeSaveMode: ExamDataEvent
+    data object OnLeftEyeSaveMode: ExamDataEvent
+    data object OnReadyToSave: ExamDataEvent
     data object OnShowToastRed: ExamDataEvent
     data object OnShowToastGreen: ExamDataEvent
     data object OnCancelExam: ExamDataEvent

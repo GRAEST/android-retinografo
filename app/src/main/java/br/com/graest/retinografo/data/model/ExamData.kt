@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import br.com.graest.retinografo.utils.Converters
 import java.nio.ByteBuffer
 import java.util.Date
 import java.util.UUID
@@ -21,10 +23,8 @@ import java.util.UUID
     indices = [Index(value = ["patientId"])]
 )
 data class ExamData (
-    val imagePath1: String,
-    val imagePath2: String,
-    val imagePath3: String,
-    val imagePath4: String,
+    @TypeConverters(Converters::class) val listImagesLeftEye: List<String> = listOf(""),
+    @TypeConverters(Converters::class) val listImagesRightEye: List<String> = listOf(""),
     val examTime: Long = System.currentTimeMillis(),
     val examCoordinates: String,
     val examLocation: String = "Default Input",
@@ -33,4 +33,3 @@ data class ExamData (
     @PrimaryKey
     val id: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
 )
-//adicionar um campo para identificar se o exame está sincronizado com a parte do servidor
