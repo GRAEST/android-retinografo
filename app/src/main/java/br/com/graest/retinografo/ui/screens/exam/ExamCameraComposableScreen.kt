@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
@@ -76,7 +77,7 @@ fun ExamCameraComposableScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "First Select a Patient!",
+                    text = examDataState.redToastMessage,
                     color = Color.White,
                     fontWeight = FontWeight(800)
                 )
@@ -92,7 +93,7 @@ fun ExamCameraComposableScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Exam Saved!",
+                    text = examDataState.greenToastMessage,
                     color = Color.White,
                     fontWeight = FontWeight(800)
                 )
@@ -115,235 +116,268 @@ fun ExamCameraComposableScreen(
         )
     }
 
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.Black),
     ) {
 
-
         if (!examDataState.patientSelected) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-
-                Button(
-                    onClick = {
-                        onEvent(ExamDataEvent.ShowAddPatientDialog)
-                    },
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                    )
-
-                    Spacer(modifier = Modifier.padding(10.dp))
-
-                    Column(
-                        Modifier.weight(4f)
-                    ) {
-                        Text(
-                            text = "Add Patient",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight(600)
-                        )
-                    }
-                }
-            }
+            AddPatientToExamButton(onEvent)
         }
         if (examDataState.patientSelected) {
             Column {
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 16.dp
-                        )
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.DarkGray)
-                        .padding(8.dp)
-                ) {
-                    if (examDataState.onRightEyeSaveMode) {
-                        Column(
-                            modifier = Modifier.weight(3f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Saving Right Eye Image",
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight(800),
-                                color = Color.White
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "R-${examDataState.rightEyeImagePaths.size}",
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight(800),
-                                    color = Color.White
-
-                                )
-                                Spacer(modifier = Modifier.padding(10.dp))
-                                Button(onClick = {
-                                    onEvent(ExamDataEvent.OnLeftEyeSaveMode)
-                                }) {
-                                    Text(text = "Capture Left Eye")
-                                }
-                            }
-                        }
-                    }
-                    if (examDataState.onLeftEyeSaveMode) {
-                        Column(
-                            modifier = Modifier.weight(3f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Saving Left Eye Image",
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight(800),
-                                color = Color.White
-                            )
-                            Row (
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "L-${examDataState.leftEyeImagePaths.size}",
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight(800),
-                                    color = Color.White
-                                )
-                                Spacer(modifier = Modifier.padding(10.dp))
-                                Button(onClick = {
-                                    onEvent(ExamDataEvent.OnRightEyeSaveMode)
-                                }) {
-                                    Text(text = "Capture Right Eye")
-                                }
-                            }
-                        }
-                    }
-                    Button(
-                        onClick = {
-                            if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
-                                onEvent(ExamDataEvent.OnReadyToSave)
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f),
-                        colors = ButtonDefaults.buttonColors(Color.Green)
-                    ) {
-                        Text("Finish")
-                    }
+                TopCameraComposableButtons(examDataState, onEvent)
+                examDataState.patientData?.let {
+                    TopCameraComposablePatientSelected(examDataState,
+                        it, onEvent)
                 }
+            }
+        }
+        MainCameraComposable(controller)
+
+        BottomCameraComposable(
+            examDataState,
+            applicationContext,
+            controller,
+            navController,
+            examDataViewModel,
+            onEvent
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun TopCameraComposablePatientSelected(
+    examDataState: ExamDataState,
+    patientData: PatientData,
+    onEvent: (ExamDataEvent) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+            .padding(8.dp)
+
+    ) {
+        if (examDataState.patientData != null) {
+            Image(
+                bitmap = byteArrayToBitmap(patientData.profilePicture).asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(4f)
+        ) {
+            if (examDataState.patientData != null) {
+                Text(
+                    text = patientData.name,
+                    fontSize = 20.sp
+                )
+            }
+            if (examDataState.patientData != null) {
+                Text(
+                    text = "${calculateAge(patientData.birthDate)} years",
+                    fontSize = 12.sp
+                )
+            }
+        }
+        IconButton(
+            onClick = {
+                onEvent(ExamDataEvent.NoPatientSelected)
+                onEvent(ExamDataEvent.OnCancelExam)
+                onEvent(ExamDataEvent.OnShowToastRed("Exam Cancelled"))
+            },
+            colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Cancel,
+                contentDescription = "Cancel Button"
+            )
+        }
+    }
+}
+
+@Composable
+private fun TopCameraComposableButtons(
+    examDataState: ExamDataState,
+    onEvent: (ExamDataEvent) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.DarkGray)
+            .padding(8.dp)
+    ) {
+        if (examDataState.onRightEyeSaveMode) {
+            Column(
+                modifier = Modifier.weight(3f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Saving Right Eye Image",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight(800),
+                    color = Color.White
+                )
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.LightGray)
-                        .padding(8.dp)
-
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (examDataState.patientData != null) {
-                        byteArrayToBitmap(examDataState.patientData.profilePicture).let {
-                            Image(
-                                bitmap = it.asImageBitmap(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                    .aspectRatio(1f),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                    Text(
+                        text = "R-${examDataState.rightEyeImagePaths.size}",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight(800),
+                        color = Color.White
 
+                    )
                     Spacer(modifier = Modifier.padding(10.dp))
-
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.weight(4f)
-                    ) {
-                        if (examDataState.patientData != null) {
-                            Text(
-                                text = examDataState.patientData.name,
-                                fontSize = 20.sp
-                            )
-                        }
-                        if (examDataState.patientData != null) {
-                            Text(
-                                text = "${calculateAge(examDataState.patientData.birthDate)} anos",
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                    IconButton(
-                        onClick = {
-                            onEvent(ExamDataEvent.NoPatientSelected)
-                            onEvent(ExamDataEvent.OnCancelExam)
-                        },
-                        colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Cancel,
-                            contentDescription = "Cancel Button"
-                        )
+                    Button(onClick = {
+                        onEvent(ExamDataEvent.OnLeftEyeSaveMode)
+                    }) {
+                        Text(text = "Capture Left Eye")
                     }
                 }
             }
         }
-
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            CameraViewScreen(
-                controller = controller,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(shape = RectangleShape)
-                    .aspectRatio(1f)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.cameraoverlay),
-                contentDescription = "Camera Overlay"
-            )
+        if (examDataState.onLeftEyeSaveMode) {
+            Column(
+                modifier = Modifier.weight(3f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Saving Left Eye Image",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight(800),
+                    color = Color.White
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "L-${examDataState.leftEyeImagePaths.size}",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight(800),
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Button(onClick = {
+                        onEvent(ExamDataEvent.OnRightEyeSaveMode)
+                    }) {
+                        Text(text = "Capture Right Eye")
+                    }
+                }
+            }
         }
+        Button(
+            onClick = {
+                if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
+                    onEvent(ExamDataEvent.OnReadyToSave)
+                }
+            },
+            modifier = Modifier
+                .weight(1f),
+            colors = ButtonDefaults.buttonColors(Color.Green)
+        ) {
+            Text("Finish")
+        }
+    }
+}
+
+@Composable
+private fun AddPatientToExamButton(onEvent: (ExamDataEvent) -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+
+        Button(
+            onClick = {
+                onEvent(ExamDataEvent.ShowAddPatientDialog)
+            },
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                    .aspectRatio(1f),
+            )
+
+            Spacer(modifier = Modifier.padding(10.dp))
+
+            Column(
+                Modifier.weight(4f)
+            ) {
+                Text(
+                    text = "Add Patient",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight(600)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BottomCameraComposable(
+    examDataState: ExamDataState,
+    applicationContext: Context,
+    controller: LifecycleCameraController,
+    navController: NavController,
+    examDataViewModel: ExamDataViewModel,
+    onEvent: (ExamDataEvent) -> Unit,
+) {
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
 
             IconButton(
                 onClick = {
@@ -383,7 +417,7 @@ fun ExamCameraComposableScreen(
                             )
                         }
                     } else {
-                        onEvent(ExamDataEvent.OnShowToastRed)
+                        onEvent(ExamDataEvent.OnShowToastRed("First Select a Patient"))
                     }
                 }
             ) {
@@ -394,6 +428,25 @@ fun ExamCameraComposableScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun MainCameraComposable(controller: LifecycleCameraController) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        CameraViewScreen(
+            controller = controller,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(shape = RectangleShape)
+                .aspectRatio(1f)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.cameraoverlay),
+            contentDescription = "Camera Overlay"
+        )
     }
 }
 

@@ -136,10 +136,13 @@ class ExamDataViewModel(
                 }
             }
 
-            ExamDataEvent.OnShowToastRed -> {
+            is ExamDataEvent.OnShowToastRed -> {
                 viewModelScope.launch {
                     _examDataState.update {
-                        it.copy(showToastRed = true)
+                        it.copy(
+                            redToastMessage = event.message,
+                            showToastRed = true
+                        )
                     }
                     delay(2000)
                     _examDataState.update {
@@ -148,10 +151,13 @@ class ExamDataViewModel(
                 }
             }
 
-            ExamDataEvent.OnShowToastGreen -> {
+            is ExamDataEvent.OnShowToastGreen -> {
                 viewModelScope.launch {
                     _examDataState.update {
-                        it.copy(showToastGreen = true)
+                        it.copy(
+                            greenToastMessage = event.message,
+                            showToastGreen = true
+                        )
                     }
                     delay(2000)
                     _examDataState.update {
