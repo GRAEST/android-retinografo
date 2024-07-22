@@ -94,18 +94,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val hideAppBarRoutes = if (examDataState.patientSelected) {
-                     setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB", "ExamCamera")
-                } else {
-                    setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
-                }
-                //val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
+                val hideAppBarRoutes = setOf("InitialScreen", "LogInScreen", "SignUpScreenA", "SignUpScreenB")
+
                 val navController: NavHostController = rememberNavController()
+
                 var showAppBar by remember { mutableStateOf(true) }
 
-                LaunchedEffect(navController) {
+                LaunchedEffect(navController, examDataState.patientSelected) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
-                        showAppBar = destination.route !in hideAppBarRoutes
+                        showAppBar = destination.route !in hideAppBarRoutes && !(examDataState.patientSelected)
                     }
                 }
 

@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -60,8 +62,6 @@ fun ExamCameraComposableScreen(
     controller: LifecycleCameraController,
     navController: NavController,
 ) {
-
-//    val capturedImagePaths by examDataViewModel.capturedImagePaths.collectAsState()
 
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -115,39 +115,6 @@ fun ExamCameraComposableScreen(
         )
     }
 
-//    if (examDataState.patientSelected) {
-//        Row {
-//            if (examDataState.onRightEyeSaveMode){
-//                Text(text = "Saving Right Eye Image")
-//                Row {
-//                    Text(text = "R-${examDataState.rightEyeImagePaths.size}")
-//                    Button(onClick = {
-//                        onEvent(ExamDataEvent.OnLeftEyeSaveMode)
-//                    }) {
-//                        Text(text = "Left Eye Save Mode")
-//                    }
-//                }
-//            }
-//            if (examDataState.onLeftEyeSaveMode) {
-//                Text(text = "Saving Left Eye Image")
-//                Row {
-//                    Text(text = "L-${examDataState.leftEyeImagePaths.size}")
-//                    Button(onClick = {
-//                        onEvent(ExamDataEvent.OnRightEyeSaveMode)
-//                    }) {
-//                        Text(text = "Right Eye Image")
-//                    }
-//                }
-//            }
-//            Button(onClick = {
-//                if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()){
-//                    onEvent(ExamDataEvent.OnReadyToSave)
-//                }
-//            }) {
-//                Text("Ready to Save")
-//            }
-//        }
-//    }
 
 
     Box(
@@ -162,7 +129,7 @@ fun ExamCameraComposableScreen(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp)
+                    .padding(16.dp)
             ) {
 
                 Button(
@@ -197,15 +164,19 @@ fun ExamCameraComposableScreen(
         }
         if (examDataState.patientSelected) {
             Column {
-
                 Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(
-                        start = 10.dp,
-                        end = 10.dp,
-                        top = 10.dp
-                    )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 16.dp
+                        )
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.DarkGray)
+                        .padding(8.dp)
                 ) {
                     if (examDataState.onRightEyeSaveMode) {
                         Column(
@@ -272,7 +243,9 @@ fun ExamCameraComposableScreen(
                                 onEvent(ExamDataEvent.OnReadyToSave)
                             }
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f),
+                        colors = ButtonDefaults.buttonColors(Color.Green)
                     ) {
                         Text("Finish")
                     }
@@ -288,7 +261,7 @@ fun ExamCameraComposableScreen(
 
                 ) {
                     if (examDataState.patientData != null) {
-                        byteArrayToBitmap(examDataState.patientData.profilePicture)?.let {
+                        byteArrayToBitmap(examDataState.patientData.profilePicture).let {
                             Image(
                                 bitmap = it.asImageBitmap(),
                                 contentDescription = null,
@@ -372,11 +345,6 @@ fun ExamCameraComposableScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-//            Text(
-//                text = "${capturedImagePaths.size}",
-//                color = Color.White
-//            )
-
             IconButton(
                 onClick = {
                     if (examDataState.patientSelected) {
@@ -414,22 +382,6 @@ fun ExamCameraComposableScreen(
                                 }
                             )
                         }
-//
-//                        captureImage(
-//                            context = applicationContext,
-//                            controller = controller,
-//                            navController = navController,
-//                            onImageCaptured = { file ->
-//                                examDataViewModel.addImagePath(
-//                                    path = file.absolutePath
-//                                )
-//                                examDataViewModel.setErrorMessage(null)
-//                                //começar contagem e dar algum sinal de tela carregando
-//                            },
-//                            onError = { error ->
-//                                examDataViewModel.setErrorMessage(error.message)
-//                            }
-//                        )
                     } else {
                         onEvent(ExamDataEvent.OnShowToastRed)
                     }
@@ -441,13 +393,6 @@ fun ExamCameraComposableScreen(
                     contentDescription = "Take Photo"
                 )
             }
-
-//            Text(
-//                text = "${capturedImagePaths.size}",
-//                color = Color.White
-//                //isso junto com um when consegue o comportamento do figma (D-1) (D-2) (E-1) (E-2)
-//            )
-
         }
     }
 }

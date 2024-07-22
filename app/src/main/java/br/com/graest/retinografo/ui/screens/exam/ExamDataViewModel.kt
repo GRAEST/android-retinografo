@@ -25,9 +25,7 @@ class ExamDataViewModel(
     private val examDataDao: ExamDataDao,
 ) : ViewModel() {
 
-//    private var _capturedImagePaths = MutableStateFlow<List<String>>(emptyList())
-//    val capturedImagePaths: StateFlow<List<String>> = _capturedImagePaths.asStateFlow()
-
+    //error de capturar mensagem
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -180,11 +178,6 @@ class ExamDataViewModel(
         }
     }
 
-//    fun addImagePath(path: String) {
-//        if (_capturedImagePaths.value.size < 4) {
-//            _capturedImagePaths.value += path
-//        }
-//    }
 
     fun addRightEyeImagePath(path: String) {
         _examDataState.update {
@@ -192,7 +185,6 @@ class ExamDataViewModel(
                 rightEyeImagePaths = _examDataState.value.rightEyeImagePaths + path
             )
         }
-        //_examDataState.value.rightEyeImagePaths += path
     }
 
     fun addLeftEyeImagePath(path: String) {
@@ -201,12 +193,7 @@ class ExamDataViewModel(
                 leftEyeImagePaths = _examDataState.value.leftEyeImagePaths + path
             )
         }
-        //_examDataState.value.leftEyeImagePaths += path
     }
-
-//    private fun cleanupPath() {
-//        _capturedImagePaths.value = emptyList()
-//    }
 
     private fun cleanupPath() {
         _examDataState.update {
@@ -221,11 +208,6 @@ class ExamDataViewModel(
         _errorMessage.value = message
     }
 
-    //    private fun cleanupTemporaryImages() {
-//        capturedImagePaths.value.forEach { path ->
-//            File(path).delete()
-//        }
-//    }
 
     private fun cleanupTemporaryImages() {
         _examDataState.value.leftEyeImagePaths.forEach { path ->
@@ -236,33 +218,6 @@ class ExamDataViewModel(
         }
     }
 
-
-//    private fun saveExamWithLocation(context: Context) {
-//        val locationService = LocationService(context)
-//        locationService.getCurrentLocation { location ->
-//            Log.d("ExamDataViewModel", "Location obtained: $location")
-//            if (_capturedImagePaths.value.size == 4) {
-//                val examData = createExamData(context, location?.latitude, location?.longitude)
-//                if (examData != null) {
-//                    viewModelScope.launch {
-//                        try {
-//                            examDataDao.insertExam(examData)
-//                            Log.d("ExamDataViewModel", "ExamData inserted successfully")
-//                        } catch (e: Exception) {
-//                            Log.e("ExamDataViewModel", "Error inserting ExamData", e)
-//                            setErrorMessage("Error saving exam data")
-//                        } finally {
-//                            onEvent(ExamDataEvent.OnCancelExam)
-//                            onEvent(ExamDataEvent.SetIsLocationAddedFalse)
-//                        }
-//                    }
-//                }
-//            } else {
-//                setErrorMessage("Not enough images captured")
-//                Log.e("ExamDataViewModel", "Not enough images captured")
-//            }
-//        }
-//    }
 
     private fun saveExamWithLocation(context: Context) {
         val locationService = LocationService(context)
@@ -284,33 +239,6 @@ class ExamDataViewModel(
             }
         }
     }
-
-//    private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
-//        return try {
-//            val image1 = BitmapFactory.decodeFile(_capturedImagePaths.value[0])
-//            val image2 = BitmapFactory.decodeFile(_capturedImagePaths.value[1])
-//            val image3 = BitmapFactory.decodeFile(_capturedImagePaths.value[2])
-//            val image4 = BitmapFactory.decodeFile(_capturedImagePaths.value[3])
-//            val patientId = _examDataState.value.patientData?.patientId
-//
-//            patientId?.let {
-//                ExamData(
-//                    listImagesRightEye = listOf(""),
-//                    listImagesLeftEye = listOf(""),
-//                    imagePath1 = saveImageToFile(context, image1, "image1_${System.currentTimeMillis()}.jpg") ?: "",
-//                    imagePath2 = saveImageToFile(context, image2, "image2_${System.currentTimeMillis()}.jpg") ?: "",
-//                    imagePath3 = saveImageToFile(context, image3, "image3_${System.currentTimeMillis()}.jpg") ?: "",
-//                    imagePath4 = saveImageToFile(context, image4, "image4_${System.currentTimeMillis()}.jpg") ?: "",
-//                    examCoordinates = "$latitude,$longitude",
-//                    examLocation = examDataState.value.examLocation,
-//                    patientId = it
-//                )
-//            }
-//        } catch (e: Exception) {
-//            Log.e("ExamDataViewModel", "Error creating ExamData", e)
-//            null
-//        }
-//    }
 
     private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
         return try {
