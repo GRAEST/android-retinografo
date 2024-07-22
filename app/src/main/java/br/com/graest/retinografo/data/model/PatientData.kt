@@ -1,16 +1,19 @@
 package br.com.graest.retinografo.data.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import br.com.graest.retinografo.utils.Converters
 import java.time.LocalDate
+import java.time.LocalDateTime
 
-@Entity (
-    tableName = "patient_data"
-)
+@Entity(tableName = "patient_data")
 data class PatientData(
     @PrimaryKey
     val patientId: ByteArray = ByteArray(0),
-    val dataCreated: Long = System.currentTimeMillis(),
+    @TypeConverters(Converters::class) val dataCreated: LocalDateTime,
     val profilePicture: ByteArray = ByteArray(0),
     val name: String,
     val birthDate: LocalDate? = null,
@@ -22,5 +25,36 @@ data class PatientData(
     val hasHyperTension: Boolean = false,
     val hasGlaucoma: Boolean = false,
     val description: String = ""
-)
+) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    constructor(
+        patientId: ByteArray = ByteArray(0),
+        profilePicture: ByteArray = ByteArray(0),
+        name: String,
+        birthDate: LocalDate? = null,
+        gender: Gender = Gender.OTHER,
+        cpf: String = "",
+        email: String = "",
+        telNumber: String = "",
+        isDiabetic: Boolean = false,
+        hasHyperTension: Boolean = false,
+        hasGlaucoma: Boolean = false,
+        description: String = ""
+    ) : this(
+        patientId,
+        LocalDateTime.now(),
+        profilePicture,
+        name,
+        birthDate,
+        gender,
+        cpf,
+        email,
+        telNumber,
+        isDiabetic,
+        hasHyperTension,
+        hasGlaucoma,
+        description
+    )
+}
+
 

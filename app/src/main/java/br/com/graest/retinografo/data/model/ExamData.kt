@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.data.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -7,6 +9,8 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import br.com.graest.retinografo.utils.Converters
 import java.nio.ByteBuffer
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity(
@@ -21,13 +25,38 @@ import java.util.UUID
     indices = [Index(value = ["patientId"])]
 )
 data class ExamData (
-    @TypeConverters(Converters::class) val listImagesLeftEye: List<String> = listOf(""),
-    @TypeConverters(Converters::class) val listImagesRightEye: List<String> = listOf(""),
-    val examTime: Long = System.currentTimeMillis(),
+    @TypeConverters(Converters::class) val listImagesLeftEye: List<String>,
+    @TypeConverters(Converters::class) val listImagesRightEye: List<String>,
+    @TypeConverters(Converters::class) val listBinaryLeftEye: List<ByteArray>,
+    @TypeConverters(Converters::class) val listBinaryRightEye: List<ByteArray>,
+    @TypeConverters(Converters::class) val examTime: LocalDateTime,
     val examCoordinates: String,
-    val examLocation: String = "Default Input",
-    val sentToServer: Boolean = false,
+    val examLocation: String,
+    val sentToServer: Boolean,
     val patientId: ByteArray,
-    @PrimaryKey
-    val id: ByteArray = ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
-)
+    @PrimaryKey val id: ByteArray
+) {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    constructor(
+        listImagesLeftEye: List<String> = listOf(""),
+        listImagesRightEye: List<String> = listOf(""),
+        listBinaryLeftEye: List<ByteArray> = listOf(),
+        listBinaryRightEye: List<ByteArray> = listOf(),
+        examCoordinates: String,
+        examLocation: String = "Default Input",
+        sentToServer: Boolean = false,
+        patientId: ByteArray
+    ) : this(
+        listImagesLeftEye,
+        listImagesRightEye,
+        listBinaryLeftEye,
+        listBinaryRightEye,
+        LocalDateTime.now(),
+        examCoordinates,
+        examLocation,
+        sentToServer,
+        patientId,
+        ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
+    )
+}
