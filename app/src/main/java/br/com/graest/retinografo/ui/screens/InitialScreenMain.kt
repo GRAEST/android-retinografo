@@ -49,7 +49,7 @@ fun InitialScreenMain(
         ) {
 
             Text(
-                text = "Olá! \uD83D\uDE03",
+                text = "Hello! \uD83D\uDE03",
                 fontSize = 32.sp,
                 modifier = Modifier
                     .padding(10.dp)
@@ -58,7 +58,7 @@ fun InitialScreenMain(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Já tem uma conta?",
+                text = "Already Have an Account?",
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(10.dp)
@@ -73,7 +73,7 @@ fun InitialScreenMain(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Criar uma conta?",
+                text = "Create an Account?",
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(10.dp)

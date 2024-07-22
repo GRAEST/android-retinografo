@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -69,36 +68,10 @@ fun ExamCameraComposableScreen(
     }
 
     if (examDataState.showToastRed) {
-        Popup(alignment = Alignment.TopCenter) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 50.dp)
-                    .background(Color.Red, shape = RoundedCornerShape(8.dp))
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = examDataState.redToastMessage,
-                    color = Color.White,
-                    fontWeight = FontWeight(800)
-                )
-            }
-        }
+        RedToast(examDataState)
     }
     if (examDataState.showToastGreen) {
-        Popup(alignment = Alignment.TopCenter) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 50.dp)
-                    .background(Color.Green, shape = RoundedCornerShape(8.dp))
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = examDataState.greenToastMessage,
-                    color = Color.White,
-                    fontWeight = FontWeight(800)
-                )
-            }
-        }
+        GreenToast(examDataState)
     }
 
     if (examDataState.showAddPatientDialog) {
@@ -144,6 +117,42 @@ fun ExamCameraComposableScreen(
             examDataViewModel,
             onEvent
         )
+    }
+}
+
+@Composable
+private fun GreenToast(examDataState: ExamDataState) {
+    Popup(alignment = Alignment.TopCenter) {
+        Box(
+            modifier = Modifier
+                .padding(top = 50.dp)
+                .background(Color.Green, shape = RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            Text(
+                text = examDataState.greenToastMessage,
+                color = Color.White,
+                fontWeight = FontWeight(800)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RedToast(examDataState: ExamDataState) {
+    Popup(alignment = Alignment.TopCenter) {
+        Box(
+            modifier = Modifier
+                .padding(top = 50.dp)
+                .background(Color.Red, shape = RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            Text(
+                text = examDataState.redToastMessage,
+                color = Color.White,
+                fontWeight = FontWeight(800)
+            )
+        }
     }
 }
 
@@ -409,7 +418,7 @@ private fun BottomCameraComposable(
                                         path = file.absolutePath
                                     )
                                     examDataViewModel.setErrorMessage(null)
-                                    //começar contagem e dar algum sinal de tela carregando
+                                    //dar algum sinal de tela carregando
                                 },
                                 onError = { error ->
                                     examDataViewModel.setErrorMessage(error.message)

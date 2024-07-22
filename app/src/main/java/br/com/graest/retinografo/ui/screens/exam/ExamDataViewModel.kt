@@ -25,10 +25,6 @@ class ExamDataViewModel(
     private val examDataDao: ExamDataDao,
 ) : ViewModel() {
 
-    //error de capturar mensagem
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
     private val _examDataState = MutableStateFlow(ExamDataState())
@@ -211,7 +207,11 @@ class ExamDataViewModel(
     }
 
     fun setErrorMessage(message: String?) {
-        _errorMessage.value = message
+        _examDataState.update {
+            it.copy(
+                errorMessage = message
+            )
+        }
     }
 
 

@@ -52,7 +52,7 @@ object ExamCameraUtils {
         )
     }
 
-    fun createImageFile(context: Context, prefix: String = "image", suffix: String = ".jpg"): File {
+    private fun createImageFile(context: Context, prefix: String = "image", suffix: String = ".jpg"): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             prefix, /* prefix */

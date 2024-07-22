@@ -7,6 +7,7 @@ data class ExamDataState(
     val examsDataWithPatient: List<ExamDataWithPatient?> = emptyList(),
     var rightEyeImagePaths: List<String> = emptyList(),
     val leftEyeImagePaths: List<String> = emptyList(),
+    val errorMessage: String? = null,
     val examLocation: String = "",
     val showAddPatientDialog: Boolean = false,
     val isLocationAdded: Boolean = false,

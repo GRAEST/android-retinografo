@@ -35,11 +35,9 @@ fun ExamAddLocationDialog(
 
         },
         onDismissRequest = {
-            //onEvent(ExamDataEvent.HideAddLocationDialog)
+            //this dialog cannot be closed after opened
         },
         confirmButton = {
-            // posso enviar uma confirmacao para permitir salvar exame
-            // isso envolve alterar o botao salvar para abrir o dialog para adicionar o local
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally

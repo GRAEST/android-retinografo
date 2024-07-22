@@ -66,7 +66,7 @@ fun SignUpScreenB(
         ) {
 
             Text(
-                text = "Dados Pessoais",
+                text = "Personal Data",
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(10.dp)

@@ -1,6 +1,5 @@
 package br.com.graest.retinografo.data.model
 
-import android.location.Location
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -8,7 +7,6 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import br.com.graest.retinografo.utils.Converters
 import java.nio.ByteBuffer
-import java.util.Date
 import java.util.UUID
 
 @Entity(
