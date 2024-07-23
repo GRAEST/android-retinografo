@@ -2,7 +2,9 @@ package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.ExamDataDao
@@ -37,6 +39,7 @@ class ExamDataViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: ExamDataEvent) {
         when (event) {
             is ExamDataEvent.DeleteExamDataById -> {
@@ -225,6 +228,7 @@ class ExamDataViewModel(
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun saveExamWithLocation(context: Context) {
         val locationService = LocationService(context)
         locationService.getCurrentLocation { location ->
@@ -246,6 +250,7 @@ class ExamDataViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
         return try {
             val leftEyeImagePathList = mutableListOf<String>()

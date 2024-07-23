@@ -35,11 +35,10 @@ import br.com.graest.retinografo.R
 
 @Composable
 fun SignUpScreenB(
+    signUpState: SignUpState,
+    onEvent: (SignUpEvent) -> Unit,
     onClickSignUp: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -74,8 +73,10 @@ fun SignUpScreenB(
             )
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = signUpState.email,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetEmail(it))
+                },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -91,8 +92,10 @@ fun SignUpScreenB(
             )
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = signUpState.password,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetPassword(it))
+                },
                 label = { Text("Password") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -108,8 +111,10 @@ fun SignUpScreenB(
             )
 
             OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = signUpState.confirmPassword,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetConfirmPassword(it))
+                },
                 label = { Text("Confirm Password") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -140,14 +145,4 @@ fun SignUpScreenB(
 
         }
     }
-
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignUpScreenB() {
-    SignUpScreenB(
-        onClickSignUp = {}
-    )
 }

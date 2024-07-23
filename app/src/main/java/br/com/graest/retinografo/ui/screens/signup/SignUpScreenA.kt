@@ -35,14 +35,10 @@ import br.com.graest.retinografo.R
 
 @Composable
 fun SignUpScreenA(
+    signUpState: SignUpState,
+    onEvent: (SignUpEvent) -> Unit,
     onClickSignUp: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var surname by remember { mutableStateOf("") }
-    var cpf by remember { mutableStateOf("") }
-    var cep by remember { mutableStateOf("") }
-    var crm by remember { mutableStateOf("") }
-
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -76,8 +72,10 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = signUpState.name,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetName(it))
+                },
                 label = { Text("Name") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -93,8 +91,10 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = surname,
-                onValueChange = { surname = it },
+                value = signUpState.surname,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetSurname(it))
+                },
                 label = { Text("Surname") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -110,8 +110,10 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = cpf,
-                onValueChange = { cpf = it },
+                value = signUpState.cpf,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetCPF(it))
+                },
                 label = { Text("CPF") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -127,8 +129,10 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = cep,
-                onValueChange = { cep = it },
+                value = signUpState.cep,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetCEP(it))
+                },
                 label = { Text("CEP") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -144,8 +148,10 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = crm,
-                onValueChange = { crm = it },
+                value = signUpState.cpf,
+                onValueChange = {
+                    onEvent(SignUpEvent.SetCRM(it))
+                },
                 label = { Text("CRM") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -176,13 +182,4 @@ fun SignUpScreenA(
         }
     }
 
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignUpScreenA() {
-    SignUpScreenA(
-        onClickSignUp = {}
-    )
 }
