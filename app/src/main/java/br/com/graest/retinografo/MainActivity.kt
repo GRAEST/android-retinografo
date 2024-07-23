@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
@@ -34,6 +35,7 @@ import br.com.graest.retinografo.data.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
+import br.com.graest.retinografo.ui.screens.signup.SignUpViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
@@ -66,7 +68,8 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +83,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RetinografoTheme {
+
+                val signUpViewModel: SignUpViewModel = viewModel()
+                val signUpState by signUpViewModel.signUpState.collectAsState()
 
                 val examDataState by examViewModel.examDataState.collectAsState()
 
@@ -137,13 +143,16 @@ class MainActivity : ComponentActivity() {
                         patientViewModel,
                         patientDataState,
                         examViewModel,
-                        examDataState
+                        examDataState,
+                        signUpViewModel,
+                        signUpState
                     )
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun hasRequiredPermissions(): Boolean {
         return CAMERAX_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(
@@ -154,11 +163,13 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private val CAMERAX_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_MEDIA_IMAGES
         )
     }
 

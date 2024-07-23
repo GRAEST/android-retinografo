@@ -10,5 +10,6 @@ data class SignUpState(
     val cep: String = "",
     val crmList: List<String> = emptyList(),
     val crm: String = "",
-    val photo: ByteArray = ByteArray(0),
+    val photo: ByteArray? = null,
+    val showDialog : Boolean = false
 )

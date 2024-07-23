@@ -1,7 +1,9 @@
 package br.com.graest.retinografo.ui.screens.signup
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -67,7 +69,11 @@ class SignUpViewModel : ViewModel(){
                 }
             }
             is SignUpEvent.SetPhoto -> {
-
+                _signUpState.update {
+                    it.copy(
+                        photo = event.photo
+                    )
+                }
             }
             is SignUpEvent.SetSurname -> {
                 _signUpState.update {
@@ -76,6 +82,28 @@ class SignUpViewModel : ViewModel(){
                     )
                 }
             }
+            SignUpEvent.HideSignUpDialog -> {
+                _signUpState.update {
+                    it.copy(
+                        showDialog = false
+                    )
+                }
+            }
+
+            SignUpEvent.ShowSignUpDialog -> {
+                _signUpState.update {
+                    it.copy(
+                        showDialog = true
+                    )
+                }
+            }
+        }
+    }
+    fun setPhoto(bitmap: Bitmap) {
+        _signUpState.update {
+            it.copy(
+                photo = bitmapToByteArray(bitmap)
+            )
         }
     }
 }

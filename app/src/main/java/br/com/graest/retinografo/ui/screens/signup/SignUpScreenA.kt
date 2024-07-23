@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.signup
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -32,15 +34,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @Composable
 fun SignUpScreenA(
+    viewModel: SignUpViewModel,
+    applicationContext: Context,
     signUpState: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
     onClickSignUp: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    if(signUpState.showDialog) {
+        SignUpImageDialog(
+            applicationContext = applicationContext,
+            viewModel = viewModel,
+            onEvent = onEvent
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -64,7 +78,7 @@ fun SignUpScreenA(
         ) {
 
             Text(
-                text = "Dados Pessoais",
+                text = "Personal Data",
                 fontSize = 24.sp,
                 modifier = Modifier
                     .padding(10.dp)
@@ -116,7 +130,7 @@ fun SignUpScreenA(
                 },
                 label = { Text("CPF") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
+                    keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
@@ -135,7 +149,7 @@ fun SignUpScreenA(
                 },
                 label = { Text("CEP") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
+                    keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
@@ -148,13 +162,13 @@ fun SignUpScreenA(
             )
 
             OutlinedTextField(
-                value = signUpState.cpf,
+                value = signUpState.crm,
                 onValueChange = {
                     onEvent(SignUpEvent.SetCRM(it))
                 },
                 label = { Text("CRM") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
+                    keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
@@ -166,13 +180,29 @@ fun SignUpScreenA(
                     .padding(bottom = 8.dp)
             )
 
+            if (signUpState.photo != null){
+                Image(
+                    bitmap = byteArrayToBitmap(signUpState.photo).asImageBitmap(),
+                    contentDescription = "User Photo"
+                )
+            }
+            
+            Text(text = "${signUpState.photo}")
+            Button(onClick = {
+                onEvent(SignUpEvent.ShowSignUpDialog)
+            }) {
+                Text("Add Photo")
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             Row {
                 Column(modifier = Modifier.weight(1f)) {}
                 Button(
                     onClick = { onClickSignUp() },
-                    modifier = Modifier.fillMaxWidth().weight(3f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(3f)
                 ) {
                     Text("Next")
                 }

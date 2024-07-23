@@ -24,8 +24,11 @@ import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
+import br.com.graest.retinografo.ui.screens.signup.SignUpEvent
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenA
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenB
+import br.com.graest.retinografo.ui.screens.signup.SignUpState
+import br.com.graest.retinografo.ui.screens.signup.SignUpViewModel
 import br.com.graest.retinografo.ui.screens.user.EditUserData
 import br.com.graest.retinografo.ui.screens.user.UserData
 
@@ -38,7 +41,9 @@ fun RetinografoNavGraph(
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
-    examDataState: ExamDataState
+    examDataState: ExamDataState,
+    signUpViewModel: SignUpViewModel,
+    signUpState: SignUpState
     ) {
     NavHost(
         navController = navController,
@@ -60,12 +65,18 @@ fun RetinografoNavGraph(
 
         composable("SignUpScreenA") {
             SignUpScreenA(
+                viewModel = signUpViewModel,
+                applicationContext = applicationContext,
+                signUpState = signUpState,
+                onEvent = signUpViewModel::onEvent,
                 onClickSignUp = { navController.navigate("SignUpScreenB") }
             )
         }
 
         composable("SignUpScreenB") {
             SignUpScreenB(
+                signUpState = signUpState,
+                onEvent = signUpViewModel::onEvent,
                 onClickSignUp = { navController.navigate("LogInScreen") }
             )
         }
