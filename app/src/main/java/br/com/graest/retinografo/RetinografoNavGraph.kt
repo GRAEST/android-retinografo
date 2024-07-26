@@ -61,6 +61,7 @@ fun RetinografoNavGraph(
 
         composable("LogInScreen") {
             LoginScreen(
+                loginViewModel = loginViewModel,
                 loginState = loginState,
                 onEvent = loginViewModel::onEvent,
                 onClickLogIn = { navController.navigate("ExamCamera") }

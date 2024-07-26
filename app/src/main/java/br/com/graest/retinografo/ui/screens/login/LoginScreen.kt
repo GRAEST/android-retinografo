@@ -16,10 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -28,24 +24,22 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
-import br.com.graest.retinografo.ui.screens.signup.SignUpEvent
-import br.com.graest.retinografo.ui.screens.signup.SignUpState
 
 @Composable
 fun LoginScreen(
+    loginViewModel: LoginViewModel,
     loginState: LoginState,
     onEvent: (LoginEvent) -> Unit,
-    onClickLogIn: () -> Unit
+    onClickLogIn: () -> Unit,
 ) {
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Column (
+    Column(
         modifier = Modifier
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,7 +110,12 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
-                onClick = { onClickLogIn() },
+                onClick = {
+                    loginViewModel.sendLoginInfo(loginState.email, loginState.password)
+                    if (loginState.requestMessage == "ok") {
+                        onClickLogIn()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Sign In")

@@ -7,6 +7,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 
 class LoginViewModel : ViewModel() {
 
@@ -24,6 +33,7 @@ class LoginViewModel : ViewModel() {
                     )
                 }
             }
+
             is LoginEvent.SetUserPassword -> {
                 _loginState.update {
                     it.copy(
@@ -32,6 +42,47 @@ class LoginViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun sendLoginInfo(email: String, password: String) {
+        val client = OkHttpClient()
+
+        val jsonObject = JSONObject().apply {
+            put("email", email)
+            put("password", password)
+        }
+        val jsonString = jsonObject.toString()
+
+        val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+        val request = Request.Builder()
+            .url("https://www.yourwebsite.com/login")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+            //aqui vai receber algo de volta da request (sucesso ou erro)
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    _loginState.update {
+                        it.copy(
+                            requestMessage = responseBody.toString()
+                        )
+                    }
+
+                } else {
+                    _loginState.update {
+                        it.copy(
+                            requestMessage = response.code.toString()
+                        )
+                    }
+                }
+            }
+        })
     }
 
 }

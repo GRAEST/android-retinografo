@@ -85,6 +85,7 @@ dependencies {
     //ksp(libs.androidx.room.room.compiler)
 
     implementation(libs.com.google.code.gson)
+    implementation(libs.com.squareup.okhttp3.okhttp)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
