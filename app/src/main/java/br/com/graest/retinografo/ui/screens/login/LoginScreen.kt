@@ -32,14 +32,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.ui.screens.signup.SignUpEvent
+import br.com.graest.retinografo.ui.screens.signup.SignUpState
 
 @Composable
 fun LoginScreen(
+    loginState: LoginState,
+    onEvent: (LoginEvent) -> Unit,
     onClickLogIn: () -> Unit
 ) {
-
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -75,8 +76,10 @@ fun LoginScreen(
 
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = loginState.email,
+                onValueChange = {
+                    onEvent(LoginEvent.SetUserEmail(it))
+                },
                 label = { Text("Username") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -92,8 +95,10 @@ fun LoginScreen(
             )
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = loginState.password,
+                onValueChange = {
+                    onEvent(LoginEvent.SetUserPassword(it))
+                },
                 label = { Text("Password") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -118,14 +123,4 @@ fun LoginScreen(
             }
         }
     }
-
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoginScreen() {
-    LoginScreen(
-        onClickLogIn = {}
-    )
 }

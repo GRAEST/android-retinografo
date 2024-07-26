@@ -13,5 +13,7 @@ data class SignUpState(
     val tempImagePath: String? = null,
     val tempImageErrorMessage: String? = null,
     val isEditingImage: Boolean = false,
-    val showDialog : Boolean = false
+    val showDialog : Boolean = false,
+    val errorMessage: String = "",
+    val successMessage: String = ""
 )

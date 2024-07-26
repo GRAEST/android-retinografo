@@ -18,6 +18,8 @@ import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.exam.ExamList
 import br.com.graest.retinografo.ui.screens.login.LoginScreen
+import br.com.graest.retinografo.ui.screens.login.LoginState
+import br.com.graest.retinografo.ui.screens.login.LoginViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
@@ -42,6 +44,8 @@ fun RetinografoNavGraph(
     examDataState: ExamDataState,
     signUpViewModel: SignUpViewModel,
     signUpState: SignUpState,
+    loginViewModel: LoginViewModel,
+    loginState: LoginState
 ) {
     NavHost(
         navController = navController,
@@ -57,6 +61,8 @@ fun RetinografoNavGraph(
 
         composable("LogInScreen") {
             LoginScreen(
+                loginState = loginState,
+                onEvent = loginViewModel::onEvent,
                 onClickLogIn = { navController.navigate("ExamCamera") }
             )
         }
