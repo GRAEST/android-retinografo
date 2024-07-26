@@ -17,6 +17,7 @@ viewModel = "2.7.0"
 roomVersion = "2.6.1"
 graphicsShapesAndroid = "1.0.0-beta01"
 gsonVersion = "2.11.0"
+runtimeSavedInstanceState = "1.0.0-alpha11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,7 @@ androidx-room-room-compiler = { group = "androidx.room", name = "room-compiler",
 androidx-room-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref="roomVersion"}
 androidx-graphics-shapes-android = { group = "androidx.graphics", name = "graphics-shapes-android", version.ref = "graphicsShapesAndroid" }
 com-google-code-gson = {group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion"}
+androidx-runtime-saved-instance-state = { group = "androidx.compose.runtime", name = "runtime-saved-instance-state", version.ref = "runtimeSavedInstanceState" }
 #implementation("com.google.code.gson:gson:2.11.0")
 
 [plugins]

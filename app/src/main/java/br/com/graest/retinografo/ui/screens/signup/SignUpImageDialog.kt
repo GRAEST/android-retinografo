@@ -13,29 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
+import java.util.Objects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpImageDialog(
-    applicationContext: Context,
-    viewModel: SignUpViewModel,
+    onLaunchCamera: () -> Unit,
     onEvent: (SignUpEvent) -> Unit
 ) {
-
-    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-        bitmap?.let {
-            viewModel.setPhoto(bitmap)
-        }
-    }
-
-    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            val bitmap = MediaStore.Images.Media.getBitmap(applicationContext.contentResolver, uri)
-            viewModel.setPhoto(bitmap)
-        }
-    }
-
     AlertDialog(
         onDismissRequest = {
             onEvent(SignUpEvent.HideSignUpDialog)
@@ -49,19 +36,19 @@ fun SignUpImageDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = {
+                    onLaunchCamera()
                     onEvent(SignUpEvent.HideSignUpDialog)
-                    cameraLauncher.launch(null)
                 }) {
                     Text("Camera")
                 }
-                Button(onClick = {
-                    onEvent(SignUpEvent.HideSignUpDialog)
-                    galleryLauncher.launch("image/*")
-                }) {
-                    Text("Gallery")
-                }
+                //Work In Progress
+//                Button(onClick = {
+//                    onEvent(SignUpEvent.HideSignUpDialog)
+//                    galleryLauncher.launch("image/*")
+//                }) {
+//                    Text("Gallery")
+//                }
             }
         }
     )
-
 }

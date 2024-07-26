@@ -10,6 +10,8 @@ data class SignUpState(
     val cep: String = "",
     val crmList: List<String> = emptyList(),
     val crm: String = "",
-    val photo: ByteArray? = null,
+    val tempImagePath: String? = null,
+    val tempImageErrorMessage: String? = null,
+    val isEditingImage: Boolean = false,
     val showDialog : Boolean = false
 )

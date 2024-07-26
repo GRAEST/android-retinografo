@@ -1,64 +1,64 @@
 package br.com.graest.retinografo.ui.screens.signup
 
-import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
-import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @Composable
 fun SignUpScreenA(
-    viewModel: SignUpViewModel,
-    applicationContext: Context,
     signUpState: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
-    onClickSignUp: () -> Unit
+    onClickSignUp: () -> Unit,
+    onLaunchCamera: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    if(signUpState.showDialog) {
+    if (signUpState.showDialog) {
         SignUpImageDialog(
-            applicationContext = applicationContext,
-            viewModel = viewModel,
-            onEvent = onEvent
+            onEvent = onEvent,
+            onLaunchCamera = onLaunchCamera
         )
     }
 
     Column(
         modifier = Modifier
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
@@ -180,18 +180,52 @@ fun SignUpScreenA(
                     .padding(bottom = 8.dp)
             )
 
-            if (signUpState.photo != null){
-                Image(
-                    bitmap = byteArrayToBitmap(signUpState.photo).asImageBitmap(),
-                    contentDescription = "User Photo"
-                )
-            }
-            
-            Text(text = "${signUpState.photo}")
-            Button(onClick = {
-                onEvent(SignUpEvent.ShowSignUpDialog)
-            }) {
-                Text("Add Photo")
+            if (signUpState.tempImagePath != null) {
+                Spacer(modifier = Modifier.padding(10.dp))
+                val bitmap = BitmapFactory.decodeFile(signUpState.tempImagePath)
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Captured Image",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .aspectRatio(1f)
+                            .weight(1f),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Column(
+                        modifier = Modifier.weight(2f),
+                        verticalArrangement = Arrangement.Bottom,
+                    ) {
+                        Button(onClick = { onEvent(SignUpEvent.ShowSignUpDialog) }) {
+                            Text("Change Photo")
+                        }
+                        Text(
+                            text = "Photo Added",
+                            modifier = Modifier.padding(start = 6.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.padding(10.dp))
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = {
+                        onEvent(SignUpEvent.ShowSignUpDialog)
+                    }) {
+                        Text("Add Photo")
+                    }
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Text(text = "No Photo Added")
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))

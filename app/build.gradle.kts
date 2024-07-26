@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.graphics.shapes.android)
+    implementation(libs.androidx.runtime.saved.instance.state)
     testImplementation(libs.junit)
 
 

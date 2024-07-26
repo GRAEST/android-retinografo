@@ -1,6 +1,17 @@
 package br.com.graest.retinografo.ui.screens.signup
 
+import android.content.Context
 import android.graphics.Bitmap
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
@@ -9,6 +20,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.UUID
 
 class SignUpViewModel : ViewModel(){
 
@@ -68,13 +83,6 @@ class SignUpViewModel : ViewModel(){
                     )
                 }
             }
-            is SignUpEvent.SetPhoto -> {
-                _signUpState.update {
-                    it.copy(
-                        photo = event.photo
-                    )
-                }
-            }
             is SignUpEvent.SetSurname -> {
                 _signUpState.update {
                     it.copy(
@@ -99,10 +107,27 @@ class SignUpViewModel : ViewModel(){
             }
         }
     }
-    fun setPhoto(bitmap: Bitmap) {
+    fun imageAlreadyEdited(){
         _signUpState.update {
             it.copy(
-                photo = bitmapToByteArray(bitmap)
+                isEditingImage = false,
+            )
+        }
+    }
+
+
+    fun setCapturedImagePath(path: String?) {
+        _signUpState.update {
+            it.copy(
+                tempImagePath = path
+            )
+        }
+    }
+
+    fun setErrorMessage(message: String?) {
+        _signUpState.update {
+            it.copy(
+                tempImageErrorMessage = message
             )
         }
     }

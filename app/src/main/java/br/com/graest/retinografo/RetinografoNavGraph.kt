@@ -1,12 +1,10 @@
 package br.com.graest.retinografo
 
 import android.content.Context
-import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -24,7 +22,7 @@ import br.com.graest.retinografo.ui.screens.patient.PatientCameraComposable
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientScreen
-import br.com.graest.retinografo.ui.screens.signup.SignUpEvent
+import br.com.graest.retinografo.ui.screens.signup.SignUpCameraComposable
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenA
 import br.com.graest.retinografo.ui.screens.signup.SignUpScreenB
 import br.com.graest.retinografo.ui.screens.signup.SignUpState
@@ -37,14 +35,14 @@ import br.com.graest.retinografo.ui.screens.user.UserData
 fun RetinografoNavGraph(
     navController: NavHostController = rememberNavController(),
     controller: LifecycleCameraController,
-    applicationContext : Context,
+    applicationContext: Context,
     patientViewModel: PatientDataViewModel,
     patientDataState: PatientDataState,
     examDataViewModel: ExamDataViewModel,
     examDataState: ExamDataState,
     signUpViewModel: SignUpViewModel,
-    signUpState: SignUpState
-    ) {
+    signUpState: SignUpState,
+) {
     NavHost(
         navController = navController,
         startDestination = "InitialScreen"
@@ -65,11 +63,19 @@ fun RetinografoNavGraph(
 
         composable("SignUpScreenA") {
             SignUpScreenA(
-                viewModel = signUpViewModel,
-                applicationContext = applicationContext,
                 signUpState = signUpState,
                 onEvent = signUpViewModel::onEvent,
-                onClickSignUp = { navController.navigate("SignUpScreenB") }
+                onClickSignUp = { navController.navigate("SignUpScreenB") },
+                onLaunchCamera = { navController.navigate("UserCamera") }
+            )
+        }
+
+        composable("UserCamera") {
+            SignUpCameraComposable(
+                applicationContext = applicationContext,
+                controller = controller,
+                navController = navController,
+                viewModel = signUpViewModel
             )
         }
 
@@ -127,10 +133,9 @@ fun RetinografoNavGraph(
             UserData(onClickEdit = { navController.navigate("EditUserData") })
 
         }
-        composable("EditUserData"){
+        composable("EditUserData") {
             EditUserData()
         }
-
 
 
     }

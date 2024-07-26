@@ -9,7 +9,6 @@ sealed interface SignUpEvent {
     data class SetCPF(val cpf: String): SignUpEvent
     data class SetCEP(val cep: String): SignUpEvent
     data class SetCRM(val crm: String): SignUpEvent
-    data class SetPhoto(val photo: ByteArray): SignUpEvent
     data object ShowSignUpDialog: SignUpEvent
     data object HideSignUpDialog: SignUpEvent
 }

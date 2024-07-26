@@ -26,7 +26,7 @@ object PatientCameraUtils {
             val tempFile = createTempImageFile(context)
             if (saveBitmapToFile(bitmap, tempFile)) {
                 onImageCaptured(tempFile)
-                if (currentRoute == "PatientCamera") {
+                if (currentRoute == "PatientCamera" || currentRoute == "UserCamera") {
                     navController.popBackStack()
                 }
             } else {
