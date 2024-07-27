@@ -56,7 +56,7 @@ class LoginViewModel : ViewModel() {
         val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val request = Request.Builder()
-            .url("https://www.yourwebsite.com/login")
+            .url("https://b220878beb13.ngrok.app/api/account/login/")
             .post(requestBody)
             .build()
 

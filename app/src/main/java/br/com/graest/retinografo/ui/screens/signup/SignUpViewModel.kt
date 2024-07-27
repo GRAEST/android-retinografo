@@ -152,7 +152,7 @@ class SignUpViewModel : ViewModel(){
         val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val request = Request.Builder()
-            .url("https://b220878beb13.ngrok.app/api/account/login/")
+            .url("https://9d7ebc73d71e.ngrok.app/api/account/register/")
             .post(requestBody)
             .build()
 
