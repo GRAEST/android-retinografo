@@ -15,5 +15,6 @@ data class SignUpState(
     val isEditingImage: Boolean = false,
     val showDialog : Boolean = false,
     val errorMessage: String = "",
-    val successMessage: String = ""
+    val successMessage: String = "",
+    val requestMessage: String = ""
 )

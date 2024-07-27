@@ -42,7 +42,7 @@ import br.com.graest.retinografo.R
 fun SignUpScreenA(
     signUpState: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
-    onClickSignUp: () -> Unit,
+    onClickNext: () -> Unit,
     onLaunchCamera: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -233,7 +233,7 @@ fun SignUpScreenA(
             Row {
                 Column(modifier = Modifier.weight(1f)) {}
                 Button(
-                    onClick = { onClickSignUp() },
+                    onClick = { onClickNext() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(3f)

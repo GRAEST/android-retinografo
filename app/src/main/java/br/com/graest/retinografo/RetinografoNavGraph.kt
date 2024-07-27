@@ -72,7 +72,7 @@ fun RetinografoNavGraph(
             SignUpScreenA(
                 signUpState = signUpState,
                 onEvent = signUpViewModel::onEvent,
-                onClickSignUp = { navController.navigate("SignUpScreenB") },
+                onClickNext = { navController.navigate("SignUpScreenB") },
                 onLaunchCamera = { navController.navigate("UserCamera") }
             )
         }
@@ -88,6 +88,7 @@ fun RetinografoNavGraph(
 
         composable("SignUpScreenB") {
             SignUpScreenB(
+                viewModel = signUpViewModel,
                 signUpState = signUpState,
                 onEvent = signUpViewModel::onEvent,
                 onClickSignUp = { navController.navigate("LogInScreen") }
