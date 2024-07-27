@@ -115,6 +115,7 @@ fun LoginScreen(
                     if (loginState.requestMessage == "ok") {
                         onClickLogIn()
                     }
+                    onClickLogIn()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

@@ -15,8 +15,8 @@ interface ExamDataDao {
 //    @Query("SELECT * FROM exam_data ORDER BY id ASC")
 //    fun getExamData() : Flow<List<ExamData>>
 
-//    @Query("SELECT * FROM exam_data WHERE id = :id")
-//    suspend fun getExamById(id: Int): Flow<ExamData?>
+    @Query("SELECT * FROM exam_data WHERE id = :id")
+    fun getExamById(id: ByteArray): Flow<ExamData?>
 
     @Query("SELECT exam_data.*, patient_data.* FROM exam_data INNER JOIN patient_data ON exam_data.patientId = patient_data.patientId ORDER BY exam_data.id ASC")
     fun getExamDataWithPatients(): Flow<List<ExamDataWithPatient>>

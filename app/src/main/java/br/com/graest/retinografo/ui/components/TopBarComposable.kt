@@ -96,6 +96,18 @@ fun TopBarComposable(
                                 )
                             }
                         }
+                        "ExamDetails"-> {
+                            IconButton(
+                                onClick = {
+                                    navController.popBackStack()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Arrow Back"
+                                )
+                            }
+                        }
                         else -> {
                             IconButton(
                                 onClick = {

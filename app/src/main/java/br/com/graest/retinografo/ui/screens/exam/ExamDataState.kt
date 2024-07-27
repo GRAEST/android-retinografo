@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.data.model.ExamDataWithPatient
 import br.com.graest.retinografo.data.model.PatientData
 
@@ -21,5 +22,6 @@ data class ExamDataState(
     val readyToSave: Boolean = false,
     val onLeftEyeSaveMode: Boolean = true,
     val onRightEyeSaveMode: Boolean = false,
+    val examData: ExamData? = null,
     val patientData: PatientData? = null,
 )

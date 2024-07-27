@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.FormatTime.formatExamTime
 
 
@@ -33,6 +36,8 @@ import br.com.graest.retinografo.utils.FormatTime.formatExamTime
 @Composable
 fun ExamList(
     examState: ExamDataState,
+    onEvent: (ExamDataEvent) -> Unit,
+    onClickExam: () -> Unit
 ) {
 
     if (examState.examsDataWithPatient.isEmpty()) {
@@ -49,38 +54,48 @@ fun ExamList(
         ) {
             items(examState.examsDataWithPatient) { examDataWithPatient ->
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (examDataWithPatient != null) {
-                        val bitmap = BitmapFactory.decodeFile(examDataWithPatient.examData.listImagesRightEye[0])
-                        Image(
-                            bitmap = bitmap.asImageBitmap(),
-                            contentDescription = "Captured Image",
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                .aspectRatio(1f)
-                                .weight(1f)
-                            ,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    if (examDataWithPatient != null) {
-                        Column(
-                            modifier = Modifier.weight(4f)
-                        ) {
-                            Text(
-                                text = examDataWithPatient.patientData.name,
-
-                            )
-                            Text(
-                                text = formatExamTime(examDataWithPatient.examData.examTime),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                if (examDataWithPatient != null) {
+                                    onEvent(ExamDataEvent.OnShowExamDetails(
+                                        examDataWithPatient.examData.id,
+                                        examDataWithPatient.patientData
+                                    ) { onClickExam() })
+                                }
+                                onClickExam()
+                            }
+                    ) {
+                        if (examDataWithPatient != null) {
+                            val bitmap = BitmapFactory.decodeFile(examDataWithPatient.examData.listImagesRightEye[0])
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = "Captured Image",
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                    .aspectRatio(1f)
+                                    .weight(1f)
+                                ,
+                                contentScale = ContentScale.Crop
                             )
                         }
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        if (examDataWithPatient != null) {
+                            Column(
+                                modifier = Modifier.weight(4f)
+                            ) {
+                                Text(
+                                    text = examDataWithPatient.patientData.name,
+
+                                )
+                                Text(
+                                    text = formatExamTime(examDataWithPatient.examData.examTime),
+                                )
+                            }
+                        }
                     }
-                }
             }
         }
     }

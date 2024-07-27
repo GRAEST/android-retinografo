@@ -178,6 +178,18 @@ class ExamDataViewModel(
                     )
                 }
             }
+            is ExamDataEvent.OnShowExamDetails -> {
+                viewModelScope.launch {
+                    examDataDao.getExamById(event.id).collect { data ->
+                        _examDataState.update {
+                            it.copy(
+                                examData = data,
+                                patientData = event.patientData
+                            )
+                        }
+                    }
+                }
+            }
 
             else -> {}
         }

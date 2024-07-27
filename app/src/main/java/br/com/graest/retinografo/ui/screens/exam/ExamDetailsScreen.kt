@@ -1,93 +1,165 @@
 package br.com.graest.retinografo.ui.screens.exam
 
-import android.graphics.Bitmap
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import br.com.graest.retinografo.R
+import br.com.graest.retinografo.utils.FormatTime.calculateAge
+import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ImageDetailsScreen(
-    bitmaps: List<Bitmap>,
-    bitmapSelectedIndex: Int
+fun ExamDetailsScreen(
+    state: ExamDataState,
 ) {
-//    val imageBitmap: ImageBitmap = bitmaps[bitmapSelectedIndex].asImageBitmap()
-//
-//
-//
-//    Column {
-//        Image(
-//            bitmap = imageBitmap,
-//            contentDescription = null
-//        )
-//        OutlinedTextField(
-//            value = username,
-//            onValueChange = { username = it },
-//            label = { Text("Username") },
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Text,
-//                imeAction = ImeAction.Next
-//            ),
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            ),
-//            singleLine = true,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//        OutlinedTextField(
-//            value = username,
-//            onValueChange = { username = it },
-//            label = { Text("Username") },
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Text,
-//                imeAction = ImeAction.Next
-//            ),
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            ),
-//            singleLine = true,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//        OutlinedTextField(
-//            value = username,
-//            onValueChange = { username = it },
-//            label = { Text("Username") },
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Text,
-//                imeAction = ImeAction.Next
-//            ),
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            ),
-//            singleLine = true,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//        OutlinedTextField(
-//            value = username,
-//            onValueChange = { username = it },
-//            label = { Text("Username") },
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Text,
-//                imeAction = ImeAction.Next
-//            ),
-//            keyboardActions = KeyboardActions(
-//                onDone = { keyboardController?.hide() }
-//            ),
-//            singleLine = true,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//
-//    }
-}
+    val scrollState = rememberScrollState()
 
-@Preview(showBackground = true)
+    Column (
+        modifier = Modifier
+            .padding(10.dp)
+            .verticalScroll(scrollState)
+    ) {
+
+        PatientSelected(
+            examDataState = state
+        )
+        Text(text = "Left Eye Images")
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+        ) {
+            state.examData?.let {
+                items(it.listImagesLeftEye) { imagePath ->
+                    val bitmap = BitmapFactory.decodeFile(imagePath)
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Captured Image",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop
+                    )
+
+                }
+            }
+        }
+        Text(text = "Right Eye Images")
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+            ) {
+            state.examData?.let {
+                items(it.listImagesRightEye) { imagePath ->
+                    val bitmap = BitmapFactory.decodeFile(imagePath)
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Captured Image",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop
+                    )
+
+                }
+            }
+        }
+    }
+
+}
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ImageDetailPreview() {
-    //ImageDetailsScreen()
+private fun PatientSelected(
+    examDataState: ExamDataState
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+            .padding(8.dp)
+
+    ) {
+        if (examDataState.patientData != null) {
+            Image(
+                bitmap = byteArrayToBitmap(examDataState.patientData.profilePicture).asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(10.dp))
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(4f)
+        ) {
+            if (examDataState.patientData != null) {
+                Text(
+                    text = examDataState.patientData.name,
+                    fontSize = 20.sp
+                )
+            }
+            if (examDataState.patientData != null) {
+                Text(
+                    text = "${calculateAge(examDataState.patientData.birthDate)} years",
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
 }
