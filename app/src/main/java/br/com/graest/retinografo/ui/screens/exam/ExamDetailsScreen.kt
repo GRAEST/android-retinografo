@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
@@ -54,12 +55,20 @@ fun ExamDetailsScreen(
         PatientSelected(
             examDataState = state
         )
-        Text(text = "Left Eye Images")
+        Text(
+            text = "Left Eye Images",
+            fontSize = 22.sp,
+            fontWeight = FontWeight(600),
+            modifier = Modifier.padding(10.dp)
+
+        )
         LazyHorizontalGrid(
             rows = GridCells.Fixed(1),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
+                .padding(10.dp)
         ) {
             state.examData?.let {
                 items(it.listImagesLeftEye) { imagePath ->
@@ -77,12 +86,19 @@ fun ExamDetailsScreen(
                 }
             }
         }
-        Text(text = "Right Eye Images")
+        Text(
+            text = "Right Eye Images",
+            fontSize = 22.sp,
+            fontWeight = FontWeight(600),
+            modifier = Modifier.padding(10.dp)
+        )
         LazyHorizontalGrid(
             rows = GridCells.Fixed(1),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
+                .padding(10.dp)
             ) {
             state.examData?.let {
                 items(it.listImagesRightEye) { imagePath ->
