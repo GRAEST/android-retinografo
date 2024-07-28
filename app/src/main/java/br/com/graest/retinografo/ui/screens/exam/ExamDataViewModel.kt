@@ -190,6 +190,16 @@ class ExamDataViewModel(
                     }
                 }
             }
+            is ExamDataEvent.OnShowImageDetails -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(
+                            imageDetailIndex = event.index,
+                            onShowImageDetail = true
+                        )
+                    }
+                }
+            }
 
             else -> {}
         }

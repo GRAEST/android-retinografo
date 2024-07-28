@@ -118,7 +118,8 @@ fun RetinografoNavGraph(
 
         composable("ExamDetails") {
             ExamDetailsScreen(
-                state = examDataState
+                state = examDataState,
+                onEvent = examDataViewModel::onEvent
             )
         }
 

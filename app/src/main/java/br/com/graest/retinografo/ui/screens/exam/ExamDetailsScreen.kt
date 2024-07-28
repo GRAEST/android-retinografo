@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Index
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
@@ -43,15 +46,23 @@ import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 @Composable
 fun ExamDetailsScreen(
     state: ExamDataState,
+    onEvent: (ExamDataEvent) -> Unit
 ) {
     val scrollState = rememberScrollState()
+
+    if (state.onShowImageDetail) {
+        ExamDetailScreenDialog(
+            state = state,
+            modifier = Modifier
+        )
+    }
+
 
     Column (
         modifier = Modifier
             .padding(10.dp)
             .verticalScroll(scrollState)
     ) {
-
         PatientSelected(
             examDataState = state
         )
@@ -71,7 +82,7 @@ fun ExamDetailsScreen(
                 .padding(10.dp)
         ) {
             state.examData?.let {
-                items(it.listImagesLeftEye) { imagePath ->
+                itemsIndexed(it.listImagesLeftEye) { index, imagePath ->
                     val bitmap = BitmapFactory.decodeFile(imagePath)
                     Image(
                         bitmap = bitmap.asImageBitmap(),
@@ -79,10 +90,13 @@ fun ExamDetailsScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
+                            .aspectRatio(1f)
+                            .clickable {
+                                onEvent(ExamDataEvent.OnShowImageDetails(index))
+                            }
+                        ,
+                        contentScale = ContentScale.Crop,
                     )
-
                 }
             }
         }

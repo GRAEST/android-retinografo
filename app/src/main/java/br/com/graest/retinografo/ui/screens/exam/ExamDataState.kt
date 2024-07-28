@@ -24,4 +24,6 @@ data class ExamDataState(
     val onRightEyeSaveMode: Boolean = false,
     val examData: ExamData? = null,
     val patientData: PatientData? = null,
+    val imageDetailIndex: Int = 0,
+    val onShowImageDetail: Boolean = false
 )
