@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.utils.ExamCameraUtils.saveImageToFile
@@ -195,7 +196,18 @@ class ExamDataViewModel(
                     _examDataState.update {
                         it.copy(
                             imageDetailIndex = event.index,
-                            onShowImageDetail = true
+                            onShowImageDetail = true,
+                            imageDetailSide = event.side
+                        )
+                    }
+                }
+            }
+
+            ExamDataEvent.OnHideImageDetails -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(
+                            onShowImageDetail = false
                         )
                     }
                 }

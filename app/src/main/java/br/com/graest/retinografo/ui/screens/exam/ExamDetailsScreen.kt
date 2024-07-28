@@ -1,13 +1,11 @@
 package br.com.graest.retinografo.ui.screens.exam
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Index
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
 import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
@@ -53,11 +49,10 @@ fun ExamDetailsScreen(
     if (state.onShowImageDetail) {
         ExamDetailScreenDialog(
             state = state,
+            onEvent = onEvent,
             modifier = Modifier
         )
     }
-
-
     Column (
         modifier = Modifier
             .padding(10.dp)
@@ -92,7 +87,7 @@ fun ExamDetailsScreen(
                             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
                             .aspectRatio(1f)
                             .clickable {
-                                onEvent(ExamDataEvent.OnShowImageDetails(index))
+                                onEvent(ExamDataEvent.OnShowImageDetails(index, "left"))
                             }
                         ,
                         contentScale = ContentScale.Crop,
@@ -115,7 +110,7 @@ fun ExamDetailsScreen(
                 .padding(10.dp)
             ) {
             state.examData?.let {
-                items(it.listImagesRightEye) { imagePath ->
+                itemsIndexed(it.listImagesRightEye) { index, imagePath ->
                     val bitmap = BitmapFactory.decodeFile(imagePath)
                     Image(
                         bitmap = bitmap.asImageBitmap(),
@@ -123,7 +118,11 @@ fun ExamDetailsScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
+                            .aspectRatio(1f)
+                            .clickable {
+                                onEvent(ExamDataEvent.OnShowImageDetails(index, "right"))
+                            }
+                        ,
                         contentScale = ContentScale.Crop
                     )
 
@@ -131,8 +130,8 @@ fun ExamDetailsScreen(
             }
         }
     }
-
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun PatientSelected(

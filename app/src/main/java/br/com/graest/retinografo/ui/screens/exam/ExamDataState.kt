@@ -25,5 +25,6 @@ data class ExamDataState(
     val examData: ExamData? = null,
     val patientData: PatientData? = null,
     val imageDetailIndex: Int = 0,
+    val imageDetailSide: String = "",
     val onShowImageDetail: Boolean = false
 )
