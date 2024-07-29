@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.camera.view.LifecycleCameraController
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -213,10 +214,52 @@ class ExamDataViewModel(
                 }
             }
 
+            is ExamDataEvent.SetZoom -> {
+//                viewModelScope.launch {
+//                    _examDataState.update {
+//                        it.copy(
+//                            zoomRatio = event.newValue
+//                        )
+//                    }
+//                    _examDataState.value.cameraControl?.setZoomRatio(event.newValue)
+//                }
+                viewModelScope.launch {
+                    Log.d("CameraZoom", "Setting zoom ratio to: ${event.newValue}")
+                    _examDataState.update { currentState ->
+                        currentState.copy(
+                            zoomRatio = event.newValue
+                        )
+                    }
+                    _examDataState.value.cameraControl?.let { control ->
+                        Log.d("CameraZoom", "Camera control is not null, setting zoom ratio.")
+                        control.setZoomRatio(event.newValue)
+                    } ?: run {
+                        Log.d("CameraZoom", "Camera control is null.")
+                    }
+                }
+            }
+
             else -> {}
         }
     }
 
+    fun setCameraController(controller: LifecycleCameraController) {
+        Log.d("CameraZoom", "Setting camera controller.")
+        val cameraControl = controller.cameraControl
+        val cameraInfo = controller.cameraInfo
+
+        if (cameraControl == null || cameraInfo == null) {
+            Log.e("CameraZoom", "CameraControl or CameraInfo is null.")
+            return
+        }
+
+        _examDataState.update {
+            it.copy(
+                cameraControl = cameraControl,
+                cameraInfo = cameraInfo
+            )
+        }
+    }
 
     fun addRightEyeImagePath(path: String) {
         _examDataState.update {

@@ -11,10 +11,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 
 
 @Composable
-fun CameraViewScreen(
+fun BasicCameraViewScreen(
     controller: LifecycleCameraController,
-    cameraControl: CameraControl?,
-    cameraInfo: CameraInfo?,
     modifier: Modifier = Modifier
 ) {
     val lifeCycleOwner = LocalLifecycleOwner.current

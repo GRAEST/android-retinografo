@@ -1,5 +1,7 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import androidx.camera.core.CameraControl
+import androidx.camera.core.CameraInfo
 import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.data.model.ExamDataWithPatient
 import br.com.graest.retinografo.data.model.PatientData
@@ -26,5 +28,8 @@ data class ExamDataState(
     val patientData: PatientData? = null,
     val imageDetailIndex: Int = 0,
     val imageDetailSide: String = "",
-    val onShowImageDetail: Boolean = false
+    val onShowImageDetail: Boolean = false,
+    val cameraControl: CameraControl? = null,
+    val cameraInfo: CameraInfo? = null,
+    val zoomRatio: Float = 1f,
 )

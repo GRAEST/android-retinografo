@@ -2,7 +2,10 @@ package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.camera.core.CameraControl
+import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -27,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,7 +69,13 @@ fun ExamCameraComposableScreen(
 
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        examDataViewModel.setCameraController(controller)
     }
+
+    val maxZoomRatio = examDataState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
+    Log.d("CameraZoom", "max $maxZoomRatio")
+    val minZoomRatio = examDataState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f
+    Log.d("CameraZoom", "min $minZoomRatio")
 
     if (examDataState.showToastRed) {
         RedToast(examDataState)
@@ -102,12 +112,20 @@ fun ExamCameraComposableScreen(
             Column {
                 TopCameraComposableButtons(examDataState, onEvent)
                 examDataState.patientData?.let {
-                    TopCameraComposablePatientSelected(examDataState,
-                        it, onEvent)
+                    TopCameraComposablePatientSelected(
+                        examDataState,
+                        it, onEvent
+                    )
                 }
             }
         }
-        MainCameraComposable(controller)
+
+
+        MainCameraComposable(
+            controller = controller,
+            cameraControl = examDataState.cameraControl,
+            cameraInfo = examDataState.cameraInfo
+        )
 
         BottomCameraComposable(
             examDataState,
@@ -115,7 +133,9 @@ fun ExamCameraComposableScreen(
             controller,
             navController,
             examDataViewModel,
-            onEvent
+            onEvent,
+            minZoomRatio,
+            maxZoomRatio
         )
     }
 }
@@ -373,8 +393,10 @@ private fun BottomCameraComposable(
     navController: NavController,
     examDataViewModel: ExamDataViewModel,
     onEvent: (ExamDataEvent) -> Unit,
+    minZoomRatio: Float,
+    maxZoomRatio: Float,
 ) {
-    Column (
+    Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -387,6 +409,18 @@ private fun BottomCameraComposable(
             verticalAlignment = Alignment.CenterVertically,
 
             ) {
+
+            Slider(
+                value = examDataState.zoomRatio,
+                onValueChange = {
+                    Log.d("CameraZoom", "Slider value changed to: ${examDataState.zoomRatio}")
+                    onEvent(ExamDataEvent.SetZoom(it))
+                },
+                valueRange = minZoomRatio..maxZoomRatio,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .weight(1f)
+            )
 
             IconButton(
                 onClick = {
@@ -428,7 +462,8 @@ private fun BottomCameraComposable(
                     } else {
                         onEvent(ExamDataEvent.OnShowToastRed("First Select a Patient"))
                     }
-                }
+                },
+                modifier = Modifier.weight(1f)
             ) {
                 Icon(
                     imageVector = Icons.Default.PhotoCamera,
@@ -436,17 +471,24 @@ private fun BottomCameraComposable(
                     contentDescription = "Take Photo"
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-private fun MainCameraComposable(controller: LifecycleCameraController) {
+private fun MainCameraComposable(
+    controller: LifecycleCameraController,
+    cameraControl: CameraControl?,
+    cameraInfo: CameraInfo?,
+) {
     Box(
         contentAlignment = Alignment.Center
     ) {
         CameraViewScreen(
             controller = controller,
+            cameraControl = cameraControl,
+            cameraInfo = cameraInfo,
             modifier = Modifier
                 .fillMaxSize()
                 .clip(shape = RectangleShape)
