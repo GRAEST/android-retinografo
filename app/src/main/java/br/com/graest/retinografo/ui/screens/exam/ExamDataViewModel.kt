@@ -38,7 +38,7 @@ class ExamDataViewModel(
             examDataState.copy(
                 examsDataWithPatient = examsDataWithPatient
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(0), ExamDataState())
 
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
 
     val loginState: StateFlow<LoginState> = _loginState
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LoginState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(0), LoginState())
 
     fun onEvent(event: LoginEvent) {
         when (event) {

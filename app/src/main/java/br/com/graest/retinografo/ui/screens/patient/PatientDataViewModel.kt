@@ -33,7 +33,7 @@ class PatientDataViewModel(
         patientState.copy(
             patientsData = patientsData
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), PatientDataState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(0), PatientDataState())
 
     /* O MUTABLE STATE PERSISTE DADOS MESMO QUANDO EU SOBRESCREVO, OU SEJA, QUANDO TEM DELETE, EDIT OU ADD, DA PROBLEMA */
 
