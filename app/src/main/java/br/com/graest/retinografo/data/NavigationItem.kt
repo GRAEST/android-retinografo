@@ -26,6 +26,12 @@ data class NavigationItem(
 
 val items = listOf(
     NavigationItem(
+        title = "Patient",
+        selectedIcon = Icons.Filled.VerifiedUser,
+        unselectedIcon = Icons.Outlined.VerifiedUser,
+        route = "Patient"
+    ),
+    NavigationItem(
         title = "Exam Camera",
         selectedIcon = Icons.Filled.CameraEnhance,
         unselectedIcon = Icons.Outlined.CameraEnhance,
@@ -36,11 +42,5 @@ val items = listOf(
         selectedIcon = Icons.Filled.MedicalServices,
         unselectedIcon = Icons.Outlined.MedicalServices,
         route = "Exams"
-    ),
-    NavigationItem(
-        title = "Patient",
-        selectedIcon = Icons.Filled.VerifiedUser,
-        unselectedIcon = Icons.Outlined.VerifiedUser,
-        route = "Patient"
     )
 )

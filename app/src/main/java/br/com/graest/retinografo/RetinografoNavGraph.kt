@@ -65,7 +65,7 @@ fun RetinografoNavGraph(
                 loginViewModel = loginViewModel,
                 loginState = loginState,
                 onEvent = loginViewModel::onEvent,
-                onClickLogIn = { navController.navigate("ExamCamera") }
+                onClickLogIn = { navController.navigate("Patient") }
             )
         }
 
