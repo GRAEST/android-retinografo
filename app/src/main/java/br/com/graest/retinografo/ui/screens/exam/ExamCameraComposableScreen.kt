@@ -1,6 +1,7 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -190,8 +191,9 @@ private fun TopCameraComposablePatientSelected(
 
     ) {
         if (examDataState.patientData != null) {
+            val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
             Image(
-                bitmap = byteArrayToBitmap(patientData.profilePicture).asImageBitmap(),
+                bitmap = bitmap.asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
                     .weight(1f)

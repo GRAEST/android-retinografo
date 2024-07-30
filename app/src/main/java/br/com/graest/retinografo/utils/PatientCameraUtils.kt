@@ -23,9 +23,9 @@ object PatientCameraUtils {
         val currentRoute = navController.currentDestination?.route
 
         takePhoto(context, controller) { bitmap ->
-            val tempFile = createTempImageFile(context)
-            if (saveBitmapToFile(bitmap, tempFile)) {
-                onImageCaptured(tempFile)
+            val imageFile = createImageFile(context)
+            if (saveBitmapToFile(bitmap, imageFile)) {
+                onImageCaptured(imageFile)
                 if (currentRoute == "PatientCamera" || currentRoute == "UserCamera") {
                     navController.popBackStack()
                 }
@@ -35,21 +35,34 @@ object PatientCameraUtils {
         }
     }
 
-    fun createTempImageFile(context: Context): File {
+    private fun createImageFile(context: Context): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "temp_image", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        )
+        val imageFileName = "image_${System.currentTimeMillis()}.jpg"
+        return File(storageDir, imageFileName)
     }
 
-    fun saveBitmapToFile(bitmap: Bitmap, file: File): Boolean {
+    private fun saveBitmapToFile(bitmap: Bitmap, file: File): Boolean {
         return try {
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
             }
             true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    fun deleteImageFile(file: File): Boolean {
+        return file.delete()
+    }
+
+    fun overwriteImageFile(bitmap: Bitmap, file: File): Boolean {
+        return try {
+            if (file.exists()) {
+                file.delete()
+            }
+            saveBitmapToFile(bitmap, file)
         } catch (e: IOException) {
             e.printStackTrace()
             false

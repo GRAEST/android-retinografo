@@ -148,8 +148,9 @@ private fun PatientSelected(
 
     ) {
         if (examDataState.patientData != null) {
+            val bitmap = BitmapFactory.decodeFile(examDataState.patientData.profilePicturePath)
             Image(
-                bitmap = byteArrayToBitmap(examDataState.patientData.profilePicture).asImageBitmap(),
+                bitmap = bitmap.asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
                     .weight(1f)

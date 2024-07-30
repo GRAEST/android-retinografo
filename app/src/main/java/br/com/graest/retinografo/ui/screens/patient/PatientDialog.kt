@@ -88,8 +88,8 @@ fun PatientDialog(
                     .padding(10.dp)
             ) {
                 if (state.isAddingPatientData || state.isEditingImage) {
-                    if (state.tempImagePath != null) {
-                        val bitmap = BitmapFactory.decodeFile(state.tempImagePath)
+                    val bitmap = BitmapFactory.decodeFile(state.profilePicturePath)
+                    if (state.profilePicturePath != "") {
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured Image",
@@ -102,21 +102,6 @@ fun PatientDialog(
                         )
                     }
                 }
-                if (state.isEditingPatientData && !state.isEditingImage) {
-                    state.profilePicture?.let { byteArrayToBitmap(it).asImageBitmap() }?.let {
-                        Image(
-                            bitmap = it,
-                            contentDescription = "Captured Image",
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                                .aspectRatio(1f)
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = { onEvent(PatientDataEvent.SetPatientName(it)) },
@@ -366,7 +351,7 @@ fun PatientDialog(
                         }
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
-                    if (state.tempImagePath != null) {
+                    if (state.profilePicturePath != "") {
                         Text(text = "Image Added")
                     } else {
                         Text(text = "No image yet.")

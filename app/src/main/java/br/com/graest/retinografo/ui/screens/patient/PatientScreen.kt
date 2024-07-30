@@ -1,6 +1,7 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -61,8 +62,9 @@ fun PatientScreen(
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 if (patientData != null) {
+                    val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
                     Image(
-                        bitmap = byteArrayToBitmap(patientData.profilePicture).asImageBitmap(),
+                        bitmap = bitmap.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
                             .weight(1f)

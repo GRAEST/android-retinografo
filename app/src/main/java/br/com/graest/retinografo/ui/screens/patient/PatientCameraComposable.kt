@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,7 +71,9 @@ fun PatientCameraComposable(
                             CameraSelector.DEFAULT_FRONT_CAMERA
                         } else CameraSelector.DEFAULT_BACK_CAMERA
                 },
-                modifier = Modifier.offset(16.dp, 16.dp)
+                modifier = Modifier
+                    .offset(16.dp, 16.dp)
+                    .weight(1f)
             ) {
                 Icon(
                     imageVector = Icons.Default.Cameraswitch,
@@ -91,12 +94,14 @@ fun PatientCameraComposable(
                         },
                         onError = { error ->
                             viewModel.setErrorMessage(error.message)
-                            viewModel.setCapturedImagePath(null)
+                            viewModel.setCapturedImagePath("")
                         }
                     )
 
                 },
-                modifier = Modifier.offset(16.dp, 16.dp)
+                modifier = Modifier
+                    .offset(16.dp, 16.dp)
+                    .weight(1f)
             ) {
                 Icon(
                     imageVector = Icons.Default.PhotoCamera,
@@ -104,12 +109,7 @@ fun PatientCameraComposable(
                     contentDescription = "Take Photo"
                 )
             }
-            IconButton(
-                onClick = { },
-                modifier = Modifier.offset(16.dp, 16.dp)
-            ) {
-                //fake button -> just to make it symmetrical
-            }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

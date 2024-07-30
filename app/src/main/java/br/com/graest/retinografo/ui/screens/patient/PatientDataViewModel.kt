@@ -1,22 +1,15 @@
 package br.com.graest.retinografo.ui.screens.patient
 
-import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.data.model.PatientData
-import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
-import br.com.graest.retinografo.utils.ImageConvertingUtils.getBitmapFromDrawable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -98,7 +91,7 @@ class PatientDataViewModel(
                                     isEditingPatientData = true,
                                     patientId = event.id,
                                     name = data.name,
-                                    profilePicture = data.profilePicture,
+                                    profilePicturePath = data.profilePicturePath,
                                     birthDate = birthDate,
                                     gender = data.gender,
                                     cpf = data.cpf,
@@ -118,6 +111,7 @@ class PatientDataViewModel(
             is PatientDataEvent.SavePatientData -> {
 
                 val patientId = patientDataState.value.patientId //id é necessário para caso de EDIT
+                val profilePicturePath = patientDataState.value.profilePicturePath
                 val name = patientDataState.value.name
                 val gender = patientDataState.value.gender
                 val cpf = patientDataState.value.cpf
@@ -131,15 +125,6 @@ class PatientDataViewModel(
 
                 val birthDate = validateAndSetBirthDate(patientDataState.value.birthDate)
 
-
-                val bitmap = if (patientDataState.value.isAddingPatientData && patientDataState.value.tempImagePath == null) {
-                    getBitmapFromDrawable(event.context, R.drawable.user_icon)
-                } else if (patientDataState.value.isEditingPatientData && patientDataState.value.tempImagePath == null) {
-                    byteArrayToBitmap(patientDataState.value.profilePicture!!)
-                } else {
-                    BitmapFactory.decodeFile(patientDataState.value.tempImagePath)
-                }
-
                 val newPatientId = patientId ?: ByteBuffer.wrap(ByteArray(16))
                     .putLong(UUID.randomUUID().mostSignificantBits)
                     .putLong(UUID.randomUUID().leastSignificantBits)
@@ -150,48 +135,41 @@ class PatientDataViewModel(
                 }
 
                 val patientData = if (patientId != null) {
-                    bitmap?.let { bitmapToByteArray(it) }?.let {
-                        PatientData(
-                            patientId = patientId,
-                            profilePicture = it,
-                            name = name,
-                            birthDate = birthDate,
-                            gender = gender,
-                            cpf = cpf,
-                            email = email,
-                            telNumber = telNumber,
-                            isDiabetic = isDiabetic,
-                            hasHyperTension = hasHyperTension,
-                            hasGlaucoma = hasGlaucoma,
-                            description = description
-                        )
-                    }
+                    PatientData(
+                        patientId = patientId,
+                        profilePicturePath = profilePicturePath,
+                        name = name,
+                        birthDate = birthDate,
+                        gender = gender,
+                        cpf = cpf,
+                        email = email,
+                        telNumber = telNumber,
+                        isDiabetic = isDiabetic,
+                        hasHyperTension = hasHyperTension,
+                        hasGlaucoma = hasGlaucoma,
+                        description = description
+                    )
                 } else {
-                    bitmap?.let { bitmapToByteArray(it) }?.let {
-                        PatientData(
-                            patientId = newPatientId,
-                            profilePicture = it,
-                            name = name,
-                            birthDate = birthDate,
-                            gender = gender,
-                            cpf = cpf,
-                            email = email,
-                            telNumber = telNumber,
-                            isDiabetic = isDiabetic,
-                            hasHyperTension = hasHyperTension,
-                            hasGlaucoma = hasGlaucoma,
-                            description = description
-                        )
-                    }
+                    PatientData(
+                        patientId = newPatientId,
+                        profilePicturePath = profilePicturePath,
+                        name = name,
+                        birthDate = birthDate,
+                        gender = gender,
+                        cpf = cpf,
+                        email = email,
+                        telNumber = telNumber,
+                        isDiabetic = isDiabetic,
+                        hasHyperTension = hasHyperTension,
+                        hasGlaucoma = hasGlaucoma,
+                        description = description
+                    )
                 }
 
-
                 viewModelScope.launch {
-                    if (patientData != null) {
-                        patientDataDao.upsertPatientData(patientData)
-                        clearStates()
-                        closeDialogs()
-                    }
+                    patientDataDao.upsertPatientData(patientData)
+                    clearStates()
+                    closeDialogs()
                 }
             }
 
@@ -296,14 +274,14 @@ class PatientDataViewModel(
     }
 
     // to kill all problems, try and avoid cuncurrency problems (async and sync) so move all to async
-    fun resetFlowState(){
+    fun resetFlowState() {
         viewModelScope.launch {
             _patientDataState.value = PatientDataState()
         }
     }
 
 
-    fun imageAlreadyEdited(){
+    fun imageAlreadyEdited() {
         _patientDataState.update {
             it.copy(
                 isEditingImage = false,
@@ -335,16 +313,15 @@ class PatientDataViewModel(
                 hasHyperTension = false,
                 hasGlaucoma = false,
                 description = "",
-                tempImagePath = null,
-                profilePicture = null
+                profilePicturePath = "",
             )
         }
     }
 
-    fun setCapturedImagePath(path: String?) {
+    fun setCapturedImagePath(path: String) {
         _patientDataState.update {
             it.copy(
-                tempImagePath = path
+                profilePicturePath = path
             )
         }
     }
@@ -352,7 +329,7 @@ class PatientDataViewModel(
     fun setErrorMessage(message: String?) {
         _patientDataState.update {
             it.copy(
-                tempImageErrorMessage = message
+                fileImageErrorMessage = message
             )
         }
     }
