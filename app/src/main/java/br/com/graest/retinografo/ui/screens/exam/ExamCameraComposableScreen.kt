@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -408,17 +411,8 @@ private fun BottomCameraComposable(
 
             ) {
 
-            Slider(
-                value = examDataState.zoomRatio,
-                onValueChange = {
-                    Log.d("CameraZoom", "Slider value changed to: ${examDataState.zoomRatio}")
-                    onEvent(ExamDataEvent.SetZoom(it))
-                },
-                valueRange = minZoomRatio..maxZoomRatio,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .weight(1f)
-            )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             IconButton(
                 onClick = {
@@ -469,7 +463,23 @@ private fun BottomCameraComposable(
                     contentDescription = "Take Photo"
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .graphicsLayer(rotationZ = -90f)
+                    .weight(1f)
+            ) {
+                Slider(
+                    value = examDataState.zoomRatio,
+                    onValueChange = {
+                        Log.d("CameraZoom", "Slider value changed to: ${examDataState.zoomRatio}")
+                        onEvent(ExamDataEvent.SetZoom(it))
+                    },
+                    valueRange = minZoomRatio..maxZoomRatio,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }
