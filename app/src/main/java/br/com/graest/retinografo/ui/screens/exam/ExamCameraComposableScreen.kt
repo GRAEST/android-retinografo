@@ -121,11 +121,7 @@ fun ExamCameraComposableScreen(
         }
 
 
-        MainCameraComposable(
-            controller = controller,
-            cameraControl = examDataState.cameraControl,
-            cameraInfo = examDataState.cameraInfo
-        )
+        MainCameraComposable(controller = controller)
 
         BottomCameraComposable(
             examDataState,
@@ -478,17 +474,13 @@ private fun BottomCameraComposable(
 
 @Composable
 private fun MainCameraComposable(
-    controller: LifecycleCameraController,
-    cameraControl: CameraControl?,
-    cameraInfo: CameraInfo?,
+    controller: LifecycleCameraController
 ) {
     Box(
         contentAlignment = Alignment.Center
     ) {
         CameraViewScreen(
             controller = controller,
-            cameraControl = cameraControl,
-            cameraInfo = cameraInfo,
             modifier = Modifier
                 .fillMaxSize()
                 .clip(shape = RectangleShape)

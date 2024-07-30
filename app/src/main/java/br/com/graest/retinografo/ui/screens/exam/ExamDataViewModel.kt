@@ -215,26 +215,13 @@ class ExamDataViewModel(
             }
 
             is ExamDataEvent.SetZoom -> {
-//                viewModelScope.launch {
-//                    _examDataState.update {
-//                        it.copy(
-//                            zoomRatio = event.newValue
-//                        )
-//                    }
-//                    _examDataState.value.cameraControl?.setZoomRatio(event.newValue)
-//                }
                 viewModelScope.launch {
-                    Log.d("CameraZoom", "Setting zoom ratio to: ${event.newValue}")
                     _examDataState.update { currentState ->
                         currentState.copy(
                             zoomRatio = event.newValue
                         )
                     }
-                    _examDataState.value.cameraControl?.let { control ->
-                        Log.d("CameraZoom", "Camera control is not null, setting zoom ratio.")
-                        control.setZoomRatio(event.newValue)
-                    } ?: run {
-                        Log.d("CameraZoom", "Camera control is null.")
+                    _examDataState.value.cameraControl?.setZoomRatio(event.newValue) ?: run {
                     }
                 }
             }
