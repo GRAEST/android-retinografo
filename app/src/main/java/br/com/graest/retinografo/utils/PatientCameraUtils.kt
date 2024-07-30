@@ -7,6 +7,8 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.navigation.NavController
 import br.com.graest.retinografo.getCurrentRoute
 import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -23,15 +25,7 @@ object PatientCameraUtils {
         val currentRoute = navController.currentDestination?.route
 
         takePhoto(context, controller) { bitmap ->
-            val imageFile = createImageFile(context)
-            if (saveBitmapToFile(bitmap, imageFile)) {
-                onImageCaptured(imageFile)
-                if (currentRoute == "PatientCamera" || currentRoute == "UserCamera") {
-                    navController.popBackStack()
-                }
-            } else {
-                onError(IOException("Failed to save image to file"))
-            }
+            saveImageAsync(context, bitmap, currentRoute, navController, onImageCaptured, onError)
         }
     }
 
@@ -50,6 +44,28 @@ object PatientCameraUtils {
         } catch (e: IOException) {
             e.printStackTrace()
             false
+        }
+    }
+
+    private fun saveImageAsync(
+        context: Context,
+        bitmap: Bitmap,
+        currentRoute: String?,
+        navController: NavController,
+        onImageCaptured: (File) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        // Start a coroutine
+        kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
+            val imageFile = createImageFile(context)
+            if (saveBitmapToFile(bitmap, imageFile)) {
+                onImageCaptured(imageFile)
+                if (currentRoute == "PatientCamera" || currentRoute == "UserCamera") {
+                    navController.popBackStack()
+                }
+            } else {
+                onError(IOException("Failed to save image to file"))
+            }
         }
     }
 

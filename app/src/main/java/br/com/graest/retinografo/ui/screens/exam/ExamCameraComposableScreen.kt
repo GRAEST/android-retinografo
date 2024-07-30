@@ -77,9 +77,7 @@ fun ExamCameraComposableScreen(
     }
 
     val maxZoomRatio = examDataState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
-    Log.d("CameraZoom", "max $maxZoomRatio")
     val minZoomRatio = examDataState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f
-    Log.d("CameraZoom", "min $minZoomRatio")
 
     if (examDataState.showToastRed) {
         RedToast(examDataState)
