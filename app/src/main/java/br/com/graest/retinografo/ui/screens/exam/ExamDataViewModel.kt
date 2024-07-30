@@ -38,7 +38,7 @@ class ExamDataViewModel(
             examDataState.copy(
                 examsDataWithPatient = examsDataWithPatient
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(0), ExamDataState())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExamDataState())
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -317,26 +317,13 @@ class ExamDataViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
         return try {
-            val leftEyeImagePathList = mutableListOf<String>()
-            val rightEyeImagePathList = mutableListOf<String>()
-
-            //talvez levar o file direto de temp para permanente ao invés de traduzir no meio
-            _examDataState.value.leftEyeImagePaths.forEachIndexed { index, tempImagePath ->
-                val bitmapImageFromTemp = BitmapFactory.decodeFile(tempImagePath)
-                leftEyeImagePathList.add(saveImageToFile(context, bitmapImageFromTemp, "left_eye_image${index}_${System.currentTimeMillis()}.jpg") ?: "")
-            }
-
-            _examDataState.value.rightEyeImagePaths.forEachIndexed { index, tempImagePath ->
-                val bitmapImageFromTemp = BitmapFactory.decodeFile(tempImagePath)
-                rightEyeImagePathList.add(saveImageToFile(context, bitmapImageFromTemp, "right_eye_image${index}_${System.currentTimeMillis()}.jpg") ?: "")
-            }
 
             val patientId = _examDataState.value.patientData?.patientId
 
             patientId?.let {
                 ExamData(
-                    listImagesRightEye = rightEyeImagePathList,
-                    listImagesLeftEye = leftEyeImagePathList,
+                    listImagesRightEye = examDataState.value.rightEyeImagePaths,
+                    listImagesLeftEye = examDataState.value.leftEyeImagePaths,
                     examCoordinates = "$latitude,$longitude",
                     examLocation = examDataState.value.examLocation,
                     patientId = it

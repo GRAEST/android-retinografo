@@ -22,7 +22,7 @@ class SignUpViewModel : ViewModel(){
     private val _signUpState = MutableStateFlow(SignUpState())
 
     val signUpState: StateFlow<SignUpState> = _signUpState
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(0), SignUpState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SignUpState())
 
     fun onEvent(event: SignUpEvent) {
         when (event) {
