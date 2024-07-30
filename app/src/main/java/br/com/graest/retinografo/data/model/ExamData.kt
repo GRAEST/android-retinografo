@@ -33,6 +33,7 @@ data class ExamData (
     val examCoordinates: String,
     val examLocation: String,
     val sentToServer: Boolean,
+    val closed: Boolean,
     val patientId: ByteArray,
     @PrimaryKey val id: ByteArray
 ) {
@@ -46,6 +47,7 @@ data class ExamData (
         examCoordinates: String,
         examLocation: String = "Default Input",
         sentToServer: Boolean = false,
+        closed: Boolean = false,
         patientId: ByteArray
     ) : this(
         listImagesLeftEye,
@@ -56,6 +58,7 @@ data class ExamData (
         examCoordinates,
         examLocation,
         sentToServer,
+        closed,
         patientId,
         ByteBuffer.wrap(ByteArray(16)).putLong(UUID.randomUUID().mostSignificantBits).putLong(UUID.randomUUID().leastSignificantBits).array()
     )
