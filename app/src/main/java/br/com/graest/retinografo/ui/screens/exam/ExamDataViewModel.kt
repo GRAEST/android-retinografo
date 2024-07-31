@@ -24,9 +24,11 @@ import java.io.File
 
 
 class ExamDataViewModel(
-    private val examDataDao: ExamDataDao
+    private val examDataDao: ExamDataDao,
+    applicationContext: Context
 ) : ViewModel() {
 
+    val flashlightController = FlashLightController(applicationContext)
     
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
@@ -225,15 +227,6 @@ class ExamDataViewModel(
                 }
             }
 
-            is ExamDataEvent.SetFlash -> {
-                viewModelScope.launch {
-                    _examDataState.update {
-                        it.copy(
-                            setFlash = event.setFlash
-                        )
-                    }
-                }
-            }
 
             else -> {}
         }

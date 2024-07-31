@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,7 @@ import androidx.room.Room
 import br.com.graest.retinografo.ui.components.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.MainScreenComposable
+import br.com.graest.retinografo.ui.FlashViewModel
 import br.com.graest.retinografo.ui.RetinografoNavGraph
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.login.LoginViewModel
@@ -66,7 +68,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ExamDataViewModel(db.examDataDao) as T
+                    return ExamDataViewModel(db.examDataDao, applicationContext) as T
                 }
             }
         }
@@ -91,15 +93,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             RetinografoTheme {
 
+                val flashViewModel: FlashViewModel = viewModel()
+                val flashState by flashViewModel.flashState.collectAsState()
+
                 val signUpViewModel: SignUpViewModel = viewModel()
                 val signUpState by signUpViewModel.signUpState.collectAsState()
 
                 val loginViewModel: LoginViewModel = viewModel()
                 val loginState by loginViewModel.loginState.collectAsState()
 
-
                 val examDataState by examViewModel.examDataState.collectAsState()
-
                 val patientDataState by patientViewModel.patientDataState.collectAsState()
 
                 val controller = remember {
@@ -158,7 +161,9 @@ class MainActivity : ComponentActivity() {
                         signUpViewModel,
                         signUpState,
                         loginViewModel,
-                        loginState
+                        loginState,
+                        flashViewModel,
+                        flashState
                     )
                 }
             }

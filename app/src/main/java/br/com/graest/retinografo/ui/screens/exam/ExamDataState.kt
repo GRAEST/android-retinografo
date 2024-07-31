@@ -32,5 +32,4 @@ data class ExamDataState(
     val cameraControl: CameraControl? = null,
     val cameraInfo: CameraInfo? = null,
     val zoomRatio: Float = 1f,
-    val setFlash: Boolean = false
 )

@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
+import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +35,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,14 +46,20 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.ui.FlashEvent
+import br.com.graest.retinografo.ui.FlashState
+import br.com.graest.retinografo.ui.FlashViewModel
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
@@ -65,19 +75,42 @@ fun ExamCameraComposableScreen(
     applicationContext: Context,
     controller: LifecycleCameraController,
     navController: NavController,
+    flashViewModel: FlashViewModel,
+    flashState: FlashState,
+    onFlashEvent: (FlashEvent) -> Unit
 ) {
 
-    LaunchedEffect(Unit) {
-        controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-        examDataViewModel.setCameraController(controller)
-    }
 
-    LaunchedEffect(examDataState.setFlash) {
-
-    }
 
     val maxZoomRatio = examDataState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
     val minZoomRatio = examDataState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val cameraController = remember {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(
+                CameraController.IMAGE_CAPTURE or CameraController.VIDEO_CAPTURE
+            )
+            bindToLifecycle(lifecycleOwner)
+        }
+    }
+
+
+    LaunchedEffect(Unit) {
+//        controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+//        examDataViewModel.setCameraController(controller)
+
+        cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        examDataViewModel.setCameraController(cameraController)
+
+    }
+
+    LaunchedEffect(flashState.isFlashOn) {
+        cameraController.enableTorch(flashState.isFlashOn)
+    }
+
 
     if (examDataState.showToastRed) {
         RedToast(examDataState)
@@ -123,17 +156,20 @@ fun ExamCameraComposableScreen(
         }
 
 
-        MainCameraComposable(controller = controller)
+        MainCameraComposable(controller = cameraController)
 
         BottomCameraComposable(
             examDataState,
             applicationContext,
-            controller,
+            cameraController,
             navController,
             examDataViewModel,
             onEvent,
             minZoomRatio,
-            maxZoomRatio
+            maxZoomRatio,
+            flashViewModel,
+            flashState,
+            onFlashEvent
         )
     }
 }
@@ -396,6 +432,9 @@ private fun BottomCameraComposable(
     onEvent: (ExamDataEvent) -> Unit,
     minZoomRatio: Float,
     maxZoomRatio: Float,
+    flashViewModel: FlashViewModel,
+    flashState: FlashState,
+    onFlashEvent: (FlashEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -411,11 +450,10 @@ private fun BottomCameraComposable(
 
             ) {
 
-
             Switch(
-                checked = examDataState.setFlash,
+                checked = flashState.isFlashOn,
                 onCheckedChange = {
-                    onEvent(ExamDataEvent.SetFlash(it))
+                    onFlashEvent(FlashEvent.OnSetFlash(it))
                 },
                 modifier = Modifier.weight(1f)
             )

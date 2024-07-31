@@ -46,7 +46,9 @@ fun RetinografoNavGraph(
     signUpViewModel: SignUpViewModel,
     signUpState: SignUpState,
     loginViewModel: LoginViewModel,
-    loginState: LoginState
+    loginState: LoginState,
+    flashViewModel: FlashViewModel,
+    flashState: FlashState
 ) {
     NavHost(
         navController = navController,
@@ -104,7 +106,10 @@ fun RetinografoNavGraph(
                 onEvent = examDataViewModel::onEvent,
                 applicationContext = applicationContext,
                 controller = controller,
-                navController = navController
+                navController = navController,
+                flashViewModel = flashViewModel,
+                flashState = flashState,
+                onFlashEvent = flashViewModel::onEvent
             )
 
         }
