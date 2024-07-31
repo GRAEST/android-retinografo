@@ -1,23 +1,21 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import android.app.Application
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.camera.view.LifecycleCameraController
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
-import br.com.graest.retinografo.utils.ExamCameraUtils.saveImageToFile
+import br.com.graest.retinografo.utils.FlashLightController
 import br.com.graest.retinografo.utils.LocationService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -26,9 +24,10 @@ import java.io.File
 
 
 class ExamDataViewModel(
-    private val examDataDao: ExamDataDao,
+    private val examDataDao: ExamDataDao
 ) : ViewModel() {
 
+    
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
     private val _examDataState = MutableStateFlow(ExamDataState())
@@ -169,7 +168,7 @@ class ExamDataViewModel(
 
             ExamDataEvent.OnCancelExam -> {
                 cleanupPath()
-                cleanupTemporaryImages()
+                //cleanupTemporaryImages()
                 _examDataState.update {
                     it.copy(
                         examLocation = "",
@@ -216,12 +215,22 @@ class ExamDataViewModel(
 
             is ExamDataEvent.SetZoom -> {
                 viewModelScope.launch {
-                    _examDataState.update { currentState ->
-                        currentState.copy(
+                    _examDataState.update {
+                        it.copy(
                             zoomRatio = event.newValue
                         )
                     }
                     _examDataState.value.cameraControl?.setZoomRatio(event.newValue) ?: run {
+                    }
+                }
+            }
+
+            is ExamDataEvent.SetFlash -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(
+                            setFlash = event.setFlash
+                        )
                     }
                 }
             }
@@ -281,8 +290,8 @@ class ExamDataViewModel(
         }
     }
 
-
-    private fun cleanupTemporaryImages() {
+    //going to be used later
+    private fun cleanupImages() {
         _examDataState.value.leftEyeImagePaths.forEach { path ->
             File(path).delete()
         }

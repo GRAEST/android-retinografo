@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,7 +53,7 @@ import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
-import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
+import br.com.graest.retinografo.utils.CameraUtils.captureImage
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -69,6 +70,10 @@ fun ExamCameraComposableScreen(
     LaunchedEffect(Unit) {
         controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
         examDataViewModel.setCameraController(controller)
+    }
+
+    LaunchedEffect(examDataState.setFlash) {
+
     }
 
     val maxZoomRatio = examDataState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
@@ -407,7 +412,13 @@ private fun BottomCameraComposable(
             ) {
 
 
-            Spacer(modifier = Modifier.weight(1f))
+            Switch(
+                checked = examDataState.setFlash,
+                onCheckedChange = {
+                    onEvent(ExamDataEvent.SetFlash(it))
+                },
+                modifier = Modifier.weight(1f)
+            )
 
             IconButton(
                 onClick = {

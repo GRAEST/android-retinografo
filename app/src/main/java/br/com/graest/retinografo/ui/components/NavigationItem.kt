@@ -1,19 +1,11 @@
-package br.com.graest.retinografo.data
+package br.com.graest.retinografo.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraEnhance
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MedicalServices
-import androidx.compose.material.icons.filled.PersonOutline
-import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.icons.outlined.CameraEnhance
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MedicalServices
-import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material.icons.outlined.SupervisorAccount
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.ui.graphics.vector.ImageVector
 

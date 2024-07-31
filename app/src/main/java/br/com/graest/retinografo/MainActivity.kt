@@ -31,8 +31,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import br.com.graest.retinografo.data.items
+import br.com.graest.retinografo.ui.components.items
 import br.com.graest.retinografo.data.repository.Database
+import br.com.graest.retinografo.ui.MainScreenComposable
+import br.com.graest.retinografo.ui.RetinografoNavGraph
 import br.com.graest.retinografo.ui.screens.exam.ExamDataViewModel
 import br.com.graest.retinografo.ui.screens.login.LoginViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel

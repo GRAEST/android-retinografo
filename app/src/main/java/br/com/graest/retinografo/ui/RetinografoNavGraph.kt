@@ -1,4 +1,4 @@
-package br.com.graest.retinografo
+package br.com.graest.retinografo.ui
 
 import android.content.Context
 import android.os.Build

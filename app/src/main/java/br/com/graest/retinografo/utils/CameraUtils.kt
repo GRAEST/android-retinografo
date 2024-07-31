@@ -2,23 +2,22 @@ package br.com.graest.retinografo.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Environment
+import android.util.Log
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import br.com.graest.retinografo.R
-import br.com.graest.retinografo.getCurrentRoute
-import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import kotlin.coroutines.CoroutineContext
 
-object PatientCameraUtils {
+object CameraUtils {
 
     fun captureImage(
         context: Context,
@@ -32,6 +31,43 @@ object PatientCameraUtils {
         takePhoto(context, controller) { bitmap ->
             saveImageAsync(context, bitmap, currentRoute, navController, onImageCaptured, onError)
         }
+    }
+
+    fun takePhoto(
+        applicationContext: Context,
+        controller: LifecycleCameraController,
+        onPhotoTaken: (Bitmap) -> Unit,
+    ) {
+        controller.takePicture(
+            ContextCompat.getMainExecutor(applicationContext),
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    super.onCaptureSuccess(image)
+
+                    val matrix = Matrix().apply {
+                        postRotate(image.imageInfo.rotationDegrees.toFloat())
+                    }
+                    val rotatedBitmap = Bitmap.createBitmap(
+                        image.toBitmap(),
+                        0,
+                        0,
+                        image.width,
+                        image.height,
+                        matrix,
+                        true
+                    )
+                    val removedGreen = BitmapUtils.removeGreen(rotatedBitmap)
+
+                    onPhotoTaken(rotatedBitmap)
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    super.onError(exception)
+                    Log.e("Camera", "Couldn't take photo: ", exception)
+                }
+
+            }
+        )
     }
 
     private fun createImageFile(context: Context): File {

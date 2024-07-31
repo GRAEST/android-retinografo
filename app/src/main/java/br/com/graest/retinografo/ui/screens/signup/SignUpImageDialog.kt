@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
-import br.com.graest.retinografo.utils.ImageConvertingUtils.bitmapToByteArray
 import java.util.Objects
 
 @OptIn(ExperimentalMaterial3Api::class)

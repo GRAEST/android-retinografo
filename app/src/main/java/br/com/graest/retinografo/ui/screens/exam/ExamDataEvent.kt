@@ -23,4 +23,5 @@ sealed interface ExamDataEvent {
     data class OnShowImageDetails(val index: Int, val side: String): ExamDataEvent
     data object OnHideImageDetails: ExamDataEvent
     data class SetZoom(val newValue: Float): ExamDataEvent
+    data class SetFlash(val setFlash: Boolean): ExamDataEvent
 }

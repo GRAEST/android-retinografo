@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.graest.retinografo.ui.components.CameraViewScreen
-import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
+import br.com.graest.retinografo.utils.CameraUtils.captureImage
 
 
 @Composable

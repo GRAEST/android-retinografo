@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

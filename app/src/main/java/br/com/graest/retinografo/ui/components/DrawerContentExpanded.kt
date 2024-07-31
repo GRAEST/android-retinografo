@@ -13,8 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import br.com.graest.retinografo.data.NavigationItem
-import br.com.graest.retinografo.getCurrentRoute
+import br.com.graest.retinografo.ui.getCurrentRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
