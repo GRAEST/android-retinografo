@@ -34,6 +34,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -80,11 +81,6 @@ fun ExamCameraComposableScreen(
     onFlashEvent: (FlashEvent) -> Unit
 ) {
 
-
-
-    val maxZoomRatio = examDataState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
-    val minZoomRatio = examDataState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -97,19 +93,27 @@ fun ExamCameraComposableScreen(
         }
     }
 
+    DisposableEffect(lifecycleOwner) {
+        onDispose {
+            cameraController.unbind()
+        }
+    }
+
+    LaunchedEffect(cameraController) {
+        flashViewModel.setCameraController(cameraController)
+    }
 
     LaunchedEffect(Unit) {
-//        controller.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//        examDataViewModel.setCameraController(controller)
-
         cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-        examDataViewModel.setCameraController(cameraController)
-
     }
 
     LaunchedEffect(flashState.isFlashOn) {
         cameraController.enableTorch(flashState.isFlashOn)
     }
+
+    val maxZoomRatio = flashState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 4f
+    val minZoomRatio = flashState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f
+    Log.d("CameraZoom", "minZoomRatio: $minZoomRatio, maxZoomRatio: $maxZoomRatio")
 
 
     if (examDataState.showToastRed) {
@@ -515,10 +519,10 @@ private fun BottomCameraComposable(
                     .weight(1f)
             ) {
                 Slider(
-                    value = examDataState.zoomRatio,
+                    value = flashState.zoomRatio,
                     onValueChange = {
-                        Log.d("CameraZoom", "Slider value changed to: ${examDataState.zoomRatio}")
-                        onEvent(ExamDataEvent.SetZoom(it))
+                        Log.d("CameraZoom", "Slider value changed to: ${flashState.zoomRatio}")
+                        onFlashEvent(FlashEvent.SetZoom(it))
                     },
                     valueRange = minZoomRatio..maxZoomRatio,
                     modifier = Modifier.padding(16.dp)

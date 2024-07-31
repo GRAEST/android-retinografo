@@ -28,8 +28,6 @@ class ExamDataViewModel(
     applicationContext: Context
 ) : ViewModel() {
 
-    val flashlightController = FlashLightController(applicationContext)
-    
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
 
     private val _examDataState = MutableStateFlow(ExamDataState())
@@ -214,39 +212,7 @@ class ExamDataViewModel(
                     }
                 }
             }
-
-            is ExamDataEvent.SetZoom -> {
-                viewModelScope.launch {
-                    _examDataState.update {
-                        it.copy(
-                            zoomRatio = event.newValue
-                        )
-                    }
-                    _examDataState.value.cameraControl?.setZoomRatio(event.newValue) ?: run {
-                    }
-                }
-            }
-
-
             else -> {}
-        }
-    }
-
-    fun setCameraController(controller: LifecycleCameraController) {
-        Log.d("CameraZoom", "Setting camera controller.")
-        val cameraControl = controller.cameraControl
-        val cameraInfo = controller.cameraInfo
-
-        if (cameraControl == null || cameraInfo == null) {
-            Log.e("CameraZoom", "CameraControl or CameraInfo is null.")
-            return
-        }
-
-        _examDataState.update {
-            it.copy(
-                cameraControl = cameraControl,
-                cameraInfo = cameraInfo
-            )
         }
     }
 

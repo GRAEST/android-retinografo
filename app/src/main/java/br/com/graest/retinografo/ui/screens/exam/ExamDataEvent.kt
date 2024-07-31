@@ -22,5 +22,4 @@ sealed interface ExamDataEvent {
     data class OnShowExamDetails(val id: ByteArray, val patientData: PatientData, val goToDetails:  () -> Unit) : ExamDataEvent
     data class OnShowImageDetails(val index: Int, val side: String): ExamDataEvent
     data object OnHideImageDetails: ExamDataEvent
-    data class SetZoom(val newValue: Float): ExamDataEvent
 }

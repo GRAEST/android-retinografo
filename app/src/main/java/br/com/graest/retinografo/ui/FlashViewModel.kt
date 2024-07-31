@@ -1,14 +1,16 @@
 package br.com.graest.retinografo.ui
 
 import android.app.Application
+import android.util.Log
+import androidx.camera.view.LifecycleCameraController
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.graest.retinografo.ui.screens.signup.SignUpState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class FlashViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,10 +28,36 @@ class FlashViewModel(application: Application) : AndroidViewModel(application) {
                     )
                 }
             }
+            is FlashEvent.SetZoom -> {
+                viewModelScope.launch {
+                    _flashState.update {
+                        it.copy(
+                            zoomRatio = event.newValue
+                        )
+                    }
+                    _flashState.value.cameraControl?.setZoomRatio(event.newValue) ?: run {
+                    }
+                }
+            }
         }
     }
 
-//    fun toggleFlash() {
-//        _flashState.value.isFlashOn = !_flashState.value.isFlashOn
-//    }
+    fun setCameraController(controller: LifecycleCameraController) {
+        Log.d("CameraZoom", "Setting camera controller.")
+        val cameraControl = controller.cameraControl
+        val cameraInfo = controller.cameraInfo
+
+        if (cameraControl == null || cameraInfo == null) {
+            Log.e("CameraZoom", "CameraControl or CameraInfo is null.")
+            return
+        }
+
+        _flashState.update {
+            it.copy(
+                cameraControl = cameraControl,
+                cameraInfo = cameraInfo
+            )
+        }
+    }
+
 }
