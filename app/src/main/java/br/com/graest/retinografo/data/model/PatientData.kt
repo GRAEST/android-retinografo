@@ -9,12 +9,13 @@ import br.com.graest.retinografo.utils.Converters
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+
 @Entity(tableName = "patient_data")
 data class PatientData(
     @PrimaryKey
     val patientId: ByteArray = ByteArray(0),
     @TypeConverters(Converters::class) val dataCreated: LocalDateTime,
-    val profilePicturePath: String,
+    val profilePicturePath: String?,
     val name: String,
     val birthDate: LocalDate? = null,
     val gender: Gender = Gender.OTHER,
@@ -29,7 +30,7 @@ data class PatientData(
     @RequiresApi(Build.VERSION_CODES.O)
     constructor(
         patientId: ByteArray = ByteArray(0),
-        profilePicturePath: String = "",
+        profilePicturePath: String? = null,
         name: String,
         birthDate: LocalDate? = null,
         gender: Gender = Gender.OTHER,

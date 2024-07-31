@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.camera.core.CameraControl
-import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -17,10 +15,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,7 +52,6 @@ import br.com.graest.retinografo.data.model.PatientData
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
-import br.com.graest.retinografo.utils.ImageConvertingUtils.byteArrayToBitmap
 import br.com.graest.retinografo.utils.PatientCameraUtils.captureImage
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -192,28 +187,30 @@ private fun TopCameraComposablePatientSelected(
 
     ) {
         if (examDataState.patientData != null) {
-            val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.Crop
-            )
+            if (examDataState.patientData.profilePicturePath != null) {
+                val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Spacer(modifier = Modifier.padding(10.dp))
@@ -484,7 +481,7 @@ private fun BottomCameraComposable(
 
 @Composable
 private fun MainCameraComposable(
-    controller: LifecycleCameraController
+    controller: LifecycleCameraController,
 ) {
     Box(
         contentAlignment = Alignment.Center

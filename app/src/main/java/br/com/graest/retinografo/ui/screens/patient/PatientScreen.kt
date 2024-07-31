@@ -62,28 +62,30 @@ fun PatientScreen(
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 if (patientData != null) {
-                    val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (patientData.profilePicturePath != null) {
+                        val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))

@@ -88,8 +88,8 @@ fun PatientDialog(
                     .padding(10.dp)
             ) {
                 if (state.isAddingPatientData || state.isEditingImage) {
-                    val bitmap = BitmapFactory.decodeFile(state.profilePicturePath)
-                    if (state.profilePicturePath != "") {
+                    if (state.profilePicturePath != null) {
+                        val bitmap = BitmapFactory.decodeFile(state.profilePicturePath)
                         Image(
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured Image",
@@ -351,7 +351,7 @@ fun PatientDialog(
                         }
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
-                    if (state.profilePicturePath != "") {
+                    if (state.profilePicturePath != null) {
                         Text(text = "Image Added")
                     } else {
                         Text(text = "No image yet.")

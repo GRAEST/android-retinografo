@@ -273,7 +273,7 @@ class PatientDataViewModel(
         }
     }
 
-    // to kill all problems, try and avoid cuncurrency problems (async and sync) so move all to async
+    // to kill all problems, try and avoid concurrency problems (async and sync) so move all to async
     fun resetFlowState() {
         viewModelScope.launch {
             _patientDataState.value = PatientDataState()
@@ -313,12 +313,12 @@ class PatientDataViewModel(
                 hasHyperTension = false,
                 hasGlaucoma = false,
                 description = "",
-                profilePicturePath = "",
+                profilePicturePath = null,
             )
         }
     }
 
-    fun setCapturedImagePath(path: String) {
+    fun setCapturedImagePath(path: String?) {
         _patientDataState.update {
             it.copy(
                 profilePicturePath = path

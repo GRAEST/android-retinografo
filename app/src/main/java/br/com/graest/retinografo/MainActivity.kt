@@ -40,6 +40,7 @@ import br.com.graest.retinografo.ui.screens.signup.SignUpViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 
 
+
 class MainActivity : ComponentActivity() {
 
     private val db by lazy {
@@ -75,11 +76,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         if (!hasRequiredPermissions()) {
             ActivityCompat.requestPermissions(
                 this, CAMERAX_PERMISSIONS, 0
             )
         }
+
+
 
         enableEdgeToEdge()
         setContent {
@@ -158,6 +162,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun hasRequiredPermissions(): Boolean {

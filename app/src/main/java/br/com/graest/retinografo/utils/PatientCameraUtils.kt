@@ -5,13 +5,18 @@ import android.graphics.Bitmap
 import android.os.Environment
 import androidx.camera.view.LifecycleCameraController
 import androidx.navigation.NavController
+import br.com.graest.retinografo.R
 import br.com.graest.retinografo.getCurrentRoute
 import br.com.graest.retinografo.utils.ExamCameraUtils.takePhoto
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import kotlin.coroutines.CoroutineContext
 
 object PatientCameraUtils {
 
@@ -84,5 +89,7 @@ object PatientCameraUtils {
             false
         }
     }
+
+
 
 }

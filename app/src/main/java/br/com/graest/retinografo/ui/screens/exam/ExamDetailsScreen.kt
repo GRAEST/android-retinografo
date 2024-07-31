@@ -148,28 +148,30 @@ private fun PatientSelected(
 
     ) {
         if (examDataState.patientData != null) {
-            val bitmap = BitmapFactory.decodeFile(examDataState.patientData.profilePicturePath)
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                    .aspectRatio(1f),
-                contentScale = ContentScale.Crop
-            )
+            if (examDataState.patientData.profilePicturePath != null) {
+                val bitmap = BitmapFactory.decodeFile(examDataState.patientData.profilePicturePath)
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Spacer(modifier = Modifier.padding(10.dp))

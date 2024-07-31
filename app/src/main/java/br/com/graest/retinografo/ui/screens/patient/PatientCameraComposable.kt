@@ -94,7 +94,7 @@ fun PatientCameraComposable(
                         },
                         onError = { error ->
                             viewModel.setErrorMessage(error.message)
-                            viewModel.setCapturedImagePath("")
+                            viewModel.setCapturedImagePath(null)
                         }
                     )
 
