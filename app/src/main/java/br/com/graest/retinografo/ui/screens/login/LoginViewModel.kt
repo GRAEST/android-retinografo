@@ -56,7 +56,7 @@ class LoginViewModel : ViewModel() {
         val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val request = Request.Builder()
-            .url("https://b220878beb13.ngrok.app/api/account/login/")
+            .url("https://76e79302a360.ngrok.app/api/account/login/")
             .post(requestBody)
             .build()
 
@@ -67,10 +67,9 @@ class LoginViewModel : ViewModel() {
             //aqui vai receber algo de volta da request (sucesso ou erro)
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
                     _loginState.update {
                         it.copy(
-                            requestMessage = responseBody.toString()
+                            requestMessage = response.code.toString()
                         )
                     }
 

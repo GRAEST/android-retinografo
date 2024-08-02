@@ -112,10 +112,10 @@ fun LoginScreen(
             Button(
                 onClick = {
                     loginViewModel.sendLoginInfo(loginState.email, loginState.password)
-                    if (loginState.requestMessage == "ok") {
+                    if (loginState.requestMessage == "200") {
                         onClickLogIn()
                     }
-                    onClickLogIn()
+                    //onClickLogIn()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
