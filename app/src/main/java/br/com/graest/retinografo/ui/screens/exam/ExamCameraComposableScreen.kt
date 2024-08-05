@@ -262,7 +262,7 @@ private fun TopCameraComposable(
                         onClick = {
                             onEvent(ExamDataEvent.NoPatientSelected)
                             onEvent(ExamDataEvent.OnCancelExam)
-                            onEvent(ExamDataEvent.OnShowToastRed("Exam Cancelled"))
+                            onEvent(ExamDataEvent.OnShowToastRed("Exam Finished"))
                         },
                         colors = IconButtonDefaults.iconButtonColors(Color.Red)
                     ) {

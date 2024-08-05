@@ -128,6 +128,15 @@ fun ExamDetailsScreen(
                 }
             }
         }
+        if (state.examData != null) {
+            Text(
+                text = "Exam Location: ${state.examData.examLocation}",
+                fontSize = 22.sp,
+                fontWeight = FontWeight(600),
+                modifier = Modifier.padding(10.dp)
+            )
+        }
+
     }
 }
 

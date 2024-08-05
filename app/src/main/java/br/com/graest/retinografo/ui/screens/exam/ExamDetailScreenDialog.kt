@@ -65,8 +65,8 @@ fun ExamDetailScreenDialog(
                         magnifierCenter = {
                             offset - Offset(x = 0f, y = 200f)
                         },
-                        size = DpSize(100.dp, 100.dp),
-                        cornerRadius = 100.dp
+                        size = DpSize(200.dp, 200.dp),
+                        cornerRadius = 200.dp
                     )
             ) {
                 Image(
