@@ -68,8 +68,8 @@ fun ExamAddLocationDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Left Eye: ${examDataState.leftEyeImagePaths.size} images captured")
-                    Text(text = "Right Eye: ${examDataState.rightEyeImagePaths.size} images captured")
+                    Text(text = "Left Eye: ${examDataState.leftEyeBitmaps.size} images captured")
+                    Text(text = "Right Eye: ${examDataState.rightEyeBitmaps.size} images captured")
                     Text(text = "Location: ${examDataState.examLocation}")
                 }
             } else {

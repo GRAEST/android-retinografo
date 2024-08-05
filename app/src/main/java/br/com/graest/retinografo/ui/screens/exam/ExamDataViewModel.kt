@@ -2,6 +2,7 @@ package br.com.graest.retinografo.ui.screens.exam
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
+import br.com.graest.retinografo.utils.CameraUtils.saveBitmapToExternalStorage
 import br.com.graest.retinografo.utils.FlashLightController
 import br.com.graest.retinografo.utils.LocationService
 import kotlinx.coroutines.delay
@@ -53,7 +55,8 @@ class ExamDataViewModel(
                 viewModelScope.launch {
                     saveExamWithLocation(event.context)
                     if (examDataState.value.errorMessage == ""){
-
+                        //testar isso depois
+                        //saveExamWithLocation(event.context)
                     }
                 }
             }
@@ -172,8 +175,7 @@ class ExamDataViewModel(
             }
 
             ExamDataEvent.OnCancelExam -> {
-                cleanupPath()
-                //cleanupTemporaryImages()
+                cleanupCache()
                 _examDataState.update {
                     it.copy(
                         examLocation = "",
@@ -233,31 +235,6 @@ class ExamDataViewModel(
         }
     }
 
-    fun addRightEyeImagePath(path: String) {
-        _examDataState.update {
-            it.copy(
-                rightEyeImagePaths = _examDataState.value.rightEyeImagePaths + path
-            )
-        }
-    }
-
-    fun addLeftEyeImagePath(path: String) {
-        _examDataState.update {
-            it.copy(
-                leftEyeImagePaths = _examDataState.value.leftEyeImagePaths + path
-            )
-        }
-    }
-
-    private fun cleanupPath() {
-        _examDataState.update {
-            it.copy(
-                rightEyeImagePaths = emptyList(),
-                leftEyeImagePaths = emptyList()
-            )
-        }
-    }
-
     fun setErrorMessage(message: String?) {
         _examDataState.update {
             it.copy(
@@ -266,15 +243,16 @@ class ExamDataViewModel(
         }
     }
 
-    //going to be used later
-    private fun cleanupImages() {
-        _examDataState.value.leftEyeImagePaths.forEach { path ->
-            File(path).delete()
-        }
-        _examDataState.value.rightEyeImagePaths.forEach { path ->
-            File(path).delete()
+
+    private fun cleanupCache() {
+        _examDataState.update {
+            it.copy(
+                rightEyeBitmaps = emptyList(),
+                leftEyeBitmaps = emptyList()
+            )
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getLatestExamAndNavigate(){
         viewModelScope.launch {
@@ -331,10 +309,27 @@ class ExamDataViewModel(
 
             val patientId = _examDataState.value.patientData?.patientId
 
+            val rightEyeImagePath = mutableListOf<String>()
+            val leftEyeImagePath = mutableListOf<String>()
+
+            examDataState.value.rightEyeBitmaps.forEach { bitmap ->
+                saveBitmapToExternalStorage(context, bitmap, System.currentTimeMillis().toString())?.let {
+                    rightEyeImagePath.add(
+                        it
+                    )
+                }
+            }
+            examDataState.value.leftEyeBitmaps.forEach { bitmap ->
+                saveBitmapToExternalStorage(context, bitmap, System.currentTimeMillis().toString())?.let {
+                    leftEyeImagePath.add(
+                        it
+                    )
+                }
+            }
             patientId?.let {
                 ExamData(
-                    listImagesRightEye = examDataState.value.rightEyeImagePaths,
-                    listImagesLeftEye = examDataState.value.leftEyeImagePaths,
+                    listImagesRightEye = rightEyeImagePath,
+                    listImagesLeftEye = leftEyeImagePath,
                     examCoordinates = "$latitude,$longitude",
                     examLocation = examDataState.value.examLocation,
                     patientId = it
@@ -345,5 +340,14 @@ class ExamDataViewModel(
             null
         }
     }
+
+    fun onTakeRightEyePhoto(bitmap: Bitmap) {
+        _examDataState.value.rightEyeBitmaps += bitmap
+    }
+
+    fun onTakeLeftEyePhoto(bitmap: Bitmap) {
+        _examDataState.value.leftEyeBitmaps += bitmap
+    }
+
 
 }

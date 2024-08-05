@@ -1,5 +1,6 @@
 package br.com.graest.retinografo.ui.screens.exam
 
+import android.graphics.Bitmap
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraInfo
 import br.com.graest.retinografo.data.model.ExamData
@@ -8,8 +9,8 @@ import br.com.graest.retinografo.data.model.PatientData
 
 data class ExamDataState(
     val examsDataWithPatient: List<ExamDataWithPatient?> = emptyList(),
-    var rightEyeImagePaths: List<String> = emptyList(),
-    val leftEyeImagePaths: List<String> = emptyList(),
+    var rightEyeBitmaps: List<Bitmap> = emptyList(),
+    var leftEyeBitmaps: List<Bitmap> = emptyList(),
     var rightEyeBinaryList: List<ByteArray> = emptyList(),
     val leftEyeBinaryList: List<ByteArray> = emptyList(),
     val errorMessage: String? = null,

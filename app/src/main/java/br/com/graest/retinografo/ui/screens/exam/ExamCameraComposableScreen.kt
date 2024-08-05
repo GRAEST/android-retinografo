@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.model.PatientData
@@ -66,6 +67,7 @@ import br.com.graest.retinografo.ui.FlashViewModel
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
 import br.com.graest.retinografo.utils.CameraUtils.captureImage
+import br.com.graest.retinografo.utils.CameraUtils.takePhoto
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -188,7 +190,8 @@ fun ExamCameraComposableScreen(
             maxZoomRatio,
             flashViewModel,
             flashState,
-            onFlashEvent
+            onFlashEvent,
+            cameraController
         )
     }
 }
@@ -322,7 +325,7 @@ private fun TopCameraComposable(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "OS(${examDataState.leftEyeImagePaths.size})",
+                        text = "OS(${examDataState.leftEyeBitmaps.size})",
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -356,7 +359,7 @@ private fun TopCameraComposable(
                         }
                     )
                     Text(
-                        text = "OD(${examDataState.rightEyeImagePaths.size})",
+                        text = "OD(${examDataState.rightEyeBitmaps.size})",
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -364,7 +367,7 @@ private fun TopCameraComposable(
             }
             IconButton(
                 onClick = {
-                    if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
+                    if (examDataState.leftEyeBitmaps.isNotEmpty() && examDataState.rightEyeBitmaps.isNotEmpty()) {
                         onEvent(ExamDataEvent.OnReadyToSave)
                     }
                 },
@@ -430,6 +433,7 @@ private fun BottomCameraComposable(
     flashViewModel: FlashViewModel,
     flashState: FlashState,
     onFlashEvent: (FlashEvent) -> Unit,
+    cameraController: LifecycleCameraController
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -457,37 +461,17 @@ private fun BottomCameraComposable(
                 onClick = {
                     if (examDataState.patientSelected) {
                         if (examDataState.onRightEyeSaveMode) {
-                            captureImage(
-                                context = applicationContext,
-                                controller = controller,
-                                navController = navController,
-                                onImageCaptured = { file ->
-                                    examDataViewModel.addRightEyeImagePath(
-                                        path = file.absolutePath
-                                    )
-                                    examDataViewModel.setErrorMessage(null)
-                                    //começar contagem e dar algum sinal de tela carregando
-                                },
-                                onError = { error ->
-                                    examDataViewModel.setErrorMessage(error.message)
-                                }
+                            takePhoto(
+                                applicationContext = applicationContext,
+                                controller = cameraController,
+                                onPhotoTaken = examDataViewModel::onTakeRightEyePhoto
                             )
                         }
                         if (examDataState.onLeftEyeSaveMode) {
-                            captureImage(
-                                context = applicationContext,
-                                controller = controller,
-                                navController = navController,
-                                onImageCaptured = { file ->
-                                    examDataViewModel.addLeftEyeImagePath(
-                                        path = file.absolutePath
-                                    )
-                                    examDataViewModel.setErrorMessage(null)
-                                    //dar algum sinal de tela carregando
-                                },
-                                onError = { error ->
-                                    examDataViewModel.setErrorMessage(error.message)
-                                }
+                            takePhoto(
+                                applicationContext = applicationContext,
+                                controller = cameraController,
+                                onPhotoTaken = examDataViewModel::onTakeLeftEyePhoto
                             )
                         }
                     } else {

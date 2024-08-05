@@ -19,19 +19,6 @@ import java.io.IOException
 
 object CameraUtils {
 
-    fun captureImage(
-        context: Context,
-        controller: LifecycleCameraController,
-        navController: NavController,
-        onImageCaptured: (File) -> Unit,
-        onError: (Exception) -> Unit
-    ) {
-        val currentRoute = navController.currentDestination?.route
-
-        takePhoto(context, controller) { bitmap ->
-            saveImageAsync(context, bitmap, currentRoute, navController, onImageCaptured, onError)
-        }
-    }
 
     fun takePhoto(
         applicationContext: Context,
@@ -70,6 +57,37 @@ object CameraUtils {
         )
     }
 
+    fun saveBitmapToExternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
+        val externalStorageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        if (externalStorageDirectory != null) {
+            val file = File(externalStorageDirectory, "$fileName.jpg")
+            try {
+                FileOutputStream(file).use { out ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                }
+                return file.absolutePath
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return null
+    }
+
+
+    fun captureImage(
+        context: Context,
+        controller: LifecycleCameraController,
+        navController: NavController,
+        onImageCaptured: (File) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        val currentRoute = navController.currentDestination?.route
+
+        takePhoto(context, controller) { bitmap ->
+            saveImageAsync(context, bitmap, currentRoute, navController, onImageCaptured, onError)
+        }
+
+    }
     private fun createImageFile(context: Context): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFileName = "image_${System.currentTimeMillis()}.jpg"
