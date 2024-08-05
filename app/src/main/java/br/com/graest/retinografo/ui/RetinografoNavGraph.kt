@@ -109,7 +109,8 @@ fun RetinografoNavGraph(
                 navController = navController,
                 flashViewModel = flashViewModel,
                 flashState = flashState,
-                onFlashEvent = flashViewModel::onEvent
+                onFlashEvent = flashViewModel::onEvent,
+                onNavigateToDetails = {  navController.navigate("ExamDetails") }
             )
 
         }

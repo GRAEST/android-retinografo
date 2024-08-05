@@ -55,6 +55,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.model.PatientData
@@ -79,6 +81,7 @@ fun ExamCameraComposableScreen(
     flashViewModel: FlashViewModel,
     flashState: FlashState,
     onFlashEvent: (FlashEvent) -> Unit,
+    onNavigateToDetails: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -93,9 +96,18 @@ fun ExamCameraComposableScreen(
         }
     }
 
+
     DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                onEvent(ExamDataEvent.OnSetNavigationStatusToFalse)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             cameraController.unbind()
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -105,11 +117,20 @@ fun ExamCameraComposableScreen(
 
     LaunchedEffect(Unit) {
         cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        onEvent(ExamDataEvent.OnSetNavigationStatusToFalse)
     }
 
     LaunchedEffect(flashState.isFlashOn) {
         cameraController.enableTorch(flashState.isFlashOn)
     }
+
+    LaunchedEffect(examDataState.onNavigateToDetails) {
+        if (examDataState.onNavigateToDetails) {
+            onNavigateToDetails()
+
+        }
+    }
+
 
     val maxZoomRatio = flashState.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 4f
     val minZoomRatio = flashState.cameraInfo?.zoomState?.value?.minZoomRatio ?: 1f

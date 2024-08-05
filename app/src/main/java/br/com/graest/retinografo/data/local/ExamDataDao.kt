@@ -12,8 +12,8 @@ interface ExamDataDao {
     @Insert
     suspend fun insertExam(examData: ExamData): Long
 
-//    @Query("SELECT * FROM exam_data ORDER BY id ASC")
-//    fun getExamData() : Flow<List<ExamData>>
+    @Query("SELECT exam_data.*, patient_data.* FROM exam_data INNER JOIN patient_data ON exam_data.patientId = patient_data.patientId ORDER BY exam_data.examTime DESC LIMIT 1")
+    fun getLatestExam() : Flow<ExamDataWithPatient>
 
     @Query("SELECT * FROM exam_data WHERE id = :id")
     fun getExamById(id: ByteArray): Flow<ExamData?>

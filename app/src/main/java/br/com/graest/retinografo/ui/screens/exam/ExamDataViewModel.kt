@@ -50,7 +50,12 @@ class ExamDataViewModel(
             }
 
             is ExamDataEvent.SaveExamData -> {
-                saveExamWithLocation(event.context)
+                viewModelScope.launch {
+                    saveExamWithLocation(event.context)
+                    if (examDataState.value.errorMessage == ""){
+
+                    }
+                }
             }
 
             ExamDataEvent.ShowAddPatientDialog -> {
@@ -212,6 +217,18 @@ class ExamDataViewModel(
                     }
                 }
             }
+
+            ExamDataEvent.OnSetNavigationStatusToFalse -> {
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(
+                            onNavigateToDetails = false
+                        )
+                    }
+                }
+            }
+
+
             else -> {}
         }
     }
@@ -258,6 +275,30 @@ class ExamDataViewModel(
             File(path).delete()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getLatestExamAndNavigate(){
+        viewModelScope.launch {
+            examDataDao.getLatestExam().collect { data ->
+                _examDataState.update {
+                    it.copy(
+                        examData = data.examData,
+                        patientData = data.patientData,
+                        onNavigateToDetails = true
+                    )
+                }
+            }
+        }
+    }
+
+    fun setNavigationStatusToFalse() {
+
+        _examDataState.update {
+            it.copy(
+                onNavigateToDetails = false
+            )
+        }
+    }
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -277,6 +318,8 @@ class ExamDataViewModel(
                 } finally {
                     onEvent(ExamDataEvent.OnCancelExam)
                     onEvent(ExamDataEvent.SetIsLocationAddedFalse)
+                    onEvent(ExamDataEvent.NoPatientSelected)
+                    getLatestExamAndNavigate()
                 }
             }
         }

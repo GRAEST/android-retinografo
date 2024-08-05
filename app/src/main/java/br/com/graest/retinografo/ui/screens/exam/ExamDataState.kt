@@ -29,4 +29,5 @@ data class ExamDataState(
     val imageDetailIndex: Int = 0,
     val imageDetailSide: String = "",
     val onShowImageDetail: Boolean = false,
+    val onNavigateToDetails: Boolean = false
 )
