@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -78,13 +79,13 @@ fun ExamAddPatientDialog(
                                         onEvent(ExamDataEvent.PatientSelected(patientData))
                                         onEvent(ExamDataEvent.HideAddPatientDialog)
                                     },
-                                    colors = IconButtonDefaults.iconButtonColors(Color.Gray),
+                                    colors = IconButtonDefaults.iconButtonColors(Color.Green),
                                     modifier = Modifier
                                         .weight(1f)
                                         .aspectRatio(1f)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Add,
+                                        imageVector = Icons.Default.DownloadDone,
                                         contentDescription = "Add",
                                     )
                                 }

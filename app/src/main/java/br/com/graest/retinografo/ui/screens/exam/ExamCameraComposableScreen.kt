@@ -22,22 +22,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleLeft
+import androidx.compose.material.icons.filled.ArrowCircleRight
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +55,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.model.PatientData
@@ -63,8 +63,8 @@ import br.com.graest.retinografo.ui.FlashState
 import br.com.graest.retinografo.ui.FlashViewModel
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
-import br.com.graest.retinografo.utils.FormatTime.calculateAge
 import br.com.graest.retinografo.utils.CameraUtils.captureImage
+import br.com.graest.retinografo.utils.FormatTime.calculateAge
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -78,7 +78,7 @@ fun ExamCameraComposableScreen(
     navController: NavController,
     flashViewModel: FlashViewModel,
     flashState: FlashState,
-    onFlashEvent: (FlashEvent) -> Unit
+    onFlashEvent: (FlashEvent) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -145,20 +145,14 @@ fun ExamCameraComposableScreen(
     ) {
 
         if (!examDataState.patientSelected) {
-            AddPatientToExamButton(onEvent)
+            SelectPatientToExamButton(onEvent)
         }
         if (examDataState.patientSelected) {
-            Column {
-                TopCameraComposableButtons(examDataState, onEvent)
-                examDataState.patientData?.let {
-                    TopCameraComposablePatientSelected(
-                        examDataState,
-                        it, onEvent
-                    )
-                }
+            examDataState.patientData?.let {
+                TopCameraComposable(examDataState = examDataState, patientData = it, onEvent)
             }
-        }
 
+        }
 
         MainCameraComposable(controller = cameraController)
 
@@ -216,178 +210,154 @@ private fun RedToast(examDataState: ExamDataState) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun TopCameraComposablePatientSelected(
+private fun TopCameraComposable(
     examDataState: ExamDataState,
     patientData: PatientData,
     onEvent: (ExamDataEvent) -> Unit,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray)
-            .padding(8.dp)
-
-    ) {
-        if (examDataState.patientData != null) {
-            if (examDataState.patientData.profilePicturePath != null) {
-                val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(10.dp))
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.weight(4f)
-        ) {
-            if (examDataState.patientData != null) {
-                Text(
-                    text = patientData.name,
-                    fontSize = 20.sp
-                )
-            }
-            if (examDataState.patientData != null) {
-                Text(
-                    text = "${calculateAge(patientData.birthDate)} years",
-                    fontSize = 12.sp
-                )
-            }
-        }
-        IconButton(
-            onClick = {
-                onEvent(ExamDataEvent.NoPatientSelected)
-                onEvent(ExamDataEvent.OnCancelExam)
-                onEvent(ExamDataEvent.OnShowToastRed("Exam Cancelled"))
-            },
-            colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.error)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Cancel,
-                contentDescription = "Cancel Button"
-            )
-        }
-    }
-}
-
-@Composable
-private fun TopCameraComposableButtons(
-    examDataState: ExamDataState,
-    onEvent: (ExamDataEvent) -> Unit,
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp
-            )
-            .clip(RoundedCornerShape(16.dp))
             .background(Color.DarkGray)
             .padding(8.dp)
     ) {
-        if (examDataState.onRightEyeSaveMode) {
-            Column(
-                modifier = Modifier.weight(3f),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Saving Right Eye Image",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight(800),
-                    color = Color.White
-                )
+        Row {
+            if (examDataState.patientData != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "R-${examDataState.rightEyeImagePaths.size}",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight(800),
-                        color = Color.White
-
-                    )
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Button(onClick = {
-                        onEvent(ExamDataEvent.OnLeftEyeSaveMode)
-                    }) {
-                        Text(text = "Capture Left Eye")
+                    if (examDataState.patientData.profilePicturePath != null) {
+                        val bitmap = BitmapFactory.decodeFile(patientData.profilePicturePath)
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                                .aspectRatio(1f),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .weight(4f)
+                            .padding(10.dp)
+                    ) {
+                        Text(
+                            text = patientData.name,
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "${calculateAge(patientData.birthDate)} years",
+                            fontSize = 12.sp,
+                            color = Color.White
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            onEvent(ExamDataEvent.NoPatientSelected)
+                            onEvent(ExamDataEvent.OnCancelExam)
+                            onEvent(ExamDataEvent.OnShowToastRed("Exam Cancelled"))
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(Color.Red)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Cancel,
+                            contentDescription = "Cancel Button"
+                        )
                     }
                 }
             }
         }
-        if (examDataState.onLeftEyeSaveMode) {
-            Column(
-                modifier = Modifier.weight(3f),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Saving Left Eye Image",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight(800),
-                    color = Color.White
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "L-${examDataState.leftEyeImagePaths.size}",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight(800),
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Button(onClick = {
-                        onEvent(ExamDataEvent.OnRightEyeSaveMode)
-                    }) {
-                        Text(text = "Capture Right Eye")
-                    }
-                }
-            }
-        }
-        Button(
-            onClick = {
-                if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
-                    onEvent(ExamDataEvent.OnReadyToSave)
-                }
-            },
-            modifier = Modifier
-                .weight(1f),
-            colors = ButtonDefaults.buttonColors(Color.Green)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp)
         ) {
-            Text("Finish")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                if (examDataState.onLeftEyeSaveMode) {
+                    Text(
+                        text = "Left Eye",
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
+                if (examDataState.onRightEyeSaveMode) {
+                    Text(
+                        text = "Right Eye",
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.padding(6.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "OS(${examDataState.leftEyeImagePaths.size})",
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                    Switch(
+                        checked = examDataState.onRightEyeSaveMode,
+                        onCheckedChange = {
+                            if (examDataState.onRightEyeSaveMode) {
+                                onEvent(ExamDataEvent.OnLeftEyeSaveMode)
+                            }
+                            if (examDataState.onLeftEyeSaveMode) {
+                                onEvent(ExamDataEvent.OnRightEyeSaveMode)
+                            }
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedBorderColor = Color.Black,
+                            uncheckedBorderColor = Color.Black,
+                            checkedIconColor = Color.Black,
+                            uncheckedIconColor = Color.Black,
+                            checkedThumbColor = Color.Yellow,
+                            uncheckedThumbColor = Color.Yellow,
+                            checkedTrackColor = Color.White,
+                            uncheckedTrackColor = Color.White,
+                        ),
+                        thumbContent = {
+                            if (examDataState.onLeftEyeSaveMode) {
+                                Icon(imageVector = Icons.Default.ArrowCircleLeft, contentDescription = "arrow left")
+                            }
+                            if (examDataState.onRightEyeSaveMode) {
+                                Icon(imageVector = Icons.Default.ArrowCircleRight, contentDescription = "arrow right")
+                            }
+                        }
+                    )
+                    Text(
+                        text = "OD(${examDataState.rightEyeImagePaths.size})",
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
+            }
+            IconButton(
+                onClick = {
+                    if (examDataState.leftEyeImagePaths.isNotEmpty() && examDataState.rightEyeImagePaths.isNotEmpty()) {
+                        onEvent(ExamDataEvent.OnReadyToSave)
+                    }
+                },
+                modifier = Modifier,
+                colors = IconButtonDefaults.iconButtonColors(Color.Green)
+            ) {
+                Icon(imageVector = Icons.Default.SaveAlt, contentDescription = "Save Exam")
+            }
         }
     }
 }
 
 @Composable
-private fun AddPatientToExamButton(onEvent: (ExamDataEvent) -> Unit) {
+private fun SelectPatientToExamButton(onEvent: (ExamDataEvent) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -416,7 +386,7 @@ private fun AddPatientToExamButton(onEvent: (ExamDataEvent) -> Unit) {
                 Modifier.weight(4f)
             ) {
                 Text(
-                    text = "Add Patient",
+                    text = "Select Patient",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight(600)
@@ -438,7 +408,7 @@ private fun BottomCameraComposable(
     maxZoomRatio: Float,
     flashViewModel: FlashViewModel,
     flashState: FlashState,
-    onFlashEvent: (FlashEvent) -> Unit
+    onFlashEvent: (FlashEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
