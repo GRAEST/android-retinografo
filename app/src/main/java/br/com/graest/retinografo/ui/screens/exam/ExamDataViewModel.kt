@@ -175,15 +175,18 @@ class ExamDataViewModel(
             }
 
             ExamDataEvent.OnCancelExam -> {
-                cleanupCache()
-                _examDataState.update {
-                    it.copy(
-                        examLocation = "",
-                        isLocationAdded = false,
-                        readyToSave = false,
-                        onLeftEyeSaveMode = true,
-                        onRightEyeSaveMode = false
-                    )
+                viewModelScope.launch {
+                    _examDataState.update {
+                        it.copy(
+                            examLocation = "",
+                            isLocationAdded = false,
+                            readyToSave = false,
+                            onLeftEyeSaveMode = true,
+                            onRightEyeSaveMode = false,
+                            rightEyeBitmaps = emptyList(),
+                            leftEyeBitmaps = emptyList()
+                        )
+                    }
                 }
             }
             is ExamDataEvent.OnShowExamDetails -> {
@@ -247,8 +250,7 @@ class ExamDataViewModel(
     private fun cleanupCache() {
         _examDataState.update {
             it.copy(
-                rightEyeBitmaps = emptyList(),
-                leftEyeBitmaps = emptyList()
+
             )
         }
     }
