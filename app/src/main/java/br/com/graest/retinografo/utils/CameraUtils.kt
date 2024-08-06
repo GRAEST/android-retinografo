@@ -60,20 +60,22 @@ object CameraUtils {
         }
     }
 
-    fun saveBitmapToExternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
-        val externalStorageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        if (externalStorageDirectory != null) {
-            val file = File(externalStorageDirectory, "$fileName.jpg")
-            try {
-                FileOutputStream(file).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+    suspend fun saveBitmapToExternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
+        return withContext(Dispatchers.IO) {
+            val externalStorageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            if (externalStorageDirectory != null) {
+                val file = File(externalStorageDirectory, "$fileName.jpg")
+                try {
+                    FileOutputStream(file).use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                    }
+                    return@withContext file.absolutePath
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
-                return file.absolutePath
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
+            return@withContext null
         }
-        return null
     }
 
 
@@ -89,12 +91,14 @@ object CameraUtils {
         takePhoto(context, controller) { bitmap ->
             saveImageAsync(context, bitmap, currentRoute, navController, onImageCaptured, onError)
         }
-
     }
-    private fun createImageFile(context: Context): File {
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val imageFileName = "image_${System.currentTimeMillis()}.jpg"
-        return File(storageDir, imageFileName)
+
+    suspend fun createImageFile(context: Context): File {
+        return withContext(Dispatchers.IO) {
+            val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val imageFileName = "image_${System.currentTimeMillis()}.jpg"
+            return@withContext File(storageDir, imageFileName)
+        }
     }
 
     private fun saveBitmapToFile(bitmap: Bitmap, file: File): Boolean {
@@ -117,7 +121,6 @@ object CameraUtils {
         onImageCaptured: (File) -> Unit,
         onError: (Exception) -> Unit
     ) {
-        // Start a coroutine
         kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
             val imageFile = createImageFile(context)
             if (saveBitmapToFile(bitmap, imageFile)) {

@@ -292,8 +292,8 @@ class ExamDataViewModel(
         val locationService = LocationService(context)
         locationService.getCurrentLocation { location ->
             Log.d("ExamDataViewModel", "Location obtained: $location")
-            val examData = createExamData(context, location?.latitude, location?.longitude)
             viewModelScope.launch {
+                val examData = createExamData(context, location?.latitude, location?.longitude)
                 try {
                     if (examData != null) {
                         examDataDao.insertExam(examData = examData)
@@ -312,7 +312,7 @@ class ExamDataViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
+    private suspend fun createExamData(context: Context, latitude: Double?, longitude: Double?): ExamData? {
         return try {
 
             val patientId = _examDataState.value.patientData?.patientId
