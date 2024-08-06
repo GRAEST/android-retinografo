@@ -344,11 +344,19 @@ class ExamDataViewModel(
     }
 
     fun onTakeRightEyePhoto(bitmap: Bitmap) {
-        _examDataState.value.rightEyeBitmaps += bitmap
+        _examDataState.update {
+            it.copy(
+                rightEyeBitmaps = it.rightEyeBitmaps + bitmap
+            )
+        }
     }
 
     fun onTakeLeftEyePhoto(bitmap: Bitmap) {
-        _examDataState.value.leftEyeBitmaps += bitmap
+        _examDataState.update {
+            it.copy(
+                leftEyeBitmaps = it.leftEyeBitmaps + bitmap
+            )
+        }
     }
 
 

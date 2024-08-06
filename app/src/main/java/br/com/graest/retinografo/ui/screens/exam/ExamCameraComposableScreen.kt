@@ -57,7 +57,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.model.PatientData
@@ -66,7 +65,6 @@ import br.com.graest.retinografo.ui.FlashState
 import br.com.graest.retinografo.ui.FlashViewModel
 import br.com.graest.retinografo.ui.components.CameraViewScreen
 import br.com.graest.retinografo.ui.screens.patient.PatientDataState
-import br.com.graest.retinografo.utils.CameraUtils.captureImage
 import br.com.graest.retinografo.utils.CameraUtils.takePhoto
 import br.com.graest.retinografo.utils.FormatTime.calculateAge
 
