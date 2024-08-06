@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.PatientDataDao
 import br.com.graest.retinografo.data.model.Gender
 import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.utils.CameraUtils
+import br.com.graest.retinografo.utils.CameraUtils.captureImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -265,6 +267,18 @@ class PatientDataViewModel(
                 _patientDataState.update {
                     it.copy(
                         genderMenuExpanded = false
+                    )
+                }
+            }
+
+            is PatientDataEvent.OnTakePhoto -> {
+                viewModelScope.launch {
+                    captureImage(
+                        event.context,
+                        event.controller,
+                        event.navController,
+                        event.onImageCaptured,
+                        event.onError
                     )
                 }
             }

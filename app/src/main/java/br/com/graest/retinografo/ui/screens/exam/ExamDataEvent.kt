@@ -1,6 +1,9 @@
 package br.com.graest.retinografo.ui.screens.exam
 
 import android.content.Context
+import android.graphics.Bitmap
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
 import br.com.graest.retinografo.data.model.PatientData
 
 sealed interface ExamDataEvent {
@@ -23,4 +26,5 @@ sealed interface ExamDataEvent {
     data class OnShowImageDetails(val index: Int, val side: String): ExamDataEvent
     data object OnHideImageDetails: ExamDataEvent
     data object OnSetNavigationStatusToFalse: ExamDataEvent
+    data class OnTakePhoto(val applicationContext: Context, val cameraController: LifecycleCameraController, val onPhotoTaken: (Bitmap) -> Unit) : ExamDataEvent
 }

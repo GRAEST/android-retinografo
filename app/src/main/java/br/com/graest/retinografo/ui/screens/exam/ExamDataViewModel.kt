@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
 import br.com.graest.retinografo.utils.CameraUtils.saveBitmapToExternalStorage
+import br.com.graest.retinografo.utils.CameraUtils.takePhoto
 import br.com.graest.retinografo.utils.FlashLightController
 import br.com.graest.retinografo.utils.LocationService
 import kotlinx.coroutines.delay
@@ -26,8 +27,7 @@ import java.io.File
 
 
 class ExamDataViewModel(
-    private val examDataDao: ExamDataDao,
-    applicationContext: Context
+    private val examDataDao: ExamDataDao
 ) : ViewModel() {
 
     private val _examsDataWithPatient = examDataDao.getExamDataWithPatients()
@@ -230,6 +230,12 @@ class ExamDataViewModel(
                             onNavigateToDetails = false
                         )
                     }
+                }
+            }
+
+            is ExamDataEvent.OnTakePhoto -> {
+                viewModelScope.launch {
+                    takePhoto(event.applicationContext, event.cameraController, event.onPhotoTaken)
                 }
             }
 

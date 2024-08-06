@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,41 +21,43 @@ import java.io.IOException
 object CameraUtils {
 
 
-    fun takePhoto(
+    suspend fun takePhoto(
         applicationContext: Context,
         controller: LifecycleCameraController,
         onPhotoTaken: (Bitmap) -> Unit,
     ) {
-        controller.takePicture(
-            ContextCompat.getMainExecutor(applicationContext),
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    super.onCaptureSuccess(image)
+        return withContext(Dispatchers.Main){
+            controller.takePicture(
+                ContextCompat.getMainExecutor(applicationContext),
+                object : ImageCapture.OnImageCapturedCallback() {
+                    override fun onCaptureSuccess(image: ImageProxy) {
+                        super.onCaptureSuccess(image)
 
-                    val matrix = Matrix().apply {
-                        postRotate(image.imageInfo.rotationDegrees.toFloat())
+                        val matrix = Matrix().apply {
+                            postRotate(image.imageInfo.rotationDegrees.toFloat())
+                        }
+                        val rotatedBitmap = Bitmap.createBitmap(
+                            image.toBitmap(),
+                            0,
+                            0,
+                            image.width,
+                            image.height,
+                            matrix,
+                            true
+                        )
+                        val removedGreen = BitmapUtils.removeGreen(rotatedBitmap)
+
+                        onPhotoTaken(rotatedBitmap)
                     }
-                    val rotatedBitmap = Bitmap.createBitmap(
-                        image.toBitmap(),
-                        0,
-                        0,
-                        image.width,
-                        image.height,
-                        matrix,
-                        true
-                    )
-                    val removedGreen = BitmapUtils.removeGreen(rotatedBitmap)
 
-                    onPhotoTaken(rotatedBitmap)
+                    override fun onError(exception: ImageCaptureException) {
+                        super.onError(exception)
+                        Log.e("Camera", "Couldn't take photo: ", exception)
+                    }
+
                 }
-
-                override fun onError(exception: ImageCaptureException) {
-                    super.onError(exception)
-                    Log.e("Camera", "Couldn't take photo: ", exception)
-                }
-
-            }
-        )
+            )
+        }
     }
 
     fun saveBitmapToExternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
@@ -74,7 +77,7 @@ object CameraUtils {
     }
 
 
-    fun captureImage(
+    suspend fun captureImage(
         context: Context,
         controller: LifecycleCameraController,
         navController: NavController,

@@ -85,7 +85,8 @@ fun RetinografoNavGraph(
                 applicationContext = applicationContext,
                 controller = controller,
                 navController = navController,
-                viewModel = signUpViewModel
+                viewModel = signUpViewModel,
+                onEvent = signUpViewModel::onEvent
             )
         }
 
@@ -143,7 +144,8 @@ fun RetinografoNavGraph(
                 applicationContext = applicationContext,
                 controller = controller,
                 navController = navController,
-                viewModel = patientViewModel
+                viewModel = patientViewModel,
+                onEvent = patientViewModel::onEvent
             )
         }
         composable("UserData") {

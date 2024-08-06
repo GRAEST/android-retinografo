@@ -10,6 +10,7 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
@@ -459,18 +461,28 @@ private fun BottomCameraComposable(
                 onClick = {
                     if (examDataState.patientSelected) {
                         if (examDataState.onRightEyeSaveMode) {
-                            takePhoto(
+                            onEvent(ExamDataEvent.OnTakePhoto(
                                 applicationContext = applicationContext,
-                                controller = cameraController,
+                                cameraController = cameraController,
                                 onPhotoTaken = examDataViewModel::onTakeRightEyePhoto
-                            )
+                            ))
+//                            takePhoto(
+//                                applicationContext = applicationContext,
+//                                controller = cameraController,
+//                                onPhotoTaken = examDataViewModel::onTakeRightEyePhoto
+//                            )
                         }
                         if (examDataState.onLeftEyeSaveMode) {
-                            takePhoto(
+                            onEvent(ExamDataEvent.OnTakePhoto(
                                 applicationContext = applicationContext,
-                                controller = cameraController,
+                                cameraController = cameraController,
                                 onPhotoTaken = examDataViewModel::onTakeLeftEyePhoto
-                            )
+                            ))
+//                            takePhoto(
+//                                applicationContext = applicationContext,
+//                                controller = cameraController,
+//                                onPhotoTaken = examDataViewModel::onTakeLeftEyePhoto
+//                            )
                         }
                     } else {
                         onEvent(ExamDataEvent.OnShowToastRed("First Select a Patient"))
@@ -510,7 +522,7 @@ private fun MainCameraComposable(
     controller: LifecycleCameraController,
 ) {
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CameraViewScreen(
             controller = controller,
@@ -518,6 +530,8 @@ private fun MainCameraComposable(
                 .fillMaxSize()
                 .clip(shape = RectangleShape)
                 .aspectRatio(1f)
+                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
+
         )
         Image(
             painter = painterResource(id = R.drawable.cameraoverlay),

@@ -34,7 +34,8 @@ fun SignUpCameraComposable(
     applicationContext: Context,
     controller: LifecycleCameraController,
     navController: NavController,
-    viewModel: SignUpViewModel
+    viewModel: SignUpViewModel,
+    onEvent: (SignUpEvent) -> Unit
 ) {
 
     Box(
@@ -80,7 +81,7 @@ fun SignUpCameraComposable(
             }
             IconButton(
                 onClick = {
-                    captureImage(
+                    onEvent(SignUpEvent.OnTakePhoto(
                         context = applicationContext,
                         controller = controller,
                         navController = navController,
@@ -93,8 +94,7 @@ fun SignUpCameraComposable(
                             viewModel.setErrorMessage(error.message)
                             viewModel.setCapturedImagePath(null)
                         }
-                    )
-
+                    ))
                 },
                 modifier = Modifier.offset(16.dp, 16.dp)
             ) {

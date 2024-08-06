@@ -35,7 +35,8 @@ fun PatientCameraComposable(
     applicationContext: Context,
     controller: LifecycleCameraController,
     navController: NavController,
-    viewModel: PatientDataViewModel
+    viewModel: PatientDataViewModel,
+    onEvent: (PatientDataEvent) -> Unit
 ) {
 
     Box(
@@ -83,7 +84,7 @@ fun PatientCameraComposable(
             }
             IconButton(
                 onClick = {
-                    captureImage(
+                    onEvent(PatientDataEvent.OnTakePhoto(
                         context = applicationContext,
                         controller = controller,
                         navController = navController,
@@ -96,7 +97,7 @@ fun PatientCameraComposable(
                             viewModel.setErrorMessage(error.message)
                             viewModel.setCapturedImagePath(null)
                         }
-                    )
+                    ))
 
                 },
                 modifier = Modifier

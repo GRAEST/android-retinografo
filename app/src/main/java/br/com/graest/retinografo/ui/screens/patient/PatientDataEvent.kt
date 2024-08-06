@@ -1,7 +1,10 @@
 package br.com.graest.retinografo.ui.screens.patient
 
 import android.content.Context
+import androidx.camera.view.LifecycleCameraController
+import androidx.navigation.NavController
 import br.com.graest.retinografo.data.model.Gender
+import java.io.File
 
 sealed interface PatientDataEvent {
     data class SavePatientData(val context: Context) : PatientDataEvent
@@ -22,4 +25,11 @@ sealed interface PatientDataEvent {
     data class SetDescription(val description: String): PatientDataEvent
     data object ExpandGenderMenu: PatientDataEvent
     data object ShrinkGenderMenu: PatientDataEvent
+    data class OnTakePhoto(
+        val context: Context,
+        val controller: LifecycleCameraController,
+        val navController: NavController,
+        val onImageCaptured: (File) -> Unit,
+        val onError: (Exception) -> Unit
+    ) : PatientDataEvent
 }

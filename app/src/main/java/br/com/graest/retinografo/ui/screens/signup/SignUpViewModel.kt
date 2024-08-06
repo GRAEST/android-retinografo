@@ -2,11 +2,13 @@ package br.com.graest.retinografo.ui.screens.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.graest.retinografo.utils.CameraUtils.captureImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -94,6 +96,17 @@ class SignUpViewModel : ViewModel(){
                 _signUpState.update {
                     it.copy(
                         showDialog = true
+                    )
+                }
+            }
+            is SignUpEvent.OnTakePhoto -> {
+                viewModelScope.launch {
+                    captureImage(
+                        event.context,
+                        event.controller,
+                        event.navController,
+                        event.onImageCaptured,
+                        event.onError
                     )
                 }
             }
