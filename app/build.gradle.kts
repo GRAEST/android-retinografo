@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.com.google.devtools.ksp)
-    id("org.jetbrains.kotlin.kapt")
-    //id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -81,11 +81,12 @@ dependencies {
     implementation(libs.androidx.room.room.runtime)
     implementation(libs.androidx.room.room.ktx)
     annotationProcessor(libs.androidx.room.room.compiler)
-    kapt(libs.androidx.room.room.compiler)
-    //ksp(libs.androidx.room.room.compiler)
+    ksp(libs.androidx.room.room.compiler)
 
     implementation(libs.com.google.code.gson)
     implementation(libs.com.squareup.okhttp3.okhttp)
+
+    implementation(libs.bundles.ktor)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
