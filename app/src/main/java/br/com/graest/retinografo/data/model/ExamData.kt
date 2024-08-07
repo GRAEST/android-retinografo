@@ -8,11 +8,14 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import br.com.graest.retinografo.utils.Converters
+import br.com.graest.retinografo.utils.LocalDateSerializer
+import br.com.graest.retinografo.utils.LocalDateTimeSerializer
+import kotlinx.serialization.Serializable
 import java.nio.ByteBuffer
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
+@Serializable
 @Entity(
     tableName = "exam_data",
     foreignKeys = [ForeignKey(
@@ -29,6 +32,7 @@ data class ExamData (
     @TypeConverters(Converters::class) val listImagesRightEye: List<String>,
     @TypeConverters(Converters::class) val listBinaryLeftEye: List<ByteArray>,
     @TypeConverters(Converters::class) val listBinaryRightEye: List<ByteArray>,
+    @Serializable(with = LocalDateTimeSerializer::class)
     @TypeConverters(Converters::class) val examTime: LocalDateTime,
     val examCoordinates: String,
     val examLocation: String,

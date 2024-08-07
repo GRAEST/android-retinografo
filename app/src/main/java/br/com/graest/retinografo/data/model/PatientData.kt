@@ -6,17 +6,22 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import br.com.graest.retinografo.utils.Converters
+import br.com.graest.retinografo.utils.LocalDateSerializer
+import br.com.graest.retinografo.utils.LocalDateTimeSerializer
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-
+@Serializable
 @Entity(tableName = "patient_data")
 data class PatientData(
     @PrimaryKey
     val patientId: ByteArray = ByteArray(0),
+    @Serializable(with = LocalDateTimeSerializer::class)
     @TypeConverters(Converters::class) val dataCreated: LocalDateTime,
     val profilePicturePath: String?,
     val name: String,
+    @Serializable(with = LocalDateSerializer::class)
     val birthDate: LocalDate? = null,
     val gender: Gender = Gender.OTHER,
     val cpf: String = "",
