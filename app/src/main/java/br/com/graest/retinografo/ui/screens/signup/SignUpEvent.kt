@@ -36,6 +36,6 @@ sealed interface SignUpEvent {
         val cep: String,
         val number: String = "00000",
         val crmList: List<String>,
-        val image: Bitmap?
+        val image: ByteArray?
     ): SignUpEvent
 }

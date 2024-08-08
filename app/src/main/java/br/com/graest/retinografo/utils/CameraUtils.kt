@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -116,6 +117,18 @@ object CameraUtils {
 
     fun generateBitmapFromFile(filePath: String): Bitmap? {
         return BitmapFactory.decodeFile(filePath)
+    }
+
+    fun imageFileToByteArray(path: String): ByteArray {
+        val imageFile = File(path)
+        return try {
+            FileInputStream(imageFile).use { inputStream ->
+                inputStream.readBytes()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            ByteArray(0) // Return an empty ByteArray in case of error
+        }
     }
 
     private fun saveImageAsync(

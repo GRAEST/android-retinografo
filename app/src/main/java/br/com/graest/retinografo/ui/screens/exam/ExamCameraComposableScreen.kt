@@ -466,11 +466,6 @@ private fun BottomCameraComposable(
                                 cameraController = cameraController,
                                 onPhotoTaken = examDataViewModel::onTakeRightEyePhoto
                             ))
-//                            takePhoto(
-//                                applicationContext = applicationContext,
-//                                controller = cameraController,
-//                                onPhotoTaken = examDataViewModel::onTakeRightEyePhoto
-//                            )
                         }
                         if (examDataState.onLeftEyeSaveMode) {
                             onEvent(ExamDataEvent.OnTakePhoto(
@@ -478,11 +473,6 @@ private fun BottomCameraComposable(
                                 cameraController = cameraController,
                                 onPhotoTaken = examDataViewModel::onTakeLeftEyePhoto
                             ))
-//                            takePhoto(
-//                                applicationContext = applicationContext,
-//                                controller = cameraController,
-//                                onPhotoTaken = examDataViewModel::onTakeLeftEyePhoto
-//                            )
                         }
                     } else {
                         onEvent(ExamDataEvent.OnShowToastRed("First Select a Patient"))

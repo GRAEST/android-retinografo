@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
 import br.com.graest.retinografo.data.remote.RequestSender
 import br.com.graest.retinografo.utils.CameraUtils.generateBitmapFromFile
+import br.com.graest.retinografo.utils.CameraUtils.imageFileToByteArray
 
 @Composable
 fun SignUpScreenB(
@@ -146,7 +147,7 @@ fun SignUpScreenB(
                                 cpf = signUpState.cpf,
                                 cep = signUpState.cep,
                                 crmList = signUpState.crmList,
-                                image = generateBitmapFromFile(signUpState.imagePath)
+                                image = imageFileToByteArray(signUpState.imagePath)
                             ))
                             if (signUpState.successMessage == "Successfully Registered") {
                                 onClickSignUp()
