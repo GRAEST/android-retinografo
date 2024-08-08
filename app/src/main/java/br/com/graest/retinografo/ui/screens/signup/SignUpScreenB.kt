@@ -27,9 +27,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.data.remote.RequestSender
+import br.com.graest.retinografo.utils.CameraUtils.generateBitmapFromFile
 
 @Composable
 fun SignUpScreenB(
+    requestSender: RequestSender,
     viewModel: SignUpViewModel,
     signUpState: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
@@ -132,17 +135,39 @@ fun SignUpScreenB(
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
-                        viewModel.sendSignUpInfo(
-                            name = signUpState.name,
-                            surname = signUpState.surname,
-                            cpf = signUpState.cpf,
-                            cep = signUpState.cep,
-                            crmList = signUpState.crmList,
-                            tempImagePath = signUpState.tempImagePath ?: "",
-                            email = signUpState.email,
-                            password = signUpState.password
-                        )
-                        onClickSignUp()
+                        if (signUpState.imagePath != null) {
+                            onEvent(SignUpEvent.SendLoginRequest(
+                                requestSender = requestSender,
+                                email = signUpState.email,
+                                password = signUpState.password,
+                                confirmPassword = signUpState.confirmPassword,
+                                name = signUpState.name,
+                                surname = signUpState.surname,
+                                cpf = signUpState.cpf,
+                                cep = signUpState.cep,
+                                crmList = signUpState.crmList,
+                                image = generateBitmapFromFile(signUpState.imagePath)
+                            ))
+                            if (signUpState.successMessage == "Successfully Registered") {
+                                onClickSignUp()
+                            }
+                        } else {
+                            onEvent(SignUpEvent.SendLoginRequest(
+                                requestSender = requestSender,
+                                email = signUpState.email,
+                                password = signUpState.password,
+                                confirmPassword = signUpState.confirmPassword,
+                                name = signUpState.name,
+                                surname = signUpState.surname,
+                                cpf = signUpState.cpf,
+                                cep = signUpState.cep,
+                                crmList = signUpState.crmList,
+                                image = null
+                            ))
+                            if (signUpState.successMessage == "Successfully Registered") {
+                                onClickSignUp()
+                            }
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

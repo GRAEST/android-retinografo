@@ -2,6 +2,7 @@ package br.com.graest.retinografo.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Environment
 import android.util.Log
@@ -111,6 +112,10 @@ object CameraUtils {
             e.printStackTrace()
             false
         }
+    }
+
+    fun generateBitmapFromFile(filePath: String): Bitmap? {
+        return BitmapFactory.decodeFile(filePath)
     }
 
     private fun saveImageAsync(

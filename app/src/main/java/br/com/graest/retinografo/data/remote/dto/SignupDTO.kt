@@ -8,11 +8,13 @@ import kotlinx.serialization.Serializable
 data class SignupDTO(
     val email: String,
     val password: String,
+    val password2: String,
     val name: String,
     val surname: String,
     val cpf: String,
     val cep: String,
+    val number: String,
     val crmList: List<String>,
     @Serializable(with = BitmapSerializer::class)
-    val image: Bitmap
+    val image: Bitmap?
 )

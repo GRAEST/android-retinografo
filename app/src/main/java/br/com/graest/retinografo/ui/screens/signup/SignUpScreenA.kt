@@ -180,9 +180,9 @@ fun SignUpScreenA(
                     .padding(bottom = 8.dp)
             )
 
-            if (signUpState.tempImagePath != null) {
+            if (signUpState.imagePath != null) {
                 Spacer(modifier = Modifier.padding(10.dp))
-                val bitmap = BitmapFactory.decodeFile(signUpState.tempImagePath)
+                val bitmap = BitmapFactory.decodeFile(signUpState.imagePath)
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.Bottom

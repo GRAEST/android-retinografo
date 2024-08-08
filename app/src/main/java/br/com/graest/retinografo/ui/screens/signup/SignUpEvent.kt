@@ -1,8 +1,10 @@
 package br.com.graest.retinografo.ui.screens.signup
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.camera.view.LifecycleCameraController
 import androidx.navigation.NavController
+import br.com.graest.retinografo.data.remote.RequestSender
 import java.io.File
 
 sealed interface SignUpEvent {
@@ -23,4 +25,17 @@ sealed interface SignUpEvent {
         val onImageCaptured: (File) -> Unit,
         val onError: (Exception) -> Unit,
     ) : SignUpEvent
+    data class SendLoginRequest(
+        val requestSender: RequestSender,
+        val email: String,
+        val password: String,
+        val confirmPassword: String,
+        val name: String,
+        val surname: String,
+        val cpf: String,
+        val cep: String,
+        val number: String = "00000",
+        val crmList: List<String>,
+        val image: Bitmap?
+    ): SignUpEvent
 }

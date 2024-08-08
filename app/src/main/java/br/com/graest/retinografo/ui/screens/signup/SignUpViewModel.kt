@@ -2,6 +2,8 @@ package br.com.graest.retinografo.ui.screens.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.graest.retinografo.data.remote.dto.SignupDTO
+import br.com.graest.retinografo.data.remote.util.Result
 import br.com.graest.retinografo.utils.CameraUtils.captureImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -110,6 +112,38 @@ class SignUpViewModel : ViewModel(){
                     )
                 }
             }
+            is SignUpEvent.SendLoginRequest -> {
+                viewModelScope.launch {
+                    val signupDTO = SignupDTO(
+                        email = event.email,
+                        password = event.password,
+                        password2 = event.confirmPassword,
+                        name = event.name,
+                        surname = event.surname,
+                        cpf = event.cpf,
+                        cep = event.cep,
+                        number = event.number,
+                        crmList = event.crmList,
+                        image = event.image
+                    )
+                    when (val result = event.requestSender.sendSignupInfo(signupDTO)) {
+                        is Result.Error -> {
+                            _signUpState.update {
+                                it.copy(
+                                    errorMessage = result.error.toString()
+                                )
+                            }
+                        }
+                        is Result.Success -> {
+                            _signUpState.update {
+                                it.copy(
+                                    successMessage = result.data
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     fun imageAlreadyEdited(){
@@ -124,7 +158,7 @@ class SignUpViewModel : ViewModel(){
     fun setCapturedImagePath(path: String?) {
         _signUpState.update {
             it.copy(
-                tempImagePath = path
+                imagePath = path
             )
         }
     }
@@ -132,65 +166,9 @@ class SignUpViewModel : ViewModel(){
     fun setErrorMessage(message: String?) {
         _signUpState.update {
             it.copy(
-                tempImageErrorMessage = message
+                imageErrorMessage = message
             )
         }
     }
 
-    fun sendSignUpInfo(
-        name: String,
-        surname: String,
-        cpf: String,
-        cep: String,
-        crmList: List<String>,
-        tempImagePath: String,
-        email: String,
-        password: String,
-    ) {
-        val client = OkHttpClient()
-
-        val jsonObject = JSONObject().apply {
-            put("name", name)
-            put("surname", surname)
-            put("cpf", cpf)
-            put("cep", cep)
-            put("crmList", crmList)
-            put("tempImagePath", tempImagePath)
-            put("email", email)
-            put("password", password)
-            put("confirm_password", password)
-        }
-        val jsonString = jsonObject.toString()
-
-        val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-
-        val request = Request.Builder()
-            .url("https://9d7ebc73d71e.ngrok.app/api/account/register/")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-            //aqui vai receber algo de volta da request (sucesso ou erro)
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    _signUpState.update {
-                        it.copy(
-                            requestMessage = responseBody.toString()
-                        )
-                    }
-
-                } else {
-                    _signUpState.update {
-                        it.copy(
-                            requestMessage = response.code.toString()
-                        )
-                    }
-                }
-            }
-        })
-    }
 }
