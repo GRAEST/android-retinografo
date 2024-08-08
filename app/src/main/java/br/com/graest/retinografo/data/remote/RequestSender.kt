@@ -1,6 +1,6 @@
 package br.com.graest.retinografo.data.remote
 
-import br.com.graest.retinografo.data.model.ExamData
+import br.com.graest.retinografo.data.remote.dto.LoginDTO
 import br.com.graest.retinografo.data.remote.util.NetworkError
 import br.com.graest.retinografo.data.remote.util.Result
 import io.ktor.client.HttpClient
@@ -15,14 +15,13 @@ import kotlinx.serialization.SerializationException
 class RequestSender(
     private val httpClient: HttpClient,
 ) {
-    suspend fun sendLoginInfo(examData: ExamData): Result<String, NetworkError> {
+    suspend fun sendLoginInfo(loginDTO: LoginDTO): Result<String, NetworkError> {
         val response = try {
             httpClient.post(
                 urlString = "https://76e79302a360.ngrok.app/api/account/login/"
             ) {
-                //parameter("text", loginInfo)
                 contentType(ContentType.Application.Json)
-                setBody(examData)
+                setBody(loginDTO)
             }
         } catch (e: UnresolvedAddressException) {
             return Result.Error(NetworkError.NO_INTERNET)
@@ -32,8 +31,8 @@ class RequestSender(
         return when(response.status.value) {
             in 200..299 -> {
                 //allow them to enter app
-                val status = response.body<String>()
-                Result.Success(status.result)
+                //val status = response.body<String>()
+                Result.Success("May Enter App")
             }
             401 -> Result.Error(NetworkError.UNAUTHORIZED)
             409 -> Result.Error(NetworkError.CONFLICT)
@@ -43,6 +42,4 @@ class RequestSender(
             else -> Result.Error(NetworkError.UNKNOWN)
         }
     }
-
-
 }

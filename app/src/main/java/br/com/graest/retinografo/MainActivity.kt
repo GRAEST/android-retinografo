@@ -32,6 +32,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import br.com.graest.retinografo.data.remote.RequestSender
+import br.com.graest.retinografo.data.remote.createHttpClient
 import br.com.graest.retinografo.ui.components.items
 import br.com.graest.retinografo.data.repository.Database
 import br.com.graest.retinografo.ui.MainScreenComposable
@@ -42,7 +44,8 @@ import br.com.graest.retinografo.ui.screens.login.LoginViewModel
 import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.signup.SignUpViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
-
+import io.ktor.client.engine.okhttp.OkHttp
+import okhttp3.OkHttpClient
 
 
 class MainActivity : ComponentActivity() {
@@ -92,6 +95,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RetinografoTheme {
+
+                val client = remember {
+                    RequestSender(createHttpClient(OkHttp.create()))
+                }
 
                 val flashViewModel: FlashViewModel = viewModel()
                 val flashState by flashViewModel.flashState.collectAsState()
@@ -163,7 +170,8 @@ class MainActivity : ComponentActivity() {
                         loginViewModel,
                         loginState,
                         flashViewModel,
-                        flashState
+                        flashState,
+                        client
                     )
                 }
             }

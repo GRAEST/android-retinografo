@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import br.com.graest.retinografo.data.remote.RequestSender
 import br.com.graest.retinografo.ui.screens.InitialScreenMain
 import br.com.graest.retinografo.ui.screens.exam.ExamCameraComposableScreen
 import br.com.graest.retinografo.ui.screens.exam.ExamDataState
@@ -48,7 +49,8 @@ fun RetinografoNavGraph(
     loginViewModel: LoginViewModel,
     loginState: LoginState,
     flashViewModel: FlashViewModel,
-    flashState: FlashState
+    flashState: FlashState,
+    requestSender: RequestSender
 ) {
     NavHost(
         navController = navController,
@@ -64,7 +66,7 @@ fun RetinografoNavGraph(
 
         composable("LogInScreen") {
             LoginScreen(
-                loginViewModel = loginViewModel,
+                requestSender = requestSender,
                 loginState = loginState,
                 onEvent = loginViewModel::onEvent,
                 onClickLogIn = { navController.navigate("Patient") }

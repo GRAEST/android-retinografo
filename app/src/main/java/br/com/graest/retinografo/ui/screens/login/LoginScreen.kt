@@ -27,10 +27,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.data.remote.RequestSender
 
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel,
+    requestSender: RequestSender,
     loginState: LoginState,
     onEvent: (LoginEvent) -> Unit,
     onClickLogIn: () -> Unit,
@@ -111,11 +112,15 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    loginViewModel.sendLoginInfo(loginState.email, loginState.password)
-                    if (loginState.requestMessage == "200") {
+                    onEvent(LoginEvent.SendLoginRequest(
+                        requestSender,
+                        loginState.email,
+                        loginState.password
+                        )
+                    )
+                    if (loginState.successMessage == "May Enter App"){
                         onClickLogIn()
                     }
-                    //onClickLogIn()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

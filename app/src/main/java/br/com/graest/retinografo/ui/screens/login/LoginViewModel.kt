@@ -2,11 +2,15 @@ package br.com.graest.retinografo.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.graest.retinografo.data.remote.RequestSender
+import br.com.graest.retinografo.data.remote.dto.LoginDTO
+import br.com.graest.retinografo.data.remote.util.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -41,47 +45,27 @@ class LoginViewModel : ViewModel() {
                     )
                 }
             }
-        }
-    }
-
-    fun sendLoginInfo(email: String, password: String) {
-        val client = OkHttpClient()
-
-        val jsonObject = JSONObject().apply {
-            put("email", email)
-            put("password", password)
-        }
-        val jsonString = jsonObject.toString()
-
-        val requestBody = jsonString.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-
-        val request = Request.Builder()
-            .url("https://76e79302a360.ngrok.app/api/account/login/")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-            //aqui vai receber algo de volta da request (sucesso ou erro)
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    _loginState.update {
-                        it.copy(
-                            requestMessage = response.code.toString()
-                        )
-                    }
-
-                } else {
-                    _loginState.update {
-                        it.copy(
-                            requestMessage = response.code.toString()
-                        )
+            is LoginEvent.SendLoginRequest -> {
+                viewModelScope.launch {
+                    val loginDTO = LoginDTO(event.email, event.password)
+                    when (val result = event.requestSender.sendLoginInfo(loginDTO)) {
+                        is Result.Error -> {
+                            _loginState.update {
+                                it.copy(
+                                    errorMessage = result.error.toString()
+                                )
+                            }
+                        }
+                        is Result.Success -> {
+                            _loginState.update {
+                                it.copy(
+                                    successMessage = result.data
+                                )
+                            }
+                        }
                     }
                 }
             }
-        })
+        }
     }
-
 }
