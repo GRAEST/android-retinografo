@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
@@ -45,7 +44,6 @@ import br.com.graest.retinografo.ui.screens.patient.PatientDataViewModel
 import br.com.graest.retinografo.ui.screens.signup.SignUpViewModel
 import br.com.graest.retinografo.ui.theme.RetinografoTheme
 import io.ktor.client.engine.okhttp.OkHttp
-import okhttp3.OkHttpClient
 
 
 class MainActivity : ComponentActivity() {
@@ -96,7 +94,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             RetinografoTheme {
 
-                val client = remember {
+                val requestSender = remember {
                     RequestSender(createHttpClient(OkHttp.create()))
                 }
 
@@ -154,8 +152,11 @@ class MainActivity : ComponentActivity() {
                     onSelectedItemChange = ::onSelectedItemChange,
                     scope = scope,
                     onImageClick = {navController.navigate("UserData")},
+                    onEvent = examViewModel::onEvent,
                     drawerState = drawerState,
-                    onPatientEvent = patientViewModel::onEvent
+                    onPatientEvent = patientViewModel::onEvent,
+                    examDataState = examDataState,
+                    requestSender = requestSender
                 ) {
                     RetinografoNavGraph(
                         navController,
@@ -171,7 +172,7 @@ class MainActivity : ComponentActivity() {
                         loginState,
                         flashViewModel,
                         flashState,
-                        client
+                        requestSender
                     )
                 }
             }

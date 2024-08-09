@@ -10,8 +10,10 @@ import androidx.camera.view.LifecycleCameraController
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.graest.retinografo.data.local.ExamDataDao
 import br.com.graest.retinografo.data.model.ExamData
+import br.com.graest.retinografo.data.remote.dto.ExamDTO
 import br.com.graest.retinografo.utils.CameraUtils.saveBitmapToExternalStorage
 import br.com.graest.retinografo.utils.CameraUtils.takePhoto
 import br.com.graest.retinografo.utils.FlashLightController
@@ -236,6 +238,13 @@ class ExamDataViewModel(
             is ExamDataEvent.OnTakePhoto -> {
                 viewModelScope.launch {
                     takePhoto(event.applicationContext, event.cameraController, event.onPhotoTaken)
+                }
+            }
+
+            is ExamDataEvent.OnSendToCloud -> {
+                viewModelScope.launch {
+                    val examDTO = TODO()
+                    event.requestSender
                 }
             }
 

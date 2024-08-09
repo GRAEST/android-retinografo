@@ -34,7 +34,6 @@ import br.com.graest.retinografo.utils.CameraUtils.imageFileToByteArray
 @Composable
 fun SignUpScreenB(
     requestSender: RequestSender,
-    viewModel: SignUpViewModel,
     signUpState: SignUpState,
     onEvent: (SignUpEvent) -> Unit,
     onClickSignUp: () -> Unit,

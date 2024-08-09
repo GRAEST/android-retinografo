@@ -95,7 +95,6 @@ fun RetinografoNavGraph(
         composable("SignUpScreenB") {
             SignUpScreenB(
                 requestSender = requestSender,
-                viewModel = signUpViewModel,
                 signUpState = signUpState,
                 onEvent = signUpViewModel::onEvent,
                 onClickSignUp = { navController.navigate("LogInScreen") }

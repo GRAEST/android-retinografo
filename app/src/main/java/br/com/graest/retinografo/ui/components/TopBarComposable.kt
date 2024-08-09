@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PresentToAll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,7 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.graest.retinografo.R
+import br.com.graest.retinografo.data.remote.RequestSender
 import br.com.graest.retinografo.ui.getCurrentRoute
+import br.com.graest.retinografo.ui.screens.exam.ExamDataEvent
+import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,7 +44,10 @@ fun TopBarComposable(
     navController: NavController,
     scope: CoroutineScope,
     drawerState: DrawerState,
-    onImageClick: () -> Unit
+    onImageClick: () -> Unit,
+    onEvent: (ExamDataEvent) -> Unit,
+    examDataState: ExamDataState,
+    requestSender : RequestSender
 ) {
     TopAppBar(
         title = {
@@ -170,6 +177,22 @@ fun TopBarComposable(
                         "PatientCamera" -> {  }
                         "UserData" -> {  }
                         "EditUserData" -> {  }
+                        "ExamDetails" -> {
+                            IconButton(onClick = {
+                                if (examDataState.patientData != null && examDataState.examData != null) {
+                                    onEvent(ExamDataEvent.OnSendToCloud(
+                                        requestSender = requestSender,
+                                        examDataId = examDataState.examData.id,
+                                        patientData = examDataState.patientData
+                                    ))
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.PresentToAll,
+                                    contentDescription = "Send Images to Cloud"
+                                )
+                            }
+                        }
                         else -> {
                             IconButton(onClick = {
                                 onImageClick()

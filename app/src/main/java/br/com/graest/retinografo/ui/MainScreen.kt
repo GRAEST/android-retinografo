@@ -15,9 +15,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import br.com.graest.retinografo.data.remote.RequestSender
 import br.com.graest.retinografo.ui.components.NavigationItem
 import br.com.graest.retinografo.ui.components.DrawerContentExpanded
 import br.com.graest.retinografo.ui.components.TopBarComposable
+import br.com.graest.retinografo.ui.screens.exam.ExamDataEvent
+import br.com.graest.retinografo.ui.screens.exam.ExamDataState
 import br.com.graest.retinografo.ui.screens.patient.PatientDataEvent
 import kotlinx.coroutines.CoroutineScope
 
@@ -31,7 +34,10 @@ fun MainScreenComposable(
     scope: CoroutineScope,
     drawerState: DrawerState,
     onImageClick: () -> Unit,
+    onEvent: (ExamDataEvent) -> Unit,
+    examDataState: ExamDataState,
     onPatientEvent: (PatientDataEvent) -> Unit,
+    requestSender : RequestSender,
     composable: @Composable () -> Unit
 ) {
     Surface(
@@ -47,7 +53,7 @@ fun MainScreenComposable(
             Scaffold(
                 topBar = {
                     if ( showAppBar ) {
-                        TopBarComposable(navController, scope, drawerState, onImageClick)
+                        TopBarComposable(navController, scope, drawerState, onImageClick, onEvent, examDataState, requestSender)
                     }
                 },
                 floatingActionButton = {

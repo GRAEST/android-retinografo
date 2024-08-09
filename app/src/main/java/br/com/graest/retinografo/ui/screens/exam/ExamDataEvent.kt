@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import br.com.graest.retinografo.data.model.PatientData
+import br.com.graest.retinografo.data.remote.RequestSender
 
 sealed interface ExamDataEvent {
     data class SaveExamData(val context: Context) : ExamDataEvent
@@ -27,4 +28,9 @@ sealed interface ExamDataEvent {
     data object OnHideImageDetails: ExamDataEvent
     data object OnSetNavigationStatusToFalse: ExamDataEvent
     data class OnTakePhoto(val applicationContext: Context, val cameraController: LifecycleCameraController, val onPhotoTaken: (Bitmap) -> Unit) : ExamDataEvent
+    data class OnSendToCloud(
+        val requestSender: RequestSender,
+        val examDataId: ByteArray,
+        val patientData: PatientData
+    ) : ExamDataEvent
 }
